@@ -1,39 +1,81 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { router, Stack } from "expo-router";
+import "../global.css";
+import { GlobalProvider } from "@/context/GlobalProvider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { TouchableOpacity } from "react-native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 3,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
+const RootLayout = () => {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <GlobalProvider>
+        <Stack>
+          <Stack.Screen
+            name="index"
+            options={{
+              headerShown: false,
+            }}
+          />
+
+          <Stack.Screen
+            name="(main)"
+            options={{
+              headerShown: false,
+            }}
+          />
+
+          <Stack.Screen
+            name="change-password"
+            options={{
+              title: "Change Password",
+              headerTitleAlign: "center",
+              headerLeft: () => (
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => router.back()}
+                >
+                  <MaterialIcons
+                    name="arrow-back-ios"
+                    size={24}
+                    color="black"
+                  />
+                </TouchableOpacity>
+              ),
+            }}
+          />
+
+          <Stack.Screen
+            name="edit-profile"
+            options={{
+              title: "Edit Profile",
+              headerTitleAlign: "center",
+              headerLeft: () => (
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => router.back()}
+                >
+                  <MaterialIcons
+                    name="arrow-back-ios"
+                    size={24}
+                    color="black"
+                  />
+                </TouchableOpacity>
+              ),
+            }}
+          />
+        </Stack>
+      </GlobalProvider>
+    </QueryClientProvider>
   );
-}
+};
+
+export default RootLayout;

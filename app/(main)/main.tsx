@@ -8,14 +8,28 @@ import { ProfileResponse } from "@/features/profile/types/profileResponseType";
 import { ErrorResponse } from "@/types/responseType";
 import { AxiosError } from "axios";
 import React, { useEffect, useState } from "react";
-import { Alert, StatusBar, Text, TextInput, View } from "react-native";
+import {
+  Alert,
+  FlatList,
+  Image,
+  RefreshControl,
+  ScrollView,
+  StatusBar,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Button from "@/components/Button";
+import vectors from "@/constants/vectors";
+import BackgroundLayout from "@/features/home/components/BackgroundLayout";
+import SearchSection from "@/features/home/components/SearchSection";
 
 const Main = () => {
   const { logout } = useGlobalContext();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const dateNow = new Date();
   dateNow.setDate(dateNow.getDate() + 1);
 
@@ -33,6 +47,11 @@ const Main = () => {
       ]);
   };
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => setRefreshing(false), 3000);
+  };
+
   useEffect(() => {
     setIsLoading(true);
     ProfileService.get()
@@ -45,54 +64,32 @@ const Main = () => {
 
   return (
     <SafeAreaView>
-      <View className="relative h-full">
-        <View className="bg-black h-[25%] rounded-b-[50px]" />
-        <View className="absolute p-6 h-full w-full">
-          <View className="gap-2 mb-8">
-            <Text className="text-white text-[15px]">Hello, Teddy!</Text>
-            <Text className="text-white text-[16px] font-semibold">
-              Find the best hotel deals now 👋🏻
-            </Text>
-          </View>
+      <BackgroundLayout>
+        <View className="gap-2 px-6 pt-6">
+          <Text className="text-white text-[15px]">Hello, Teddy!</Text>
+          <Text className="text-white text-[16px] font-semibold">
+            Find the best hotel deals now 👋🏻
+          </Text>
 
-          <View className="bg-white rounded-3xl p-4 shadow-xl gap-2">
-            <SearchInput
-              icon={
-                <FontAwesome6 name="location-dot" size={18} color="black" />
-              }
-              label="Destination"
-              placeholder="Badung"
-              onChange={() => {}}
-            />
-            <View className="flex-row gap-2 mb-2">
-              <View className="flex-1">
-                <SearchInput
-                  icon={
-                    <FontAwesome6 name="location-dot" size={18} color="black" />
-                  }
-                  label="Check-in"
-                  placeholder={new Date().toISOString().split("T")[0]}
-                  onChange={() => {}}
-                />
-              </View>
-              <View className="flex-1">
-                <SearchInput
-                  icon={
-                    <FontAwesome6 name="location-dot" size={18} color="black" />
-                  }
-                  label="Check-out"
-                  placeholder={dateNow.toISOString().split("T")[0]}
-                  onChange={() => {}}
-                />
-              </View>
-            </View>
-
-            <Button text="Search" />
-          </View>
+          <SearchSection />
         </View>
-      </View>
 
-      <StatusBar barStyle="light-content" backgroundColor="black" />
+        <FlatList
+          data={Array.from({ length: 10 })}
+          contentContainerStyle={{ padding: 20 }}
+          renderItem={() => (
+            <View className="bg-white rounded-lg shadow-md p-36 mb-3">
+              <Text>TEST</Text>
+            </View>
+          )}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        />
+      </BackgroundLayout>
+
+      <StatusBar barStyle="dark-content" />
     </SafeAreaView>
   );
 };

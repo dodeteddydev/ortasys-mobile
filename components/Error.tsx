@@ -2,7 +2,7 @@ import { View, Text, Image } from "react-native";
 import React from "react";
 import vectors from "@/constants/vectors";
 
-const Error = ({ statusCode }: { statusCode: number }) => {
+const Error = ({ statusCode }: { statusCode: number | string }) => {
   return (
     <View className="h-full justify-center items-center">
       <Image

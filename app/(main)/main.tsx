@@ -1,7 +1,11 @@
+import Error from "@/components/Error";
 import Loading from "@/components/Loading";
 import { useGlobalContext } from "@/context/GlobalProvider";
 import BackgroundLayout from "@/features/home/components/BackgroundLayout";
+import ItemHotel from "@/features/home/components/ItemHotel";
 import SearchSection from "@/features/home/components/SearchSection";
+import { useGetListHotel } from "@/features/home/hooks/useGetListHotel";
+import { ListHotelParams } from "@/features/home/types/lisHotelParamsType";
 import { ProfileService } from "@/features/profile/services/profileService";
 import { ProfileResponse } from "@/features/profile/types/profileResponseType";
 import { ErrorResponse } from "@/types/responseType";
@@ -41,7 +45,7 @@ const Main = () => {
 
   const onRefresh = () => {
     setRefreshing(true);
-    setTimeout(() => setRefreshing(false), 3000);
+    setRefreshing(false);
   };
 
   useEffect(() => {
@@ -52,9 +56,35 @@ const Main = () => {
       .finally(() => setIsLoading(false));
   }, []);
 
-  if (isLoading) return <Loading />;
+  const [params, setParams] = useState<ListHotelParams>({
+    destination: "56263",
+    check_in: "2025-12-01",
+    check_out: "2025-12-31",
+  });
 
-  const { height, width } = Dimensions.get("window");
+  const {
+    data,
+    isLoading: isLoadingListHotel,
+    isError,
+    error,
+  } = useGetListHotel({
+    params: {
+      destination: params?.destination ?? "56263",
+      check_in: params?.check_in ?? "2025-12-01",
+      check_out: params?.check_out ?? "2025-12-31",
+      min_price: params?.min_price ?? undefined,
+      max_price: params?.max_price ?? undefined,
+    },
+  });
+
+  if (isLoading || isLoadingListHotel) return <Loading />;
+
+  if (isError)
+    return (
+      <Error statusCode={error.response?.status ?? "Internet Connection"} />
+    );
+
+  const { height } = Dimensions.get("window");
   return (
     <BackgroundLayout>
       <View className={`absolute w-full ${Platform.OS === "ios" && "mt-10"}`}>
@@ -84,23 +114,10 @@ const Main = () => {
             paddingBottom: Platform.OS === "android" ? 20 : undefined,
           }}
           keyExtractor={(item, index) => `${item}-${index}`}
-          data={Array.from({ length: 10 })}
-          renderItem={() => (
-            <View className="p-4 bg-white mb-4 rounded-xl">
-              <Text>TEST</Text>
-              <Text>TEST</Text>
-              <Text>TEST</Text>
-              <Text>TEST</Text>
-              <Text>TEST</Text>
-              <Text>TEST</Text>
-              <Text>TEST</Text>
-              <Text>TEST</Text>
-              <Text>TEST</Text>
-              <Text>TEST</Text>
-              <Text>TEST</Text>
-              <Text>TEST</Text>
-            </View>
-          )}
+          data={data?.data}
+          renderItem={({ item }) => {
+            return <ItemHotel data={item} onPress={() => {}} />;
+          }}
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl

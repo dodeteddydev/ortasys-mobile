@@ -1,8 +1,7 @@
 import Loading from "@/components/Loading";
-import { TextInputField } from "@/components/TextInputField";
 import { useGlobalContext } from "@/context/GlobalProvider";
-import DropdownCity from "@/features/city/components/DropdownCity";
-import SearchInput from "@/features/home/components/SearchInput";
+import BackgroundLayout from "@/features/home/components/BackgroundLayout";
+import SearchSection from "@/features/home/components/SearchSection";
 import { ProfileService } from "@/features/profile/services/profileService";
 import { ProfileResponse } from "@/features/profile/types/profileResponseType";
 import { ErrorResponse } from "@/types/responseType";
@@ -10,21 +9,14 @@ import { AxiosError } from "axios";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
+  Dimensions,
   FlatList,
-  Image,
+  Platform,
   RefreshControl,
-  ScrollView,
   StatusBar,
   Text,
-  TextInput,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import Button from "@/components/Button";
-import vectors from "@/constants/vectors";
-import BackgroundLayout from "@/features/home/components/BackgroundLayout";
-import SearchSection from "@/features/home/components/SearchSection";
 
 const Main = () => {
   const { logout } = useGlobalContext();
@@ -62,35 +54,66 @@ const Main = () => {
 
   if (isLoading) return <Loading />;
 
+  const { height, width } = Dimensions.get("window");
   return (
-    <SafeAreaView>
-      <BackgroundLayout>
-        <View className="gap-2 px-6 pt-6">
+    <BackgroundLayout>
+      <View className={`absolute w-full ${Platform.OS === "ios" && "mt-10"}`}>
+        <View
+          style={{
+            height: Platform.OS === "ios" ? height * 0.34 : height * 0.36,
+          }}
+          className="gap-2 px-6 pt-6"
+        >
           <Text className="text-white text-[15px]">Hello, Teddy!</Text>
           <Text className="text-white text-[16px] font-semibold">
             Find the best hotel deals now 👋🏻
           </Text>
-
           <SearchSection />
         </View>
 
         <FlatList
+          style={{
+            marginLeft: 20,
+            marginRight: 20,
+            paddingTop: 20,
+            borderTopStartRadius: 15,
+            borderTopEndRadius: 15,
+            height: Platform.OS === "ios" ? height * 0.53 : height * 0.56,
+          }}
+          contentContainerStyle={{
+            paddingBottom: Platform.OS === "android" ? 20 : undefined,
+          }}
+          keyExtractor={(item, index) => `${item}-${index}`}
           data={Array.from({ length: 10 })}
-          contentContainerStyle={{ padding: 20 }}
           renderItem={() => (
-            <View className="bg-white rounded-lg shadow-md p-36 mb-3">
+            <View className="p-4 bg-white mb-4 rounded-xl">
+              <Text>TEST</Text>
+              <Text>TEST</Text>
+              <Text>TEST</Text>
+              <Text>TEST</Text>
+              <Text>TEST</Text>
+              <Text>TEST</Text>
+              <Text>TEST</Text>
+              <Text>TEST</Text>
+              <Text>TEST</Text>
+              <Text>TEST</Text>
+              <Text>TEST</Text>
               <Text>TEST</Text>
             </View>
           )}
           showsVerticalScrollIndicator={false}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            <RefreshControl
+              tintColor={"#000"}
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
           }
         />
-      </BackgroundLayout>
 
-      <StatusBar barStyle="dark-content" />
-    </SafeAreaView>
+        <StatusBar barStyle="dark-content" />
+      </View>
+    </BackgroundLayout>
   );
 };
 

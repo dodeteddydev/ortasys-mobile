@@ -1,5 +1,5 @@
-import { View, Text, TouchableOpacity, Keyboard } from "react-native";
 import React from "react";
+import { Keyboard, Text, TouchableOpacity } from "react-native";
 
 type ButtonProps = {
   text?: string;

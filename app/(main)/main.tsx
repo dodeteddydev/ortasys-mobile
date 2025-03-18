@@ -1,23 +1,30 @@
+import DataNotFound from "@/components/DataNotFound";
+import Error from "@/components/Error";
 import Loading from "@/components/Loading";
-import { TextInputField } from "@/components/TextInputField";
 import { useGlobalContext } from "@/context/GlobalProvider";
-import DropdownCity from "@/features/city/components/DropdownCity";
-import SearchInput from "@/features/home/components/SearchInput";
+import BackgroundLayout from "@/features/home/components/BackgroundLayout";
+import ItemHotel from "@/features/home/components/ItemHotel";
+import SearchSection from "@/features/home/components/SearchSection";
+import { useGetListHotel } from "@/features/home/hooks/useGetListHotel";
+import { ListHotelParams } from "@/features/home/types/lisHotelParamsType";
 import { ProfileService } from "@/features/profile/services/profileService";
 import { ProfileResponse } from "@/features/profile/types/profileResponseType";
 import { ErrorResponse } from "@/types/responseType";
 import { AxiosError } from "axios";
 import React, { useEffect, useState } from "react";
-import { Alert, StatusBar, Text, TextInput, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import Button from "@/components/Button";
+import {
+  Alert,
+  FlatList,
+  RefreshControl,
+  StatusBar,
+  Text,
+  View,
+} from "react-native";
 
 const Main = () => {
   const { logout } = useGlobalContext();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const dateNow = new Date();
-  dateNow.setDate(dateNow.getDate() + 1);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
   const checkUserRole = (response: ProfileResponse) => {
     if (response.role !== "agent")
@@ -33,6 +40,12 @@ const Main = () => {
       ]);
   };
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    setParams({ check_out: "2025-8-31" });
+    setRefreshing(false);
+  };
+
   useEffect(() => {
     setIsLoading(true);
     ProfileService.get()
@@ -41,59 +54,78 @@ const Main = () => {
       .finally(() => setIsLoading(false));
   }, []);
 
+  const [params, setParams] = useState<ListHotelParams>({
+    destination: undefined,
+    check_in: undefined,
+    check_out: undefined,
+  });
+
+  const {
+    data,
+    isLoading: isLoadingListHotel,
+    isError,
+    error,
+  } = useGetListHotel({
+    params: params,
+  });
+
   if (isLoading) return <Loading />;
 
+  if (isError)
+    return (
+      <Error statusCode={error.response?.status ?? "Internet Connection"} />
+    );
+
   return (
-    <SafeAreaView>
-      <View className="relative h-full">
-        <View className="bg-black h-[25%] rounded-b-[50px]" />
-        <View className="absolute p-6 h-full w-full">
-          <View className="gap-2 mb-8">
-            <Text className="text-white text-[15px]">Hello, Teddy!</Text>
-            <Text className="text-white text-[16px] font-semibold">
-              Find the best hotel deals now 👋🏻
-            </Text>
-          </View>
-
-          <View className="bg-white rounded-3xl p-4 shadow-xl gap-2">
-            <SearchInput
-              icon={
-                <FontAwesome6 name="location-dot" size={18} color="black" />
-              }
-              label="Destination"
-              placeholder="Badung"
-              onChange={() => {}}
-            />
-            <View className="flex-row gap-2 mb-2">
-              <View className="flex-1">
-                <SearchInput
-                  icon={
-                    <FontAwesome6 name="location-dot" size={18} color="black" />
-                  }
-                  label="Check-in"
-                  placeholder={new Date().toISOString().split("T")[0]}
-                  onChange={() => {}}
-                />
-              </View>
-              <View className="flex-1">
-                <SearchInput
-                  icon={
-                    <FontAwesome6 name="location-dot" size={18} color="black" />
-                  }
-                  label="Check-out"
-                  placeholder={dateNow.toISOString().split("T")[0]}
-                  onChange={() => {}}
-                />
-              </View>
-            </View>
-
-            <Button text="Search" />
-          </View>
+    <BackgroundLayout>
+      <View className="flex flex-col flex-1">
+        <View className="px-6 pt-6">
+          <Text className="text-white text-[15px]">Hello, Teddy!</Text>
+          <Text className="text-white text-[16px] font-semibold">
+            Find the best hotel deals now 👋🏻
+          </Text>
+          <SearchSection
+            onSearch={(search) => setParams(search)}
+            onReset={() =>
+              setParams({
+                destination: undefined,
+                check_in: undefined,
+                check_out: undefined,
+              })
+            }
+          />
         </View>
+
+        {isLoadingListHotel ? (
+          <Loading />
+        ) : (
+          <View className="flex-1 mb-20">
+            {data?.data?.length! < 1 ? (
+              <DataNotFound />
+            ) : (
+              <FlatList
+                keyExtractor={(item, index) => `${item}-${index}`}
+                data={data?.data}
+                contentContainerStyle={{ margin: 18 }}
+                renderItem={(val) => {
+                  return <ItemHotel data={val.item} onPress={() => {}} />;
+                }}
+                showsVerticalScrollIndicator={false}
+                refreshControl={
+                  <RefreshControl
+                    tintColor={"#000"}
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                  />
+                }
+              />
+            )}
+          </View>
+        )}
       </View>
 
       <StatusBar barStyle="light-content" backgroundColor="black" />
-    </SafeAreaView>
+    </BackgroundLayout>
   );
 };
 

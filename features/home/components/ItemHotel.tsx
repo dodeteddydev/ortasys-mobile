@@ -1,8 +1,9 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
-import React from "react";
-import { ListHotelResponse } from "../types/lisHotelResponseType";
 import { imageBaseUrl } from "@/constants/imageBaseUrl";
+import vectors from "@/constants/vectors";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import React, { useEffect, useState } from "react";
+import { Image, Text, TouchableOpacity, View } from "react-native";
+import { ListHotelResponse } from "../types/lisHotelResponseType";
 
 type ItemHotelProps = {
   data: ListHotelResponse;
@@ -10,6 +11,10 @@ type ItemHotelProps = {
 };
 
 export default function ItemHotel({ data, onPress }: ItemHotelProps) {
+  const imageUrl = `${imageBaseUrl}${data.roomImage}`;
+  const [imageStatus, setImageStatus] = useState<
+    "load" | "success" | "error" | "iddle"
+  >("iddle");
   const formatToIDR = (price: number) => {
     return new Intl.NumberFormat("id-ID", {
       style: "currency",
@@ -19,15 +24,28 @@ export default function ItemHotel({ data, onPress }: ItemHotelProps) {
     }).format(price);
   };
 
+  useEffect(() => {
+    setImageStatus("load");
+    Image.prefetch(imageUrl)
+      .then(() => setImageStatus("success"))
+      .catch(() => setImageStatus("error"));
+  }, []);
+
   return (
     <View className="bg-white mb-4 rounded-xl flex-row">
-      <Image
-        className="h-32 w-32"
-        source={{
-          uri: `${imageBaseUrl}${data.roomImage}`,
-        }}
-        resizeMode="contain"
-      />
+      {imageStatus === "load" ? (
+        <View className="h-32 w-32 flex justify-center items-center">
+          <Text>Loading...</Text>
+        </View>
+      ) : (
+        <Image
+          className="h-32 w-32"
+          source={
+            imageStatus === "error" ? vectors.dataNotFound : { uri: imageUrl }
+          }
+          resizeMode="contain"
+        />
+      )}
 
       <View className="p-4 justify-center flex-1">
         <Text className="font-semibold text-lg">{data.hotelName}</Text>

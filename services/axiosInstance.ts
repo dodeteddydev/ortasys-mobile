@@ -27,22 +27,19 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error: ErrorResponse) => {
-    if (error.response?.status === 401) {
+    const refreshToken = Storage.getToken(StorageKey.refreshToken);
+
+    if (refreshToken && error.response?.status === 401) {
       try {
-        const data = await getRefreshToken();
-        if (!data) {
-          await Storage.deleteToken(StorageKey.accessToken);
-          await Storage.deleteToken(StorageKey.refreshToken);
-          return Promise.reject(error);
-        }
+        const { data } = await axios.post<
+          SuccessResponse<RefreshTokenResponse>
+        >("/auth/refresh", { refreshToken: refreshToken });
 
-        await Storage.saveToken(StorageKey.accessToken, data.accessToken);
-        await Storage.saveToken(StorageKey.refreshToken, data.refreshToken);
-
-        if (error.config) {
-          error.config.headers.Authorization = `Bearer ${data.accessToken}`;
-          return axiosInstance.request(error.config);
-        }
+        await Storage.saveToken(StorageKey.accessToken, data.data.accessToken);
+        await Storage.saveToken(
+          StorageKey.refreshToken,
+          data.data.refreshToken
+        );
       } catch (err) {
         console.error("Error refreshing token:", err);
       }
@@ -54,21 +51,4 @@ axiosInstance.interceptors.response.use(
 type RefreshTokenResponse = {
   accessToken: string;
   refreshToken: string;
-};
-
-const getRefreshToken = async (): Promise<RefreshTokenResponse | undefined> => {
-  try {
-    const refreshToken = await Storage.getToken(StorageKey.refreshToken);
-    if (!refreshToken) return;
-
-    const response = await axios.post<SuccessResponse<RefreshTokenResponse>>(
-      "/auth/refresh",
-      { refreshToken: refreshToken }
-    );
-
-    return response.data.data;
-  } catch (error) {
-    console.log("Failed to refresh token:", error);
-    return;
-  }
 };

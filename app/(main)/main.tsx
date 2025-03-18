@@ -1,3 +1,4 @@
+import DataNotFound from "@/components/DataNotFound";
 import Error from "@/components/Error";
 import Loading from "@/components/Loading";
 import { useGlobalContext } from "@/context/GlobalProvider";
@@ -13,9 +14,7 @@ import { AxiosError } from "axios";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
-  Dimensions,
   FlatList,
-  Platform,
   RefreshControl,
   StatusBar,
   Text,
@@ -26,8 +25,6 @@ const Main = () => {
   const { logout } = useGlobalContext();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
-  const dateNow = new Date();
-  dateNow.setDate(dateNow.getDate() + 1);
 
   const checkUserRole = (response: ProfileResponse) => {
     if (response.role !== "agent")
@@ -45,6 +42,7 @@ const Main = () => {
 
   const onRefresh = () => {
     setRefreshing(true);
+    setParams({ check_out: "2025-8-31" });
     setRefreshing(false);
   };
 
@@ -57,9 +55,9 @@ const Main = () => {
   }, []);
 
   const [params, setParams] = useState<ListHotelParams>({
-    destination: "56263",
-    check_in: "2025-12-01",
-    check_out: "2025-12-31",
+    destination: undefined,
+    check_in: undefined,
+    check_out: undefined,
   });
 
   const {
@@ -68,68 +66,65 @@ const Main = () => {
     isError,
     error,
   } = useGetListHotel({
-    params: {
-      destination: params?.destination ?? "56263",
-      check_in: params?.check_in ?? "2025-12-01",
-      check_out: params?.check_out ?? "2025-12-31",
-      min_price: params?.min_price ?? undefined,
-      max_price: params?.max_price ?? undefined,
-    },
+    params: params,
   });
 
-  if (isLoading || isLoadingListHotel) return <Loading />;
+  if (isLoading) return <Loading />;
 
   if (isError)
     return (
       <Error statusCode={error.response?.status ?? "Internet Connection"} />
     );
 
-  const { height } = Dimensions.get("window");
   return (
     <BackgroundLayout>
-      <View className={`absolute w-full ${Platform.OS === "ios" && "mt-10"}`}>
-        <View
-          style={{
-            height: Platform.OS === "ios" ? height * 0.34 : height * 0.36,
-          }}
-          className="gap-2 px-6 pt-6"
-        >
+      <View className="flex flex-col flex-1">
+        <View className="px-6 pt-6">
           <Text className="text-white text-[15px]">Hello, Teddy!</Text>
           <Text className="text-white text-[16px] font-semibold">
             Find the best hotel deals now 👋🏻
           </Text>
-          <SearchSection />
+          <SearchSection
+            onSearch={(search) => setParams(search)}
+            onReset={() =>
+              setParams({
+                destination: undefined,
+                check_in: undefined,
+                check_out: undefined,
+              })
+            }
+          />
         </View>
 
-        <FlatList
-          style={{
-            marginLeft: 20,
-            marginRight: 20,
-            paddingTop: 20,
-            borderTopStartRadius: 15,
-            borderTopEndRadius: 15,
-            height: Platform.OS === "ios" ? height * 0.53 : height * 0.56,
-          }}
-          contentContainerStyle={{
-            paddingBottom: Platform.OS === "android" ? 20 : undefined,
-          }}
-          keyExtractor={(item, index) => `${item}-${index}`}
-          data={data?.data}
-          renderItem={({ item }) => {
-            return <ItemHotel data={item} onPress={() => {}} />;
-          }}
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl
-              tintColor={"#000"}
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-            />
-          }
-        />
-
-        <StatusBar barStyle="dark-content" />
+        {isLoadingListHotel ? (
+          <Loading />
+        ) : (
+          <View className="flex-1 mb-20">
+            {data?.data?.length! < 1 ? (
+              <DataNotFound />
+            ) : (
+              <FlatList
+                keyExtractor={(item, index) => `${item}-${index}`}
+                data={data?.data}
+                contentContainerStyle={{ margin: 18 }}
+                renderItem={(val) => {
+                  return <ItemHotel data={val.item} onPress={() => {}} />;
+                }}
+                showsVerticalScrollIndicator={false}
+                refreshControl={
+                  <RefreshControl
+                    tintColor={"#000"}
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                  />
+                }
+              />
+            )}
+          </View>
+        )}
       </View>
+
+      <StatusBar barStyle="light-content" backgroundColor="black" />
     </BackgroundLayout>
   );
 };

@@ -10,7 +10,6 @@ import { ListHotelParams } from "@/features/home/types/lisHotelParamsType";
 import { ProfileService } from "@/features/profile/services/profileService";
 import { ProfileResponse } from "@/features/profile/types/profileResponseType";
 import { ErrorResponse } from "@/types/responseType";
-import { AxiosError } from "axios";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
@@ -25,6 +24,7 @@ const Main = () => {
   const { logout } = useGlobalContext();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [name, setName] = useState<string>();
 
   const checkUserRole = (response: ProfileResponse) => {
     if (response.role !== "agent")
@@ -49,7 +49,10 @@ const Main = () => {
   useEffect(() => {
     setIsLoading(true);
     ProfileService.get()
-      .then((response) => checkUserRole(response.data))
+      .then((response) => {
+        checkUserRole(response.data);
+        setName(response.data.name);
+      })
       .catch((e: ErrorResponse) => checkError(e))
       .finally(() => setIsLoading(false));
   }, []);
@@ -75,7 +78,7 @@ const Main = () => {
     <BackgroundLayout>
       <View className="flex flex-col flex-1">
         <View className="px-6 pt-6">
-          <Text className="text-white text-[15px]">Hello, Teddy!</Text>
+          <Text className="text-white text-[15px]">Hello, {name}!</Text>
           <Text className="text-white text-[16px] font-semibold">
             Find the best hotel deals now 👋🏻
           </Text>

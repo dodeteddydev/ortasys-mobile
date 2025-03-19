@@ -27,13 +27,13 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error: ErrorResponse) => {
-    const refreshToken = Storage.getToken(StorageKey.refreshToken);
+    const refreshToken = await Storage.getToken(StorageKey.refreshToken);
 
     if (refreshToken && error.response?.status === 401) {
       try {
         const { data } = await axios.post<
           SuccessResponse<RefreshTokenResponse>
-        >("/auth/refresh", { refreshToken: refreshToken });
+        >(`${baseUrl}/auth/refresh`, { refreshToken: refreshToken });
 
         await Storage.saveToken(StorageKey.accessToken, data.data.accessToken);
         await Storage.saveToken(
@@ -41,7 +41,8 @@ axiosInstance.interceptors.response.use(
           data.data.refreshToken
         );
       } catch (err) {
-        console.error("Error refreshing token:", err);
+        const errAxios = err as ErrorResponse;
+        return Promise.reject(errAxios);
       }
     }
     return Promise.reject(error);

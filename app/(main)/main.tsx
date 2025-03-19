@@ -33,7 +33,7 @@ const Main = () => {
       ]);
   };
 
-  const checkError = (e: AxiosError<ErrorResponse>) => {
+  const checkError = (e: ErrorResponse) => {
     if (e.response?.status === 401)
       return Alert.alert("Session Expired", "Please login again", [
         { text: "OK", onPress: logout },
@@ -42,7 +42,7 @@ const Main = () => {
 
   const onRefresh = () => {
     setRefreshing(true);
-    setParams({ check_out: "2025-8-31" });
+    setParams({ ...params });
     setRefreshing(false);
   };
 
@@ -50,7 +50,7 @@ const Main = () => {
     setIsLoading(true);
     ProfileService.get()
       .then((response) => checkUserRole(response.data))
-      .catch((e: AxiosError<ErrorResponse>) => checkError(e))
+      .catch((e: ErrorResponse) => checkError(e))
       .finally(() => setIsLoading(false));
   }, []);
 
@@ -70,11 +70,6 @@ const Main = () => {
   });
 
   if (isLoading) return <Loading />;
-
-  if (isError)
-    return (
-      <Error statusCode={error.response?.status ?? "Internet Connection"} />
-    );
 
   return (
     <BackgroundLayout>
@@ -96,8 +91,14 @@ const Main = () => {
           />
         </View>
 
-        {isLoadingListHotel ? (
-          <Loading />
+        {isLoadingListHotel || isError ? (
+          isLoadingListHotel ? (
+            <Loading />
+          ) : (
+            <Error
+              statusCode={error?.response?.status ?? "Internet Connection"}
+            />
+          )
         ) : (
           <View className="flex-1 mb-20">
             {data?.data?.length! < 1 ? (

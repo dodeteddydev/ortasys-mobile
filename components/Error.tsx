@@ -4,7 +4,7 @@ import vectors from "@/constants/vectors";
 
 const Error = ({ statusCode }: { statusCode: number | string }) => {
   return (
-    <View className="h-full justify-center items-center">
+    <View className="flex flex-col flex-1 justify-center items-center">
       <Image
         className="h-36 w-36"
         source={vectors.error}

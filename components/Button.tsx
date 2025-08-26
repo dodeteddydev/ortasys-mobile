@@ -17,7 +17,7 @@ const Button = ({ text, loading, onPress, className }: ButtonProps) => {
       }}
       disabled={loading}
       activeOpacity={0.8}
-      className={`${className} bg-black w-full h-16 items-center justify-center rounded-lg ${
+      className={`${className} bg-primary w-full h-16 items-center justify-center rounded-lg ${
         loading && "opacity-70"
       }`}
     >

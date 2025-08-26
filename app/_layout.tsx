@@ -1,9 +1,9 @@
-import { router, Stack } from "expo-router";
-import "../global.css";
+import HeaderLeft from "@/components/HeaderLeft";
+import { colors } from "@/constants/colors";
 import { GlobalProvider } from "@/context/GlobalProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { TouchableOpacity } from "react-native";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { router, Stack } from "expo-router";
+import "../global.css";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -18,7 +18,14 @@ const RootLayout = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <GlobalProvider>
-        <Stack>
+        <Stack
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: colors.primary,
+            },
+            headerTintColor: "white",
+          }}
+        >
           <Stack.Screen
             name="index"
             options={{
@@ -37,19 +44,7 @@ const RootLayout = () => {
             name="change-password"
             options={{
               title: "Change Password",
-              headerTitleAlign: "center",
-              headerLeft: () => (
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={() => router.back()}
-                >
-                  <MaterialIcons
-                    name="arrow-back-ios"
-                    size={24}
-                    color="black"
-                  />
-                </TouchableOpacity>
-              ),
+              headerLeft: () => <HeaderLeft onPress={() => router.back()} />,
             }}
           />
 
@@ -57,19 +52,7 @@ const RootLayout = () => {
             name="edit-profile"
             options={{
               title: "Edit Profile",
-              headerTitleAlign: "center",
-              headerLeft: () => (
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={() => router.back()}
-                >
-                  <MaterialIcons
-                    name="arrow-back-ios"
-                    size={24}
-                    color="black"
-                  />
-                </TouchableOpacity>
-              ),
+              headerLeft: () => <HeaderLeft onPress={() => router.back()} />,
             }}
           />
         </Stack>

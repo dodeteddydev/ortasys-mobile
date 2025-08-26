@@ -40,7 +40,7 @@ export const TextInputField = ({
       <View
         className={`flex-row items-center w-full h-16 border rounded-lg px-2 ${
           isFocused && !error
-            ? "border-black"
+            ? "border-primary"
             : (isFocused && error) || error
             ? "border-red-500"
             : "border-gray-400"
@@ -65,7 +65,7 @@ export const TextInputField = ({
             onPress={() => setShowPassword(!showPassword)}
           >
             <Feather
-              name={!showPassword ? "eye" : "eye-off"}
+              name={showPassword ? "eye" : "eye-off"}
               size={18}
               color={error ? "red" : "gray"}
             />

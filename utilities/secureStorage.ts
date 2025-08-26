@@ -1,19 +1,14 @@
 import * as SecureStorage from "expo-secure-store";
 
-export class StorageKey {
-  static accessToken = "accessToken";
-  static refreshToken = "refreshToken";
-}
-
 export class Storage {
-  static async saveToken(key: string, value: string) {
-    await SecureStorage.setItemAsync(key, value);
+  static saveToken(key: string, value: string) {
+    SecureStorage.setItem(key, value);
   }
 
-  static async getToken(key: string) {
-    return await SecureStorage.getItemAsync(key);
+  static getToken(key: string) {
+    return SecureStorage.getItem(key);
   }
-  static async deleteToken(key: string) {
-    await SecureStorage.deleteItemAsync(key);
+  static deleteToken(key: string) {
+    SecureStorage.deleteItemAsync(key);
   }
 }

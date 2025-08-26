@@ -1,17 +1,17 @@
 import Button from "@/components/Button";
 import { TextInputField } from "@/components/TextInputField";
 import ToastCustom from "@/components/ToastCustom";
+import { accessTokenKey, refreshTokenKey } from "@/constants/storageKey";
 import vectors from "@/constants/vectors";
 import { useGlobalContext } from "@/context/GlobalProvider";
 import { useLogin } from "@/features/auth/hooks/useLogin";
 import { loginSchema, LoginSchema } from "@/features/auth/schemas/loginSchema";
 import { LoginRequest } from "@/features/auth/types/loginRequestType";
-import { Storage, StorageKey } from "@/utilities/secureStorage";
+import { Storage } from "@/utilities/secureStorage";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Redirect, router } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import {
-  Alert,
   Image,
   Keyboard,
   KeyboardAvoidingView,
@@ -40,27 +40,15 @@ const Index = () => {
 
   const onLogin = (data: LoginSchema) => {
     login.mutate(data as LoginRequest, {
-      onSuccess: async (response) => {
-        try {
-          await Promise.all([
-            Storage.saveToken(
-              StorageKey.accessToken,
-              response.data.accessToken
-            ),
-            Storage.saveToken(
-              StorageKey.refreshToken,
-              response.data.refreshToken
-            ),
-          ]);
-          setTimeout(() => router.replace("/main"), 2050);
-          Toast.show({
-            type: "success",
-            text1: "Login Success",
-            text2: "You have successfully logged in.",
-          });
-        } catch (error) {
-          Alert.alert("Error", "Failed to login");
-        }
+      onSuccess: ({ data }) => {
+        Storage.saveToken(accessTokenKey, data.accessToken);
+        Storage.saveToken(refreshTokenKey, data.refreshToken);
+        setTimeout(() => router.replace("/home"), 2050);
+        Toast.show({
+          type: "success",
+          text1: "Login Success",
+          text2: "You have successfully logged in.",
+        });
       },
       onError: () =>
         Toast.show({
@@ -71,7 +59,7 @@ const Index = () => {
     });
   };
 
-  if (isLoggedIn) return <Redirect href={"/main"} />;
+  if (isLoggedIn) return <Redirect href={"/home"} />;
 
   return (
     <SafeAreaView>

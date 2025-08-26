@@ -1,16 +1,25 @@
+import { colors } from "@/constants/colors";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs } from "expo-router";
 import React from "react";
 
 const MainLayout = () => {
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.grayInactive,
+        headerStyle: {
+          backgroundColor: colors.primary,
+        },
+        headerTintColor: "white",
+      }}
+    >
       <Tabs.Screen
-        name="main"
+        name="home"
         options={{
           headerShown: false,
           title: "Home",
-          tabBarActiveTintColor: "black",
           tabBarIcon: ({ color }) => (
             <FontAwesome name="home" size={24} color={color} />
           ),
@@ -20,7 +29,6 @@ const MainLayout = () => {
         name="profile"
         options={{
           title: "Profile",
-          tabBarActiveTintColor: "black",
           tabBarIcon: ({ color }) => (
             <FontAwesome name="user" size={24} color={color} />
           ),

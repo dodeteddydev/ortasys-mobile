@@ -16,12 +16,12 @@ const ToastCustom = ({ type, title, text }: ToastCustomProps) => {
     >
       <Text
         className={`text-lg font-semibold ${
-          type === "success" ? "text-black" : "text-white"
+          type === "success" ? "text-primary" : "text-white"
         }`}
       >
         {title}
       </Text>
-      <Text className={type === "success" ? "text-black" : "text-white"}>
+      <Text className={type === "success" ? "text-primary" : "text-white"}>
         {text}
       </Text>
     </View>

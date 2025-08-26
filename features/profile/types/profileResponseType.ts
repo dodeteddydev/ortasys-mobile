@@ -14,4 +14,10 @@ export type ProfileResponse = {
   address: string;
   affiliateId: number | null;
   hotelId: number | null;
+  agentId: number | null;
+  affiliatePartnerId: number | null;
+  currentBalance: number;
+  countryCode: string;
+  markup: number;
+  vendorId: number | null;
 };

@@ -1,3 +1,4 @@
+import { colors } from "@/constants/colors";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import React, { ReactNode } from "react";
 import { Text, TouchableOpacity } from "react-native";
@@ -21,7 +22,11 @@ const ProfileButtonItem = ({
     >
       {icon}
       <Text className="text-lg font-semibold flex-1">{title}</Text>
-      <MaterialIcons name="arrow-forward-ios" size={24} color="black" />
+      <MaterialIcons
+        name="arrow-forward-ios"
+        size={24}
+        color={colors.primary}
+      />
     </TouchableOpacity>
   );
 };

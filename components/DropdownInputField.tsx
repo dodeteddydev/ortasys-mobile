@@ -32,7 +32,7 @@ const DropdownInputField = ({
       <View
         className={`flex-row items-center w-full h-16 border rounded-lg px-2 ${
           isFocused && !error
-            ? "border-black"
+            ? "border-primary"
             : (isFocused && error) || error
             ? "border-red-500"
             : "border-gray-400"

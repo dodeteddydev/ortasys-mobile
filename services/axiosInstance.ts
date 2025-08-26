@@ -1,23 +1,23 @@
+import { accessTokenKey, refreshTokenKey } from "@/constants/storageKey";
 import { ErrorResponse, SuccessResponse } from "@/types/responseType";
-import { Storage, StorageKey } from "@/utilities/secureStorage";
-import axios, { AxiosError } from "axios";
+import { Storage } from "@/utilities/secureStorage";
+import axios from "axios";
+import Constants from "expo-constants";
 
-const baseUrl = "https://appde.online/api/v1";
+const baseApiUrl = Constants.expoConfig?.extra?.BASE_API_URL;
 
 export const axiosInstance = axios.create({
-  baseURL: baseUrl,
+  baseURL: baseApiUrl,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
 axiosInstance.interceptors.request.use(
-  async (config) => {
-    const accessToken = await Storage.getToken(StorageKey.accessToken);
+  (config) => {
+    const accessToken = Storage.getToken(accessTokenKey);
 
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
+    if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`;
 
     return config;
   },
@@ -27,19 +27,18 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error: ErrorResponse) => {
-    const refreshToken = await Storage.getToken(StorageKey.refreshToken);
+    const refreshToken = Storage.getToken(refreshTokenKey);
 
     if (refreshToken && error.response?.status === 401) {
       try {
-        const { data } = await axios.post<
+        const authRefresh = await axios.post<
           SuccessResponse<RefreshTokenResponse>
-        >(`${baseUrl}/auth/refresh`, { refreshToken: refreshToken });
+        >(`${baseApiUrl}/auth/refresh`, { refreshToken: refreshToken });
 
-        await Storage.saveToken(StorageKey.accessToken, data.data.accessToken);
-        await Storage.saveToken(
-          StorageKey.refreshToken,
-          data.data.refreshToken
-        );
+        const data = authRefresh.data.data;
+
+        Storage.saveToken(accessTokenKey, data.accessToken);
+        Storage.saveToken(refreshTokenKey, data.refreshToken);
       } catch (err) {
         const errAxios = err as ErrorResponse;
         return Promise.reject(errAxios);

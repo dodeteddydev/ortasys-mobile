@@ -1,11 +1,11 @@
+import { colors } from "@/constants/colors";
 import { useGlobalContext } from "@/context/GlobalProvider";
 import ProfileButtonItem from "@/features/auth/components/ProfileButtonItem";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { router } from "expo-router";
 import React from "react";
-import { Alert, AlertButton, StatusBar, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Alert, StatusBar, View } from "react-native";
 
 const Profile = () => {
   const { logout } = useGlobalContext();
@@ -25,19 +25,23 @@ const Profile = () => {
     <>
       <View className="p-4 gap-3">
         <ProfileButtonItem
-          icon={<FontAwesome6 name="user" size={25} color="black" />}
+          icon={<FontAwesome6 name="user" size={25} color={colors.primary} />}
           title="Edit Profile"
           onPress={() => router.push("/edit-profile")}
         />
 
         <ProfileButtonItem
-          icon={<MaterialIcons name="password" size={25} color="black" />}
+          icon={
+            <MaterialIcons name="password" size={25} color={colors.primary} />
+          }
           title="Change Password"
           onPress={() => router.push("/change-password")}
         />
 
         <ProfileButtonItem
-          icon={<MaterialIcons name="logout" size={25} color="black" />}
+          icon={
+            <MaterialIcons name="logout" size={25} color={colors.primary} />
+          }
           title="Logout"
           onPress={onPressLogout}
         />

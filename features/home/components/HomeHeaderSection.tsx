@@ -9,15 +9,15 @@ const HomeHeaderSection = ({ data }: { data: ProfileResponse }) => {
 
   return (
     <View
-      className={`bg-primary p-5 ${
-        Platform.OS === "ios" && "pt-14"
-      } rounded-b-3xl flex flex-row items-center justify-between`}
+      className={`bg-primary rounded-b-3xl flex flex-row items-center justify-between ${
+        Platform.OS === "ios" ? "min-h-36 px-4 pt-8" : "min-h-28 px-4"
+      }`}
     >
       <View>
         <Text className="text-white text-xl">Hello, {data?.name}! 👋🏻</Text>
         <Text className="text-white font-light">Welcome to Ortasys</Text>
       </View>
-      <View className="w-32">
+      <View>
         <View className="flex-row items-center gap-2">
           <Text className="text-white text-xl">Saldo</Text>
           <TouchableOpacity
@@ -32,8 +32,9 @@ const HomeHeaderSection = ({ data }: { data: ProfileResponse }) => {
           </TouchableOpacity>
         </View>
         <Text
-          className={`text-white ${!showSaldo && "font-semibold text-xl"}`}
+          className="text-white w-28 font-semibold"
           numberOfLines={1}
+          ellipsizeMode="tail"
         >
           {showSaldo ? formatToIDR(data?.currentBalance || 0) : "•••••••••••"}
         </Text>

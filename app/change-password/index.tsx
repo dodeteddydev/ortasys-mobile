@@ -66,6 +66,7 @@ const ChangePassword = () => {
             <Text className="text-2xl font-semibold">Change Password</Text>
             <Text className="mb-10">Click update when you're done.</Text>
 
+            {/* CHANGE PASSWORD FORM */}
             <View className="gap-3">
               <Controller
                 control={control}
@@ -111,6 +112,7 @@ const ChangePassword = () => {
                   />
                 )}
               />
+
               <Button
                 loading={changePassword.isPending}
                 text="UPDATE PASSWORD"

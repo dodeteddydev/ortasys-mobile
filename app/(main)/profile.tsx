@@ -24,12 +24,14 @@ const Profile = () => {
   return (
     <>
       <View className="p-4 gap-3">
+        {/* EDIT PROFILE CARD */}
         <ProfileButtonItem
           icon={<FontAwesome6 name="user" size={25} color={colors.primary} />}
           title="Edit Profile"
           onPress={() => router.push("/edit-profile")}
         />
 
+        {/* CHANGE PASSWORD CARD */}
         <ProfileButtonItem
           icon={
             <MaterialIcons name="password" size={25} color={colors.primary} />
@@ -38,6 +40,7 @@ const Profile = () => {
           onPress={() => router.push("/change-password")}
         />
 
+        {/* LOGOUT CARD */}
         <ProfileButtonItem
           icon={
             <MaterialIcons name="logout" size={25} color={colors.primary} />

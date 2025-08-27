@@ -65,6 +65,7 @@ const Index = () => {
     <SafeAreaView>
       <KeyboardAvoidingView behavior="padding">
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          {/* LOGIN FORM */}
           <View className="p-4 gap-3 h-full justify-center items-center">
             <Image
               className="h-36 w-36"

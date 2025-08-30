@@ -54,7 +54,7 @@ export default Home;
 const homeMenu: HomeMenuType[] = [
   {
     title: "Customized",
-    path: "/customized",
+    path: "/customized/list",
     icon: <Feather name="package" size={24} color={colors.primary} />,
   },
 ];

@@ -41,6 +41,14 @@ const RootLayout = () => {
             }}
           />
 
+          {/* CUSTOMIZED ROUTE */}
+          <Stack.Screen
+            name="customized"
+            options={{
+              headerShown: false,
+            }}
+          />
+
           {/* CHANGE PASSWORD ROUTE */}
           <Stack.Screen
             name="change-password"

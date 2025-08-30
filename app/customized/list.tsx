@@ -1,12 +1,12 @@
 import { View, Text } from "react-native";
 import React from "react";
 
-const Index = () => {
+const ListScreen = () => {
   return (
     <View>
-      <Text>Customized</Text>
+      <Text>Customized Package</Text>
     </View>
   );
 };
 
-export default Index;
+export default ListScreen;

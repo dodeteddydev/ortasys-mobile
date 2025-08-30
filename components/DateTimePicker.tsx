@@ -1,0 +1,94 @@
+import { colors } from "@/constants/colors";
+import DatePicker, {
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
+import React, { useState } from "react";
+import {
+  Button,
+  Modal,
+  Platform,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
+import { TextInputField } from "./TextInputField";
+
+interface DateTimePickerProps {
+  label?: string;
+  placeholder?: string;
+  value?: string;
+  onChangeDate?: (e: string) => void;
+  error?: string;
+}
+
+const DateTimePicker = ({ ...props }: DateTimePickerProps) => {
+  const [showDateTimePicker, setShowDateTimePicker] = useState<boolean>(false);
+  const [tempDate, setTempDate] = useState<Date>(new Date());
+
+  const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
+    if (Platform.OS === "android") {
+      if (event.type === "dismissed") {
+        setShowDateTimePicker(false);
+        return;
+      }
+      if (selectedDate && event.type === "set") {
+        setShowDateTimePicker(false);
+        setTempDate(selectedDate);
+        props.onChangeDate?.(selectedDate.toISOString());
+      }
+    } else {
+      if (selectedDate) {
+        setTempDate(selectedDate);
+      }
+    }
+  };
+
+  const handleIosDateChange = () => {
+    setShowDateTimePicker(false);
+    props.onChangeDate?.(tempDate.toISOString());
+  };
+
+  return (
+    <View>
+      <TouchableWithoutFeedback onPress={() => setShowDateTimePicker(true)}>
+        <View>
+          <TextInputField editable={false} pointerEvents="none" {...props} />
+        </View>
+      </TouchableWithoutFeedback>
+
+      {showDateTimePicker && Platform.OS === "ios" && (
+        <Modal transparent visible={showDateTimePicker}>
+          <View className="flex-1 items-center justify-center rounded-xl bg-black/50">
+            <View className="bg-white rounded-xl shadow-xl">
+              <DatePicker
+                mode="date"
+                display="spinner"
+                value={tempDate}
+                onChange={onChange}
+              />
+              <View className="flex-row justify-center pb-2 gap-3">
+                <Button
+                  onPress={() => setShowDateTimePicker(false)}
+                  color="red"
+                  title="CANCEL"
+                />
+                <Button title="OK" onPress={handleIosDateChange} />
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
+
+      {showDateTimePicker && Platform.OS === "android" && (
+        <DatePicker
+          mode="date"
+          display="spinner"
+          value={tempDate}
+          onChange={onChange}
+          textColor="red"
+        />
+      )}
+    </View>
+  );
+};
+
+export default DateTimePicker;

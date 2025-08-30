@@ -1,5 +1,5 @@
 import { ProfileResponse } from "@/features/profile/types/profileResponseType";
-import { formatToIDR } from "@/utilities/currencyFormat";
+import { currencyFormat } from "@/utilities/currencyFormat";
 import Feather from "@expo/vector-icons/Feather";
 import React, { useState } from "react";
 import { Platform, Text, TouchableOpacity, View } from "react-native";
@@ -36,7 +36,9 @@ const HomeHeaderSection = ({ data }: { data: ProfileResponse }) => {
           numberOfLines={1}
           ellipsizeMode="tail"
         >
-          {showSaldo ? formatToIDR(data?.currentBalance || 0) : "•••••••••••"}
+          {showSaldo
+            ? currencyFormat(data?.currentBalance || 0)
+            : "•••••••••••"}
         </Text>
       </View>
     </View>

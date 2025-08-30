@@ -4,11 +4,12 @@ import {
   KeyboardTypeOptions,
   Text,
   TextInput,
+  TextInputProps,
   TouchableOpacity,
   View,
 } from "react-native";
 
-type TextInputFieldProps = {
+type TextInputFieldProps = TextInputProps & {
   label?: string;
   placeholder?: string;
   value?: string;
@@ -26,6 +27,7 @@ export const TextInputField = ({
   error,
   secureTextEntry,
   keyboardType,
+  ...props
 }: TextInputFieldProps) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(
@@ -47,6 +49,7 @@ export const TextInputField = ({
         }`}
       >
         <TextInput
+          {...props}
           className="flex-1 h-16"
           placeholder={placeholder}
           placeholderTextColor={error ? "red" : "gray"}

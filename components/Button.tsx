@@ -1,4 +1,3 @@
-import React from "react";
 import { Keyboard, Text, TouchableOpacity } from "react-native";
 
 type ButtonProps = {

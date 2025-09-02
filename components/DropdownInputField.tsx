@@ -36,7 +36,7 @@ const DropdownInputField = ({
             : (isFocused && error) || error
             ? "border-red-500"
             : "border-gray-400"
-        }`}
+        } ${disabled && "bg-gray-100"}`}
       >
         <Dropdown
           disable={disabled}

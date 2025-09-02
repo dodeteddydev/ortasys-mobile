@@ -17,6 +17,7 @@ type TextInputFieldProps = TextInputProps & {
   error?: string;
   secureTextEntry?: boolean;
   keyboardType?: KeyboardTypeOptions;
+  disabled?: boolean;
 };
 
 export const TextInputField = ({
@@ -27,6 +28,7 @@ export const TextInputField = ({
   error,
   secureTextEntry,
   keyboardType,
+  disabled,
   ...props
 }: TextInputFieldProps) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
@@ -46,7 +48,7 @@ export const TextInputField = ({
             : (isFocused && error) || error
             ? "border-red-500"
             : "border-gray-400"
-        }`}
+        } ${disabled && "bg-gray-100"}`}
       >
         <TextInput
           {...props}
@@ -60,6 +62,7 @@ export const TextInputField = ({
           secureTextEntry={!showPassword}
           autoCapitalize="none"
           keyboardType={keyboardType}
+          editable={props.editable ?? !disabled}
         />
 
         {secureTextEntry && (

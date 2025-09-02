@@ -1,6 +1,5 @@
 import { colors } from "@/constants/colors";
 import { router, Stack } from "expo-router";
-import React from "react";
 import { Button, Text, TouchableOpacity, View } from "react-native";
 
 const CustomizedLayout = () => {

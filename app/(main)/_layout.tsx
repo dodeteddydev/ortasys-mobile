@@ -1,7 +1,6 @@
 import { colors } from "@/constants/colors";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs } from "expo-router";
-import React from "react";
 
 const MainLayout = () => {
   return (

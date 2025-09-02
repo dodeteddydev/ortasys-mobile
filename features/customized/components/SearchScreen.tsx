@@ -6,16 +6,19 @@ import DropdownCountry from "@/features/country/components/DropdownCountry";
 import DropdownState from "@/features/state/components/DropdownState";
 import { dateFormat } from "@/utilities/dateFormat";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import { addDays } from "date-fns";
 import { Controller, useForm } from "react-hook-form";
 import { ScrollView, View } from "react-native";
+import { useCustomizedContext } from "../context/CustomizedProvider";
 import { searchSchema, SearchSchema } from "../schemas/searchShema";
 
 type SearchSceenProps = {
-  onSearch: (data: SearchSchema) => void;
+  onSearchCompleted: () => void;
 };
 
-const SearchScreen = ({ onSearch }: SearchSceenProps) => {
+const SearchScreen = ({ onSearchCompleted }: SearchSceenProps) => {
+  const { customized, setCustomized } = useCustomizedContext();
+
   const {
     control,
     handleSubmit,
@@ -25,17 +28,24 @@ const SearchScreen = ({ onSearch }: SearchSceenProps) => {
   } = useForm<SearchSchema>({
     resolver: zodResolver(searchSchema),
     defaultValues: {
-      country: undefined,
-      countryName: undefined,
-      state: undefined,
-      stateName: undefined,
-      adult: 1,
-      child: 0,
-      room: 1,
-      checkIn: undefined,
-      checkOut: undefined,
+      country: customized?.country || undefined,
+      countryName: customized?.countryName || undefined,
+      state: customized?.state || undefined,
+      stateName: customized?.stateName || undefined,
+      adult: customized?.adult ?? 1,
+      child: customized?.child ?? 0,
+      room: customized?.room ?? 1,
+      checkIn: customized?.checkIn || undefined,
+      checkOut: customized?.checkOut || undefined,
     },
   });
+
+  const onSearch = (data: SearchSchema) => {
+    setCustomized({
+      ...data,
+    });
+    onSearchCompleted();
+  };
 
   return (
     <ScrollView
@@ -52,8 +62,11 @@ const SearchScreen = ({ onSearch }: SearchSceenProps) => {
               <DateTimePicker
                 label="Check In"
                 placeholder="Select Check In Date"
-                value={value}
-                onChangeDate={(date) => onChange(dateFormat(date))}
+                value={dateFormat(value!, "long")}
+                onChangeDate={(date) => {
+                  onChange(dateFormat(date));
+                  setValue("checkOut", undefined);
+                }}
                 error={errors.checkIn?.message}
               />
             )}
@@ -66,7 +79,9 @@ const SearchScreen = ({ onSearch }: SearchSceenProps) => {
               <DateTimePicker
                 label="Check Out"
                 placeholder="Select Check Out Date"
-                value={value}
+                disabled={!watch("checkIn")}
+                minimumDate={addDays(new Date(watch("checkIn")!), 1)}
+                value={dateFormat(value!, "long")}
                 onChangeDate={(date) => onChange(dateFormat(date))}
                 error={errors.checkOut?.message}
               />
@@ -80,8 +95,8 @@ const SearchScreen = ({ onSearch }: SearchSceenProps) => {
               <DropdownCountry
                 value={value}
                 onChange={(country) => {
-                  setValue("state", "");
-                  setValue("stateName", "");
+                  setValue("state", undefined);
+                  setValue("stateName", undefined);
                   setValue("countryName", country.label);
                   onChange(country.value);
                 }}
@@ -114,7 +129,9 @@ const SearchScreen = ({ onSearch }: SearchSceenProps) => {
                 label="Adult"
                 placeholder="0"
                 value={value ? value.toString() : "0"}
-                onChangeText={onChange}
+                onChangeText={(value) =>
+                  onChange(parseInt(value ? value : "0"))
+                }
                 keyboardType="numeric"
                 error={errors.adult?.message}
               />
@@ -129,7 +146,9 @@ const SearchScreen = ({ onSearch }: SearchSceenProps) => {
                 label="Child"
                 placeholder="0"
                 value={value ? value.toString() : "0"}
-                onChangeText={onChange}
+                onChangeText={(value) =>
+                  onChange(parseInt(value ? value : "0"))
+                }
                 keyboardType="numeric"
                 error={errors.child?.message}
               />
@@ -144,7 +163,9 @@ const SearchScreen = ({ onSearch }: SearchSceenProps) => {
                 label="Room"
                 placeholder="0"
                 value={value ? value.toString() : "0"}
-                onChangeText={onChange}
+                onChangeText={(value) =>
+                  onChange(parseInt(value ? value : "0"))
+                }
                 keyboardType="numeric"
                 error={errors.room?.message}
               />

@@ -1,6 +1,6 @@
 export const stepper = {
   search: "search",
-  package: "package",
+  hotelRoom: "hotel-room",
   guest: "guest",
   payment: "payment",
 };

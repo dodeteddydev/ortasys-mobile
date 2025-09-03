@@ -36,15 +36,15 @@ const Stepper = ({ currentStep, onChange, steps }: StepperProps) => {
                 )}
 
                 <View
-                  className="items-center justify-center"
+                  className={`items-center justify-center border-2 rounded-full w-8 h-8 ${
+                    index <= currentIndex ? "border-primary" : "border-gray-200"
+                  } ${index < currentIndex && "bg-primary"}`}
                   key={step?.id + index}
                 >
                   <Text
-                    className={`text-lg font-semibold border-2 rounded-full w-8 h-8 text-center ${
-                      index <= currentIndex
-                        ? "text-primary border-primary"
-                        : "text-gray-200 border-gray-200"
-                    } ${index < currentIndex && "bg-primary"}`}
+                    className={`text-lg font-semibold ${
+                      index <= currentIndex ? "text-primary" : "text-gray-200"
+                    }`}
                   >
                     {index < currentIndex ? (
                       <MaterialIcons name="check" size={20} color="white" />

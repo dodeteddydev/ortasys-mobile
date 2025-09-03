@@ -6,19 +6,21 @@ import Card from "@/components/Card";
 import { dateFormat } from "@/utilities/dateFormat";
 import { HotelRoomSchema } from "../schemas/hotelRoomSchema";
 import { addDays } from "date-fns";
+import HotelRoomTitle from "./HotelRoomTitle";
+import HotelRoomNotChoose from "./HotelRoomNotChoose";
 
-const PackageScreen = () => {
+const HotelRoomScreen = () => {
   const { customized } = useCustomizedContext();
-  const [listPackage, setListPackage] = useState<HotelRoomSchema[]>([]);
+  const [listHotelRoom, setListHotelRoom] = useState<HotelRoomSchema[]>([]);
 
-  const handleInitialPackages = () => {
+  const handleInitialListHotelRoom = () => {
     const night =
       calculateNights(
         customized?.search?.checkIn!,
         customized?.search?.checkOut!
       ) + 1;
 
-    const packages: HotelRoomSchema[] = Array.from(
+    const hotelRooms: HotelRoomSchema[] = Array.from(
       { length: night },
       (_, index) => ({
         day: index + 1,
@@ -31,16 +33,16 @@ const PackageScreen = () => {
       })
     );
 
-    setListPackage(packages);
+    setListHotelRoom(hotelRooms);
   };
 
   useEffect(() => {
-    handleInitialPackages();
+    handleInitialListHotelRoom();
   }, []);
 
   // console.log(customized);
 
-  console.log(listPackage);
+  console.log(listHotelRoom);
 
   return (
     <ScrollView
@@ -48,29 +50,21 @@ const PackageScreen = () => {
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}
     >
-      {listPackage?.map((value, index) => (
+      {listHotelRoom?.map((value, index) => (
         <Card
           key={index}
           className={`${
-            listPackage.length - 1 === index ? "mb-10" : "mb-4"
+            listHotelRoom.length - 1 === index ? "mb-10" : "mb-4"
           } p-0`}
-          title={
-            <View className="flex flex-row items-center gap-2">
-              <Text className="text-lg font-bold text-primary">
-                Day {value?.day}
-              </Text>
-              <View className="h-6 w-[2.5px] bg-primary" />
-              <Text className="text-lg text-gray-400">
-                {dateFormat(value?.date!, "day-long")}
-              </Text>
-            </View>
-          }
+          title={<HotelRoomTitle day={value?.day!} date={value?.date!} />}
         >
-          <View></View>
+          <HotelRoomNotChoose
+            hideAddHotel={listHotelRoom.length - 1 === index}
+          />
         </Card>
       ))}
     </ScrollView>
   );
 };
 
-export default PackageScreen;
+export default HotelRoomScreen;

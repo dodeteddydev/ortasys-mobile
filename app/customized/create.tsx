@@ -1,5 +1,5 @@
 import { stepper } from "@/constants/stepper";
-import PackageScreen from "@/features/customized/components/HotelRoomScreen";
+import HotelRoomScreen from "@/features/customized/components/HotelRoomScreen";
 import SearchScreen from "@/features/customized/components/SearchScreen";
 import Stepper from "@/features/customized/components/Stepper";
 import { CustomizedProvider } from "@/features/customized/context/CustomizedProvider";
@@ -25,18 +25,18 @@ const CreateScreen = () => {
               label: "Search",
               content: (
                 <SearchScreen
-                  onSearchCompleted={() => setStep(stepper.package)}
+                  onSearchCompleted={() => setStep(stepper.hotelRoom)}
                 />
               ),
             },
             {
-              id: stepper.package,
-              label: "Package",
-              content: <PackageScreen />,
+              id: stepper.hotelRoom,
+              label: "Hotel Room",
+              content: <HotelRoomScreen />,
             },
             {
               id: stepper.guest,
-              label: "Guest",
+              label: "Guest Information",
               content: <Text>Guest</Text>,
             },
             {

@@ -28,21 +28,21 @@ const SearchScreen = ({ onSearchCompleted }: SearchSceenProps) => {
   } = useForm<SearchSchema>({
     resolver: zodResolver(searchSchema),
     defaultValues: {
-      country: customized?.country || undefined,
-      countryName: customized?.countryName || undefined,
-      state: customized?.state || undefined,
-      stateName: customized?.stateName || undefined,
-      adult: customized?.adult ?? 1,
-      child: customized?.child ?? 0,
-      room: customized?.room ?? 1,
-      checkIn: customized?.checkIn || undefined,
-      checkOut: customized?.checkOut || undefined,
+      country: customized?.search?.country || undefined,
+      countryName: customized?.search?.countryName || undefined,
+      state: customized?.search?.state || undefined,
+      stateName: customized?.search?.stateName || undefined,
+      adult: customized?.search?.adult ?? 1,
+      child: customized?.search?.child ?? 0,
+      room: customized?.search?.room ?? 0,
+      checkIn: customized?.search?.checkIn || undefined,
+      checkOut: customized?.search?.checkOut || undefined,
     },
   });
 
   const onSearch = (data: SearchSchema) => {
     setCustomized({
-      ...data,
+      search: data,
     });
     onSearchCompleted();
   };

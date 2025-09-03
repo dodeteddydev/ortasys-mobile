@@ -1,5 +1,5 @@
 import { stepper } from "@/constants/stepper";
-import PackageScreen from "@/features/customized/components/PackageScreen";
+import PackageScreen from "@/features/customized/components/HotelRoomScreen";
 import SearchScreen from "@/features/customized/components/SearchScreen";
 import Stepper from "@/features/customized/components/Stepper";
 import { CustomizedProvider } from "@/features/customized/context/CustomizedProvider";

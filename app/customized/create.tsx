@@ -1,7 +1,7 @@
+import Stepper from "@/components/Stepper";
 import { stepper } from "@/constants/stepper";
 import HotelRoomScreen from "@/features/customized/components/HotelRoomScreen";
 import SearchScreen from "@/features/customized/components/SearchScreen";
-import Stepper from "@/features/customized/components/Stepper";
 import { CustomizedProvider } from "@/features/customized/context/CustomizedProvider";
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, Text } from "react-native";
@@ -18,21 +18,24 @@ const CreateScreen = () => {
       <CustomizedProvider>
         <Stepper
           currentStep={step}
-          onChange={(step) => setStep(step)}
+          onChangeStep={(step) => setStep(step)}
           steps={[
             {
               id: stepper.search,
               label: "Search",
               content: (
-                <SearchScreen
-                  onSearchCompleted={() => setStep(stepper.hotelRoom)}
-                />
+                <SearchScreen onSubmit={() => setStep(stepper.hotelRoom)} />
               ),
             },
             {
               id: stepper.hotelRoom,
               label: "Hotel Room",
-              content: <HotelRoomScreen />,
+              content: (
+                <HotelRoomScreen
+                  onPressPrevious={() => setStep(stepper.search)}
+                  onPressNext={() => setStep(stepper.guest)}
+                />
+              ),
             },
             {
               id: stepper.guest,

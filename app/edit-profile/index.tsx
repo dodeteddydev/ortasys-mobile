@@ -14,7 +14,7 @@ import {
 import { UpdateProfileRequest } from "@/features/profile/types/updateProfileRequestType";
 import DropdownState from "@/features/state/components/DropdownState";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Keyboard,

@@ -5,7 +5,7 @@ import HomeHeaderSection from "@/features/home/components/HomeHeaderSection";
 import { HomeMenuType } from "@/types/homeMenuType";
 import Feather from "@expo/vector-icons/Feather";
 import { router } from "expo-router";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { StatusBar, Text, TouchableOpacity, View } from "react-native";
 
 const Home = () => {

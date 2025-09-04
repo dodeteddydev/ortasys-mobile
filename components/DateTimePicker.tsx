@@ -1,7 +1,7 @@
 import DatePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   Modal,
@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import { TextInputField } from "./TextInputField";
+import ModalGeneral from "./Modal";
 
 interface DateTimePickerProps {
   label?: string;
@@ -67,27 +68,23 @@ const DateTimePicker = ({ ...props }: DateTimePickerProps) => {
       </TouchableWithoutFeedback>
 
       {showDateTimePicker && Platform.OS === "ios" && (
-        <Modal transparent visible={showDateTimePicker}>
-          <View className="flex-1 items-center justify-center rounded-xl bg-black/50">
-            <View className="bg-white rounded-xl shadow-xl">
-              <DatePicker
-                mode="date"
-                display="spinner"
-                minimumDate={props.minimumDate}
-                value={tempDate}
-                onChange={onChange}
-              />
-              <View className="flex-row justify-center pb-2 gap-3">
-                <Button
-                  onPress={() => setShowDateTimePicker(false)}
-                  color="red"
-                  title="CANCEL"
-                />
-                <Button title="OK" onPress={handleIosDateChange} />
-              </View>
-            </View>
+        <ModalGeneral show={showDateTimePicker}>
+          <DatePicker
+            mode="date"
+            display="spinner"
+            minimumDate={props.minimumDate}
+            value={tempDate}
+            onChange={onChange}
+          />
+          <View className="flex-row justify-center pb-2 gap-3">
+            <Button
+              onPress={() => setShowDateTimePicker(false)}
+              color="red"
+              title="CANCEL"
+            />
+            <Button title="OK" onPress={handleIosDateChange} />
           </View>
-        </Modal>
+        </ModalGeneral>
       )}
 
       {showDateTimePicker && Platform.OS === "android" && (

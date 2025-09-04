@@ -11,12 +11,13 @@ import { Controller, useForm } from "react-hook-form";
 import { ScrollView, View } from "react-native";
 import { useCustomizedContext } from "../context/CustomizedProvider";
 import { searchSchema, SearchSchema } from "../schemas/searchShema";
+import StepperButton from "@/components/StepperButton";
 
 type SearchSceenProps = {
-  onSearchCompleted: () => void;
+  onSubmit: () => void;
 };
 
-const SearchScreen = ({ onSearchCompleted }: SearchSceenProps) => {
+const SearchScreen = ({ onSubmit }: SearchSceenProps) => {
   const { customized, setCustomized } = useCustomizedContext();
 
   const {
@@ -44,142 +45,145 @@ const SearchScreen = ({ onSearchCompleted }: SearchSceenProps) => {
     setCustomized({
       search: data,
     });
-    onSearchCompleted();
+    onSubmit();
   };
 
   return (
-    <ScrollView
-      className="h-full p-4"
-      keyboardShouldPersistTaps="handled"
-      showsVerticalScrollIndicator={false}
-    >
-      <Card>
-        <View className="gap-3">
-          <Controller
-            name="checkIn"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <DateTimePicker
-                label="Check In"
-                placeholder="Select Check In Date"
-                value={dateFormat(value!, "long")}
-                onChangeDate={(date) => {
-                  onChange(dateFormat(date));
-                  setValue("checkOut", undefined);
-                }}
-                error={errors.checkIn?.message}
-              />
-            )}
-          />
+    <View className="flex-1">
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <Card className="m-4">
+          <View className="gap-3">
+            <Controller
+              name="checkIn"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <DateTimePicker
+                  label="Check In"
+                  placeholder="Select Check In Date"
+                  value={dateFormat(value!, "long")}
+                  onChangeDate={(date) => {
+                    onChange(dateFormat(date));
+                    setValue("checkOut", undefined);
+                  }}
+                  error={errors.checkIn?.message}
+                />
+              )}
+            />
 
-          <Controller
-            name="checkOut"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <DateTimePicker
-                label="Check Out"
-                placeholder="Select Check Out Date"
-                disabled={!watch("checkIn")}
-                minimumDate={addDays(new Date(watch("checkIn")!), 1)}
-                value={dateFormat(value!, "long")}
-                onChangeDate={(date) => onChange(dateFormat(date))}
-                error={errors.checkOut?.message}
-              />
-            )}
-          />
+            <Controller
+              name="checkOut"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <DateTimePicker
+                  label="Check Out"
+                  placeholder="Select Check Out Date"
+                  disabled={!watch("checkIn")}
+                  minimumDate={addDays(new Date(watch("checkIn")!), 1)}
+                  value={dateFormat(value!, "long")}
+                  onChangeDate={(date) => onChange(dateFormat(date))}
+                  error={errors.checkOut?.message}
+                />
+              )}
+            />
 
-          <Controller
-            name="country"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <DropdownCountry
-                value={value}
-                onChange={(country) => {
-                  setValue("state", undefined);
-                  setValue("stateName", undefined);
-                  setValue("countryName", country.label);
-                  onChange(country.value);
-                }}
-                error={errors.country?.message}
-              />
-            )}
-          />
+            <Controller
+              name="country"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <DropdownCountry
+                  value={value}
+                  onChange={(country) => {
+                    setValue("state", undefined);
+                    setValue("stateName", undefined);
+                    setValue("countryName", country.label);
+                    onChange(country.value);
+                  }}
+                  error={errors.country?.message}
+                />
+              )}
+            />
 
-          <Controller
-            name="state"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <DropdownState
-                countryCode={watch("country")!}
-                value={value}
-                onChange={(state) => {
-                  setValue("stateName", state.label);
-                  onChange(state.value);
-                }}
-                error={errors.state?.message}
-              />
-            )}
-          />
+            <Controller
+              name="state"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <DropdownState
+                  countryCode={watch("country")!}
+                  value={value}
+                  onChange={(state) => {
+                    setValue("stateName", state.label);
+                    onChange(state.value);
+                  }}
+                  error={errors.state?.message}
+                />
+              )}
+            />
 
-          <Controller
-            name="adult"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <TextInputField
-                label="Adult"
-                placeholder="0"
-                value={value ? value.toString() : "0"}
-                onChangeText={(value) =>
-                  onChange(parseInt(value ? value : "0"))
-                }
-                keyboardType="numeric"
-                error={errors.adult?.message}
-              />
-            )}
-          />
+            <Controller
+              name="adult"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <TextInputField
+                  label="Adult"
+                  placeholder="0"
+                  value={value ? value.toString() : "0"}
+                  onChangeText={(value) =>
+                    onChange(parseInt(value ? value : "0"))
+                  }
+                  keyboardType="numeric"
+                  error={errors.adult?.message}
+                />
+              )}
+            />
 
-          <Controller
-            name="child"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <TextInputField
-                label="Child"
-                placeholder="0"
-                value={value ? value.toString() : "0"}
-                onChangeText={(value) =>
-                  onChange(parseInt(value ? value : "0"))
-                }
-                keyboardType="numeric"
-                error={errors.child?.message}
-              />
-            )}
-          />
+            <Controller
+              name="child"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <TextInputField
+                  label="Child"
+                  placeholder="0"
+                  value={value ? value.toString() : "0"}
+                  onChangeText={(value) =>
+                    onChange(parseInt(value ? value : "0"))
+                  }
+                  keyboardType="numeric"
+                  error={errors.child?.message}
+                />
+              )}
+            />
 
-          <Controller
-            name="room"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <TextInputField
-                label="Room"
-                placeholder="0"
-                value={value ? value.toString() : "0"}
-                onChangeText={(value) =>
-                  onChange(parseInt(value ? value : "0"))
-                }
-                keyboardType="numeric"
-                error={errors.room?.message}
-              />
-            )}
-          />
-        </View>
-      </Card>
+            <Controller
+              name="room"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <TextInputField
+                  label="Room"
+                  placeholder="0"
+                  value={value ? value.toString() : "0"}
+                  onChangeText={(value) =>
+                    onChange(parseInt(value ? value : "0"))
+                  }
+                  keyboardType="numeric"
+                  error={errors.room?.message}
+                />
+              )}
+            />
+          </View>
+        </Card>
+      </ScrollView>
 
-      <Button
-        className="mt-3 mb-10"
-        text="Search"
-        onPress={handleSubmit(onSearch)}
-      />
-    </ScrollView>
+      <StepperButton>
+        <Button
+          className="m-6 mb-10"
+          text="Search"
+          onPress={handleSubmit(onSearch)}
+        />
+      </StepperButton>
+    </View>
   );
 };
 

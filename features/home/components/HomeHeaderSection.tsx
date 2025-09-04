@@ -1,7 +1,7 @@
 import { ProfileResponse } from "@/features/profile/types/profileResponseType";
 import { currencyFormat } from "@/utilities/currencyFormat";
 import Feather from "@expo/vector-icons/Feather";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Platform, Text, TouchableOpacity, View } from "react-native";
 
 const HomeHeaderSection = ({ data }: { data: ProfileResponse }) => {

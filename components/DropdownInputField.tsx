@@ -1,5 +1,5 @@
 import { SelectOptions } from "@/types/selectOptionsType";
-import React, { useState } from "react";
+import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 

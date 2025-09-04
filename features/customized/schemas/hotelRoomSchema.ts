@@ -1,3 +1,4 @@
+import { DeepPartial } from "react-hook-form";
 import z from "zod";
 
 const activitySchema = z.object({
@@ -38,4 +39,4 @@ const hotelRoomSchema = z.object({
 
 type HotelRoom = z.infer<typeof hotelRoomSchema>;
 
-export type HotelRoomSchema = Partial<HotelRoom>;
+export type HotelRoomSchema = DeepPartial<HotelRoom>;

@@ -1,6 +1,6 @@
 import { colors } from "@/constants/colors";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import { Text, TouchableOpacity } from "react-native";
 
 type ProfileButtonItemProps = {

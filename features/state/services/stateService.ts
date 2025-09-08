@@ -1,6 +1,6 @@
 import { axiosInstance } from "@/services/axiosInstance";
 import { SuccessResponse } from "@/types/responseType";
-import { StateResponse } from "../types/stateResponseType";
+import { StateResponse } from "../types/stateResponse";
 
 export class StateService {
   static async get(countryCode: string) {

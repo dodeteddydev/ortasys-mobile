@@ -1,6 +1,6 @@
 import { accessTokenKey, refreshTokenKey } from "@/constants/storageKey";
 import { ProfileService } from "@/features/profile/services/profileService";
-import { ProfileResponse } from "@/features/profile/types/profileResponseType";
+import { ProfileResponse } from "@/features/profile/types/profileResponse";
 import { axiosInstance } from "@/services/axiosInstance";
 import { ErrorResponse } from "@/types/responseType";
 import { Storage } from "@/utilities/secureStorage";

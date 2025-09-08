@@ -1,11 +1,11 @@
 import { axiosInstance } from "@/services/axiosInstance";
 import { SuccessResponse } from "@/types/responseType";
-import { CountryResponse } from "../types/countryResponse";
+import { ProductCategoryResponse } from "../types/productCategoryResponse";
 
-export class CountryService {
+export class ProductCategoryService {
   static async get() {
     return await axiosInstance
-      .get<SuccessResponse<CountryResponse[]>>("world/country")
+      .get<SuccessResponse<ProductCategoryResponse[]>>("agent/package-category")
       .then((response) => response.data);
   }
 }

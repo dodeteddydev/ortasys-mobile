@@ -1,7 +1,7 @@
 import { ErrorResponse, SuccessResponse } from "@/types/responseType";
 import { useQuery } from "@tanstack/react-query";
 import { CityService } from "../services/cityService";
-import { CityResponse } from "../types/cityResponseType";
+import { CityResponse } from "../types/cityResponse";
 
 export const useGetCity = ({
   enabled = true,

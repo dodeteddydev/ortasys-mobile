@@ -21,7 +21,7 @@ const activitySchema = z.object({
   child: z.number(),
 });
 
-const hotelRoomSchema = z.object({
+export const hotelRoomSchema = z.object({
   day: z.number(),
   date: z.string(),
   hotelId: z.number(),

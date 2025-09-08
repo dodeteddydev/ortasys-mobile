@@ -13,11 +13,11 @@ import { useCustomizedContext } from "../context/CustomizedProvider";
 import { searchSchema, SearchSchema } from "../schemas/searchShema";
 import StepperButton from "@/components/StepperButton";
 
-type SearchSceenProps = {
+type ScreenSearchProps = {
   onSubmit: () => void;
 };
 
-const SearchScreen = ({ onSubmit }: SearchSceenProps) => {
+const ScreenSearch = ({ onSubmit }: ScreenSearchProps) => {
   const { customized, setCustomized } = useCustomizedContext();
 
   const {
@@ -35,9 +35,9 @@ const SearchScreen = ({ onSubmit }: SearchSceenProps) => {
       stateName: customized?.search?.stateName || undefined,
       adult: customized?.search?.adult ?? 1,
       child: customized?.search?.child ?? 0,
-      room: customized?.search?.room ?? 0,
-      checkIn: customized?.search?.checkIn || undefined,
-      checkOut: customized?.search?.checkOut || undefined,
+      totalRoom: customized?.search?.totalRoom ?? 0,
+      startStayDate: customized?.search?.startStayDate || undefined,
+      endStayDate: customized?.search?.endStayDate || undefined,
     },
   });
 
@@ -57,7 +57,7 @@ const SearchScreen = ({ onSubmit }: SearchSceenProps) => {
         <Card className="m-4">
           <View className="gap-3">
             <Controller
-              name="checkIn"
+              name="startStayDate"
               control={control}
               render={({ field: { onChange, value } }) => (
                 <DateTimePicker
@@ -66,25 +66,25 @@ const SearchScreen = ({ onSubmit }: SearchSceenProps) => {
                   value={dateFormat(value!, "long")}
                   onChangeDate={(date) => {
                     onChange(dateFormat(date));
-                    setValue("checkOut", undefined);
+                    setValue("endStayDate", undefined);
                   }}
-                  error={errors.checkIn?.message}
+                  error={errors.startStayDate?.message}
                 />
               )}
             />
 
             <Controller
-              name="checkOut"
+              name="endStayDate"
               control={control}
               render={({ field: { onChange, value } }) => (
                 <DateTimePicker
                   label="Check Out"
                   placeholder="Select Check Out Date"
-                  disabled={!watch("checkIn")}
-                  minimumDate={addDays(new Date(watch("checkIn")!), 1)}
+                  disabled={!watch("startStayDate")}
+                  minimumDate={addDays(new Date(watch("startStayDate")!), 1)}
                   value={dateFormat(value!, "long")}
                   onChangeDate={(date) => onChange(dateFormat(date))}
-                  error={errors.checkOut?.message}
+                  error={errors.endStayDate?.message}
                 />
               )}
             />
@@ -157,7 +157,7 @@ const SearchScreen = ({ onSubmit }: SearchSceenProps) => {
             />
 
             <Controller
-              name="room"
+              name="totalRoom"
               control={control}
               render={({ field: { onChange, value } }) => (
                 <TextInputField
@@ -168,7 +168,7 @@ const SearchScreen = ({ onSubmit }: SearchSceenProps) => {
                     onChange(parseInt(value ? value : "0"))
                   }
                   keyboardType="numeric"
-                  error={errors.room?.message}
+                  error={errors.totalRoom?.message}
                 />
               )}
             />
@@ -178,7 +178,7 @@ const SearchScreen = ({ onSubmit }: SearchSceenProps) => {
 
       <StepperButton>
         <Button
-          className="m-6 mb-10"
+          className="m-6 mb-10 w-full h-14"
           text="Search"
           onPress={handleSubmit(onSearch)}
         />
@@ -187,4 +187,4 @@ const SearchScreen = ({ onSubmit }: SearchSceenProps) => {
   );
 };
 
-export default SearchScreen;
+export default ScreenSearch;

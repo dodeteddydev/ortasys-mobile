@@ -1,7 +1,7 @@
 import { SuccessResponse } from "@/types/responseType";
 import { axiosInstance } from "../../../services/axiosInstance";
-import { LoginRequest } from "../types/loginRequestType";
-import { LoginResponse } from "../types/loginResponseType";
+import { LoginRequest } from "../types/loginRequest";
+import { LoginResponse } from "../types/loginResponse";
 
 export class LoginService {
   static async login(request: LoginRequest) {

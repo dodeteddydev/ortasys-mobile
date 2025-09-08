@@ -1,35 +1,43 @@
 import Card from "@/components/Card";
 import ModalBottomSheet from "@/components/ModalBottomSheet";
 import StepperButton from "@/components/StepperButton";
+import ToastCustom from "@/components/ToastCustom";
 import { calculateNights } from "@/utilities/calculateNights";
 import { addDays } from "date-fns";
 import { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
+import Toast from "react-native-toast-message";
 import { useCustomizedContext } from "../context/CustomizedProvider";
 import { HotelRoomSchema } from "../schemas/hotelRoomSchema";
-import HotelRoomNotChoose from "./HotelRoomNotChoose";
-import HotelRoomTitle from "./HotelRoomTitle";
-import Toast from "react-native-toast-message";
-import ToastCustom from "@/components/ToastCustom";
+import AddHotelBottomScheetContent from "./AddHotelBottomSheetContent";
+import AddServiceBottomScheetContent from "./AddServiceBottomScheetContent";
+import NoHotelOrServiceSelected from "./NoHotelOrServiceSelected";
+import CardHotelRoomTitle from "./CardHotelRoomTitle";
 
-type HotelRoomScreenProps = {
+type ScreenHotelRoomProps = {
   onPressPrevious: () => void;
   onPressNext: () => void;
 };
 
-const HotelRoomScreen = ({
+const ScreenHotelRoom = ({
   onPressPrevious,
   onPressNext,
-}: HotelRoomScreenProps) => {
+}: ScreenHotelRoomProps) => {
   const { customized } = useCustomizedContext();
   const [listHotelRoom, setListHotelRoom] = useState<HotelRoomSchema[]>([]);
-  const [showModal, setShowModal] = useState(false);
+  const [modalBottomSheet, setModalBottomSheet] = useState<{
+    type: "hotel" | "service" | "idle";
+    show: boolean;
+  }>({
+    type: "idle",
+    show: false,
+  });
 
   const handleInitialListHotelRoom = () => {
     const night =
       calculateNights(
-        customized?.search?.checkIn!,
-        customized?.search?.checkOut!
+        customized?.search?.startStayDate!,
+        customized?.search?.endStayDate!
       ) + 1;
 
     const hotelRooms: HotelRoomSchema[] = Array.from(
@@ -37,7 +45,7 @@ const HotelRoomScreen = ({
       (_, index) => ({
         day: index + 1,
         date: addDays(
-          new Date(customized?.search?.checkIn!),
+          new Date(customized?.search?.startStayDate!),
           index
         ).toISOString(),
         isCheckout: index !== 0,
@@ -60,7 +68,7 @@ const HotelRoomScreen = ({
       Toast.show({
         type: "error",
         text1: "Almost there 👋",
-        text2: "Add a hotel or activity to continue.",
+        text2: "Add a hotel or service to continue.",
       });
     }
   };
@@ -68,8 +76,6 @@ const HotelRoomScreen = ({
   useEffect(() => {
     handleInitialListHotelRoom();
   }, []);
-
-  console.log(listHotelRoom);
 
   return (
     <View className="flex-1">
@@ -83,12 +89,22 @@ const HotelRoomScreen = ({
             className={`${index === 0 && "mt-4"} ${
               index === listHotelRoom.length - 1 && "mb-4"
             } m-2 mx-4`}
-            title={<HotelRoomTitle day={value?.day!} date={value?.date!} />}
+            title={<CardHotelRoomTitle day={value?.day!} date={value?.date!} />}
           >
-            <HotelRoomNotChoose
+            <NoHotelOrServiceSelected
               hideAddHotel={listHotelRoom.length - 1 === index}
-              onPressAddHotel={() => setShowModal(true)}
-              onPressAddService={() => setShowModal(true)}
+              onPressAddHotel={() =>
+                setModalBottomSheet({
+                  type: "hotel",
+                  show: true,
+                })
+              }
+              onPressAddService={() =>
+                setModalBottomSheet({
+                  type: "service",
+                  show: true,
+                })
+              }
             />
           </Card>
         ))}
@@ -98,10 +114,19 @@ const HotelRoomScreen = ({
 
       <ModalBottomSheet
         className="h-[70%]"
-        title="Modal"
-        show={showModal}
-        onClose={() => setShowModal(false)}
-      />
+        title={`Find ${
+          modalBottomSheet.type === "hotel" ? "hotels" : "products"
+        } in ${customized?.search?.stateName}, ${
+          customized?.search?.countryName
+        }`}
+        show={modalBottomSheet.show}
+        onClose={() => setModalBottomSheet({ type: "idle", show: false })}
+      >
+        {modalBottomSheet.type === "hotel" && <AddHotelBottomScheetContent />}
+        {modalBottomSheet.type === "service" && (
+          <AddServiceBottomScheetContent />
+        )}
+      </ModalBottomSheet>
 
       <Toast
         position="bottom"
@@ -121,4 +146,4 @@ const HotelRoomScreen = ({
   );
 };
 
-export default HotelRoomScreen;
+export default ScreenHotelRoom;

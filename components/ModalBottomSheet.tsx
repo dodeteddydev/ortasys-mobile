@@ -51,9 +51,9 @@ const ModalBottomSheet = ({
           style={{
             transform: [{ translateY: slideAnim }],
           }}
-          className={`min-h-[20%] bg-white rounded-t-3xl shadow-xl p-3 ${className}`}
+          className={`min-h-[20%] bg-white rounded-t-3xl shadow-xl ${className}`}
         >
-          <View className="flex flex-row items-center">
+          <View className="flex flex-row items-center p-3">
             <View className="flex-1">
               {title && (
                 <Text className="text-lg font-bold text-primary">{title}</Text>

@@ -11,11 +11,11 @@ export const searchSchema = z.object({
   child: z
     .number({ required_error: "Child is required" })
     .min(0, "Child must be at least 0"),
-  room: z
+  totalRoom: z
     .number({ required_error: "Room is required" })
     .min(1, "Room must be at least 1"),
-  checkIn: z.string({ required_error: "Check in date is required" }),
-  checkOut: z.string({ required_error: "Check out date is required" }),
+  startStayDate: z.string({ required_error: "Check in date is required" }),
+  endStayDate: z.string({ required_error: "Check out date is required" }),
 });
 
 type Search = z.infer<typeof searchSchema>;

@@ -1,4 +1,4 @@
-import { ProfileResponse } from "@/features/profile/types/profileResponseType";
+import { ProfileResponse } from "@/features/profile/types/profileResponse";
 import { currencyFormat } from "@/utilities/currencyFormat";
 import Feather from "@expo/vector-icons/Feather";
 import { useState } from "react";

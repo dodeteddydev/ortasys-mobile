@@ -11,7 +11,7 @@ import {
   updateProfileSchema,
   UpdateProfileSchema,
 } from "@/features/profile/schemas/updateProfileSchema";
-import { UpdateProfileRequest } from "@/features/profile/types/updateProfileRequestType";
+import { UpdateProfileRequest } from "@/features/profile/types/updateProfileRequest";
 import DropdownState from "@/features/state/components/DropdownState";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";

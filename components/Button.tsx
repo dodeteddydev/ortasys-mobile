@@ -5,9 +5,16 @@ type ButtonProps = {
   loading?: boolean;
   onPress?: () => void;
   className?: string;
+  classNameText?: string;
 };
 
-const Button = ({ text, loading, onPress, className }: ButtonProps) => {
+const Button = ({
+  text,
+  loading,
+  onPress,
+  className,
+  classNameText,
+}: ButtonProps) => {
   return (
     <TouchableOpacity
       onPress={() => {
@@ -16,11 +23,11 @@ const Button = ({ text, loading, onPress, className }: ButtonProps) => {
       }}
       disabled={loading}
       activeOpacity={0.8}
-      className={`bg-primary h-16 items-center justify-center rounded-lg ${
+      className={`bg-primary items-center justify-center rounded-lg ${
         loading && "opacity-70"
       } ${className}`}
     >
-      <Text className="text-white text-xl font-semibold">
+      <Text className={`text-white text-xl font-semibold ${classNameText}`}>
         {loading ? "Loading..." : text}
       </Text>
     </TouchableOpacity>

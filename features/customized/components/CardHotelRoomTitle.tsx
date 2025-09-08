@@ -1,11 +1,11 @@
 import { dateFormat } from "@/utilities/dateFormat";
 import { Text, View } from "react-native";
 
-type HotelRoomTitleProps = {
+type CardHotelRoomTitleProps = {
   day: number;
   date: string;
 };
-const HotelRoomTitle = ({ day, date }: HotelRoomTitleProps) => {
+const CardHotelRoomTitle = ({ day, date }: CardHotelRoomTitleProps) => {
   return (
     <View className="flex flex-row items-center gap-2">
       <Text className="text-lg font-bold text-primary">Day {day}</Text>
@@ -17,4 +17,4 @@ const HotelRoomTitle = ({ day, date }: HotelRoomTitleProps) => {
   );
 };
 
-export default HotelRoomTitle;
+export default CardHotelRoomTitle;

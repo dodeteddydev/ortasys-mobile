@@ -15,40 +15,38 @@ const StepperButton = ({
   children,
 }: StepperButtonProps) => {
   return (
-    <View>
-      <View className="bottom-0 left-0 right-0 z-10 rounded-t-xl bg-white shadow-lg">
-        {children}
+    <View className="bottom-0 z-10 rounded-t-xl bg-white shadow-lg">
+      <View className="flex flex-col items-center px-4">{children}</View>
 
-        {!children && (
-          <View className="flex flex-row justify-between px-6 pt-6 pb-16">
-            <TouchableOpacity
-              activeOpacity={0.8}
-              className="flex flex-row items-center"
-              onPress={onPressPrevious}
-            >
-              <SimpleLineIcons
-                name="arrow-left"
-                size={24}
-                color={colors.primary}
-              />
-              <Text className="text-2xl font-bold text-primary">Previous</Text>
-            </TouchableOpacity>
+      {!children && (
+        <View className="flex flex-row justify-between px-6 pt-6 pb-16">
+          <TouchableOpacity
+            activeOpacity={0.8}
+            className="flex flex-row items-center gap-2"
+            onPress={onPressPrevious}
+          >
+            <SimpleLineIcons
+              name="arrow-left"
+              size={16}
+              color={colors.primary}
+            />
+            <Text className="text-lg font-bold text-primary">Previous</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              activeOpacity={0.8}
-              className="flex flex-row items-center"
-              onPress={onPressNext}
-            >
-              <Text className="text-2xl font-bold text-primary">Next</Text>
-              <SimpleLineIcons
-                name="arrow-right"
-                size={24}
-                color={colors.primary}
-              />
-            </TouchableOpacity>
-          </View>
-        )}
-      </View>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            className="flex flex-row items-center gap-2"
+            onPress={onPressNext}
+          >
+            <Text className="text-lg font-bold text-primary">Next</Text>
+            <SimpleLineIcons
+              name="arrow-right"
+              size={16}
+              color={colors.primary}
+            />
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };

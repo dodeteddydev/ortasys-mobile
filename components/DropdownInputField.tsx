@@ -3,17 +3,17 @@ import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 
-type DropdownInputFieldProps = {
+type DropdownInputFieldProps<T> = {
   label?: string;
   disabled?: boolean;
   placeholder?: string;
   value?: string;
-  data: SelectOptions[];
-  onChange: (value: SelectOptions) => void;
+  data: T[];
+  onChange: (value: T) => void;
   error?: string;
 };
 
-const DropdownInputField = ({
+const DropdownInputField = <T extends SelectOptions>({
   label,
   disabled,
   placeholder,
@@ -21,7 +21,7 @@ const DropdownInputField = ({
   data,
   onChange,
   error,
-}: DropdownInputFieldProps) => {
+}: DropdownInputFieldProps<T>) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
 
   return (

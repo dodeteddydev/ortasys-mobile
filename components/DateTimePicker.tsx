@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { TextInputField } from "./TextInputField";
 import ModalGeneral from "./Modal";
+import { colors } from "@/constants/colors";
 
 interface DateTimePickerProps {
   label?: string;
@@ -75,8 +76,9 @@ const DateTimePicker = ({ ...props }: DateTimePickerProps) => {
             minimumDate={props.minimumDate}
             value={tempDate}
             onChange={onChange}
+            textColor="black"
           />
-          <View className="flex-row justify-center pb-2 gap-3">
+          <View className="flex-row justify-end p-4 gap-3">
             <Button
               onPress={() => setShowDateTimePicker(false)}
               color="red"
@@ -94,7 +96,7 @@ const DateTimePicker = ({ ...props }: DateTimePickerProps) => {
           minimumDate={props.minimumDate}
           value={tempDate}
           onChange={onChange}
-          textColor="red"
+          textColor="black"
         />
       )}
     </View>

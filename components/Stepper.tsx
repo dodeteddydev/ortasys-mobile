@@ -14,7 +14,7 @@ const Stepper = ({ currentStep, onChangeStep, steps }: StepperProps) => {
 
   return (
     <View className="flex-1">
-      <View className="top-0 left-0 right-0 z-10 rounded-b-xl bg-white shadow-lg p-2">
+      <View className="z-10 rounded-b-xl bg-white shadow-lg p-2">
         <View className="flex flex-row items-center justify-center">
           {steps?.map((step, index) => {
             const isCompleted = index < currentIndex;
@@ -64,7 +64,7 @@ const Stepper = ({ currentStep, onChangeStep, steps }: StepperProps) => {
         </Text>
       </View>
 
-      {current?.content}
+      <View className="flex-1">{current?.content}</View>
     </View>
   );
 };

@@ -1,0 +1,118 @@
+import { calculateNights } from "@/utilities/calculateNights";
+import { useCustomizedContext } from "../context/CustomizedProvider";
+import { useGetRoomSimple } from "../hooks/useGetRoomSimple";
+import { HotelSimpleResponse } from "../types/hotelSimpleResponse";
+import { Text, View } from "react-native";
+import NetworkImage from "@/components/NetworkImage";
+import HotelStar from "@/components/HotelStar";
+import { Ionicons } from "@expo/vector-icons";
+import { colors } from "@/constants/colors";
+import Button from "@/components/Button";
+import CardItemRoomBottomSheetContent from "./CardItemRoomBottomSheetContent";
+import { useState } from "react";
+
+type CardItemHotelBottomSheetContentProps = {
+  isOpenRoom: boolean;
+  datePicked: string | null;
+  dataHotel: HotelSimpleResponse;
+  onPressRoom: () => void;
+};
+
+const CardItemHotelBottomSheetContent = ({
+  isOpenRoom,
+  datePicked,
+  dataHotel,
+  onPressRoom,
+}: CardItemHotelBottomSheetContentProps) => {
+  const { customized } = useCustomizedContext();
+  const { data, isPending, isError, error } = useGetRoomSimple({
+    enabled: isOpenRoom && !!datePicked,
+    hotelId: dataHotel.hotelId,
+    params: {
+      date: datePicked!,
+      night: calculateNights(
+        customized?.search?.startStayDate!,
+        customized?.search?.endStayDate!
+      ),
+      adult: customized?.search?.adult,
+      child: customized?.search?.child,
+      checkIn: "yes",
+      totalRoom: 1,
+      startStayDate: new Date(customized?.search?.startStayDate!).toISOString(),
+      endStayDate: new Date(customized?.search?.endStayDate!).toISOString(),
+    },
+  });
+
+  const [currentRateOpen, setCurrentRateOpen] = useState<number | null>(null);
+
+  const onPress = () => {
+    setCurrentRateOpen(null);
+    onPressRoom();
+  };
+
+  return (
+    <View className="mb-4 p-4 bg-white rounded-lg shadow-lg gap-3">
+      <View className="flex flex-row items-center">
+        <View className="flex-1 flex flex-row items-center gap-3">
+          <NetworkImage path={dataHotel?.logoPath} />
+          <View>
+            <HotelStar star={dataHotel?.star ?? 0} />
+            <Text className="text-lg font-bold text-primary">
+              {dataHotel?.hotelName}
+            </Text>
+            <Text className="text-sm text-gray-400">
+              Child {dataHotel?.childAgeMin} - {dataHotel?.childAgeMax}{" "}
+              {dataHotel?.childAgeMax > 1 ? "years" : "year"}
+            </Text>
+            <View className="w-[180px] flex flex-row gap-1">
+              <Ionicons
+                name="location-outline"
+                size={18}
+                color={colors.primary}
+              />
+              <Text className="text-sm text-gray-400">
+                {dataHotel?.city}, {dataHotel?.countryName}
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        <Button
+          loading={isPending && isOpenRoom}
+          className="px-4 py-2"
+          classNameText="text-lg font-semibold text-white"
+          text="Room"
+          onPress={onPress}
+        />
+      </View>
+
+      {isOpenRoom && !isPending && (
+        <>
+          {isError ? (
+            <Text className="text-red-500 text-lg text-center">
+              {error?.message}
+            </Text>
+          ) : data?.data?.length! > 0 ? (
+            <>
+              {data?.data?.map((item, index) => (
+                <CardItemRoomBottomSheetContent
+                  key={index}
+                  isOpenRate={currentRateOpen === index}
+                  datePicked={datePicked}
+                  dataRoom={item}
+                  onPressRate={() => setCurrentRateOpen(index)}
+                />
+              ))}
+            </>
+          ) : (
+            <Text className="text-lg text-gray-400 text-center">
+              No room available
+            </Text>
+          )}
+        </>
+      )}
+    </View>
+  );
+};
+
+export default CardItemHotelBottomSheetContent;

@@ -19,7 +19,7 @@ const NoHotelOrServiceSelected = ({
           <>
             <Button
               className="px-4 py-2"
-              classNameText="text-[14px]"
+              classNameText="text-lg text-white font-semibold"
               text="Add Hotel"
               onPress={onPressAddHotel}
             />
@@ -29,7 +29,7 @@ const NoHotelOrServiceSelected = ({
 
         <Button
           className="px-4 py-2"
-          classNameText="text-[14px]"
+          classNameText="text-lg text-white font-semibold"
           text="Add Service"
           onPress={onPressAddService}
         />

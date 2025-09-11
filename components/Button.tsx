@@ -27,7 +27,9 @@ const Button = ({
         loading && "opacity-70"
       } ${className}`}
     >
-      <Text className={`text-white text-xl font-semibold ${classNameText}`}>
+      <Text
+        className={`${classNameText ?? "text-xl text-white font-semibold"}`}
+      >
         {loading ? "Loading..." : text}
       </Text>
     </TouchableOpacity>

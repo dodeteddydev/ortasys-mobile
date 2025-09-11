@@ -23,12 +23,13 @@ const ScreenHotelRoom = ({
   onPressPrevious,
   onPressNext,
 }: ScreenHotelRoomProps) => {
-  const { customized } = useCustomizedContext();
-  const [listHotelRoom, setListHotelRoom] = useState<HotelRoomSchema[]>([]);
+  const { customized, setCustomized } = useCustomizedContext();
   const [modalBottomSheet, setModalBottomSheet] = useState<{
+    datePicked: string | null;
     type: "hotel" | "service" | "idle";
     show: boolean;
   }>({
+    datePicked: null,
     type: "idle",
     show: false,
   });
@@ -53,11 +54,14 @@ const ScreenHotelRoom = ({
       })
     );
 
-    setListHotelRoom(hotelRooms);
+    setCustomized({
+      ...customized,
+      hotelRoom: hotelRooms,
+    });
   };
 
   const onSubmit = () => {
-    const isHotelAndServiceAdded = listHotelRoom.some(
+    const isHotelAndServiceAdded = customized?.hotelRoom?.some(
       (hotelRoom) =>
         !!hotelRoom.hotelId || !!hotelRoom?.activities?.[0]?.packageElementId
     );
@@ -83,24 +87,26 @@ const ScreenHotelRoom = ({
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        {listHotelRoom?.map((value, index) => (
+        {customized?.hotelRoom?.map((value, index) => (
           <Card
             key={index}
             className={`${index === 0 && "mt-4"} ${
-              index === listHotelRoom.length - 1 && "mb-4"
+              index === customized?.hotelRoom?.length! - 1 && "mb-4"
             } m-2 mx-4`}
             title={<CardHotelRoomTitle day={value?.day!} date={value?.date!} />}
           >
             <NoHotelOrServiceSelected
-              hideAddHotel={listHotelRoom.length - 1 === index}
+              hideAddHotel={customized?.hotelRoom?.length! - 1 === index}
               onPressAddHotel={() =>
                 setModalBottomSheet({
+                  datePicked: value.date ?? null,
                   type: "hotel",
                   show: true,
                 })
               }
               onPressAddService={() =>
                 setModalBottomSheet({
+                  datePicked: value.date ?? null,
                   type: "service",
                   show: true,
                 })
@@ -120,9 +126,15 @@ const ScreenHotelRoom = ({
           customized?.search?.countryName
         }`}
         show={modalBottomSheet.show}
-        onClose={() => setModalBottomSheet({ type: "idle", show: false })}
+        onClose={() =>
+          setModalBottomSheet({ datePicked: null, type: "idle", show: false })
+        }
       >
-        {modalBottomSheet.type === "hotel" && <AddHotelBottomScheetContent />}
+        {modalBottomSheet.type === "hotel" && (
+          <AddHotelBottomScheetContent
+            datePicked={modalBottomSheet.datePicked}
+          />
+        )}
         {modalBottomSheet.type === "service" && (
           <AddServiceBottomScheetContent />
         )}

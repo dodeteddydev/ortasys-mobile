@@ -15,7 +15,7 @@ const StepperButton = ({
   children,
 }: StepperButtonProps) => {
   return (
-    <View className="bottom-0 z-10 rounded-t-xl bg-white shadow-lg">
+    <View className="z-10 rounded-t-xl bg-white shadow-lg">
       <View className="flex flex-col items-center px-4">{children}</View>
 
       {!children && (

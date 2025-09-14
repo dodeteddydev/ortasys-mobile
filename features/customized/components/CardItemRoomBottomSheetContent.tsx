@@ -1,28 +1,36 @@
 import Button from "@/components/Button";
-import { Text, View } from "react-native";
-import { useCustomizedContext } from "../context/CustomizedProvider";
-import { RoomSimpleResponse } from "../types/roomSimpleResponse";
-import { useGetContract } from "../hooks/useGetContract";
 import { calculateNights } from "@/utilities/calculateNights";
 import { currencyFormat } from "@/utilities/currencyFormat";
+import { Feather } from "@expo/vector-icons";
+import { useMemo } from "react";
+import { Dimensions, Text, View } from "react-native";
+import RenderHtml from "react-native-render-html";
+import { useCustomizedContext } from "../context/CustomizedProvider";
+import { useGetContract } from "../hooks/useGetContract";
+import { ContractResponse } from "../types/contractResponse";
+import { HotelSimpleResponse } from "../types/hotelSimpleResponse";
+import { RoomSimpleResponse } from "../types/roomSimpleResponse";
 
 type CardItemRoomBottomSheetContentProps = {
   isOpenRate: boolean;
   datePicked: string | null;
-  dataRoom: RoomSimpleResponse;
+  dataHotelAndRoom: { hotel: HotelSimpleResponse; room: RoomSimpleResponse };
   onPressRate: () => void;
+  onCloseModalBottomSheet: () => void;
 };
 
 const CardItemRoomBottomSheetContent = ({
   isOpenRate,
   datePicked,
-  dataRoom,
+  dataHotelAndRoom,
   onPressRate,
+  onCloseModalBottomSheet,
 }: CardItemRoomBottomSheetContentProps) => {
-  const { customized } = useCustomizedContext();
+  const { width } = Dimensions.get("window");
+  const { customized, setCustomized } = useCustomizedContext();
   const { data, isPending, isError, error } = useGetContract({
     enabled: isOpenRate && !!datePicked,
-    roomId: dataRoom.id,
+    roomId: dataHotelAndRoom?.room?.id,
     params: {
       date: datePicked!,
       night: calculateNights(
@@ -35,16 +43,59 @@ const CardItemRoomBottomSheetContent = ({
     },
   });
 
+  const tagsStyles = useMemo(
+    () => ({
+      p: { color: "#9ca3af" },
+    }),
+    []
+  );
+
+  const handleAddRoom = (data: ContractResponse) => {
+    const newHotelRoomCustomized = customized?.hotelRoomCustomized?.map(
+      (hotelRoom) => {
+        if (hotelRoom.payload.date === datePicked) {
+          return {
+            ...hotelRoom,
+            payload: {
+              ...hotelRoom?.payload,
+              contractRateId: data?.contractRateId,
+              rate: data?.rate,
+              base: data?.base,
+              hotelId: dataHotelAndRoom?.hotel?.hotelId,
+              hotelRoomId: dataHotelAndRoom?.room?.id,
+              hotelRoomConfigurationId: data?.hotelRoomConfigurationId,
+              markupAgent: data?.markupAgent,
+              markupHotel: data?.markupHotel,
+            },
+            response: {
+              ...hotelRoom?.response,
+              hotel: dataHotelAndRoom?.hotel,
+              room: dataHotelAndRoom?.room,
+              contract: data,
+            },
+          };
+        }
+        return hotelRoom;
+      }
+    );
+
+    setCustomized({
+      ...customized,
+      hotelRoomCustomized: newHotelRoomCustomized,
+    });
+    onCloseModalBottomSheet();
+  };
+
   return (
-    <View className="px-4">
-      <View className="flex flex-row justify-between items-center">
+    <View className="px-4 py-2 border-b border-gray-200">
+      <View className="flex flex-row justify-between items-center mb-3">
         <View>
           <Text className="text-primary font-bold text-lg">
-            {dataRoom?.roomTypeDescription}
+            {dataHotelAndRoom?.room?.roomTypeDescription}
           </Text>
-          {dataRoom?.roomDescription && (
+          {dataHotelAndRoom?.room?.roomDescription && (
             <Text className="text-sm text-gray-400">
-              {dataRoom?.roomDescription}
+              {dataHotelAndRoom?.room?.roomDescription}
             </Text>
           )}
         </View>
@@ -67,10 +118,42 @@ const CardItemRoomBottomSheetContent = ({
           ) : data?.data?.length! > 0 ? (
             <>
               {data?.data?.map((item, index) => (
-                <View key={index}>
-                  <Text className="text-lg text-gray-400">
-                    {currencyFormat(item?.base)}
+                <View
+                  key={index}
+                  className="gap-1 border border-primary rounded-lg p-2 mb-2"
+                >
+                  <Text className="font-medium">
+                    {currencyFormat(item?.rate)}
                   </Text>
+
+                  <RenderHtml
+                    contentWidth={width}
+                    source={{
+                      html: item?.policies?.benefit
+                        .replace(/<li>/g, "<p>")
+                        .replace(/<\/li>/g, "</p>")
+                        .replace(/<\/?ul>/g, ""),
+                    }}
+                    tagsStyles={tagsStyles}
+                  />
+
+                  <View className="flex flex-row items-center gap-2 pe-3">
+                    <Feather name="alert-octagon" size={15} color="#ef4444" />
+                    <Text className="uppercase overflow-auto text-sm text-red-500">
+                      VALID FOR{" "}
+                      {item?.markets
+                        ?.map((market) => market?.marketName)
+                        .join(", ")}{" "}
+                      MARKET ONLY
+                    </Text>
+                  </View>
+
+                  <Button
+                    className="px-4 py-2"
+                    classNameText="text-sm font-semibold text-white"
+                    text="Apply"
+                    onPress={() => handleAddRoom(item)}
+                  />
                 </View>
               ))}
             </>

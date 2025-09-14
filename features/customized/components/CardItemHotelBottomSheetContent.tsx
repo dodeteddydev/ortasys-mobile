@@ -1,21 +1,22 @@
+import Button from "@/components/Button";
+import HotelStar from "@/components/HotelStar";
+import NetworkImage from "@/components/NetworkImage";
+import { colors } from "@/constants/colors";
 import { calculateNights } from "@/utilities/calculateNights";
+import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
+import { Text, View } from "react-native";
 import { useCustomizedContext } from "../context/CustomizedProvider";
 import { useGetRoomSimple } from "../hooks/useGetRoomSimple";
 import { HotelSimpleResponse } from "../types/hotelSimpleResponse";
-import { Text, View } from "react-native";
-import NetworkImage from "@/components/NetworkImage";
-import HotelStar from "@/components/HotelStar";
-import { Ionicons } from "@expo/vector-icons";
-import { colors } from "@/constants/colors";
-import Button from "@/components/Button";
 import CardItemRoomBottomSheetContent from "./CardItemRoomBottomSheetContent";
-import { useState } from "react";
 
 type CardItemHotelBottomSheetContentProps = {
   isOpenRoom: boolean;
   datePicked: string | null;
   dataHotel: HotelSimpleResponse;
   onPressRoom: () => void;
+  onCloseModalBottomSheet: () => void;
 };
 
 const CardItemHotelBottomSheetContent = ({
@@ -23,6 +24,7 @@ const CardItemHotelBottomSheetContent = ({
   datePicked,
   dataHotel,
   onPressRoom,
+  onCloseModalBottomSheet,
 }: CardItemHotelBottomSheetContentProps) => {
   const { customized } = useCustomizedContext();
   const { data, isPending, isError, error } = useGetRoomSimple({
@@ -99,8 +101,12 @@ const CardItemHotelBottomSheetContent = ({
                   key={index}
                   isOpenRate={currentRateOpen === index}
                   datePicked={datePicked}
-                  dataRoom={item}
+                  dataHotelAndRoom={{
+                    hotel: dataHotel,
+                    room: item,
+                  }}
                   onPressRate={() => setCurrentRateOpen(index)}
+                  onCloseModalBottomSheet={onCloseModalBottomSheet}
                 />
               ))}
             </>

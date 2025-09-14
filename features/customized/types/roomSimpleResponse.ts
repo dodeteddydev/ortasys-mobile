@@ -4,6 +4,7 @@ export type RoomSimpleResponse = {
   roomType: string;
   roomTypeDescription: string;
   roomAllotment: number;
+  roomImage: string;
   roomDescription: string;
   size: number;
   roomTypeCode: string;
@@ -11,7 +12,10 @@ export type RoomSimpleResponse = {
   maxAdult: number;
   maxPerson: number;
   basePrice: number;
-  attributes: [];
+  attributes: {
+    attributeId: number;
+    attributeName: string;
+  }[];
   galleries: [];
   roomConfigurations: {
     id: string;

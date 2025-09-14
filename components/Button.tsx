@@ -3,6 +3,7 @@ import { Keyboard, Text, TouchableOpacity } from "react-native";
 type ButtonProps = {
   text?: string;
   loading?: boolean;
+  disabled?: boolean;
   onPress?: () => void;
   className?: string;
   classNameText?: string;
@@ -11,6 +12,7 @@ type ButtonProps = {
 const Button = ({
   text,
   loading,
+  disabled,
   onPress,
   className,
   classNameText,
@@ -21,10 +23,10 @@ const Button = ({
         onPress && onPress();
         Keyboard.dismiss();
       }}
-      disabled={loading}
+      disabled={disabled || loading}
       activeOpacity={0.8}
       className={`bg-primary items-center justify-center rounded-lg ${
-        loading && "opacity-70"
+        (disabled || loading) && "opacity-70"
       } ${className}`}
     >
       <Text

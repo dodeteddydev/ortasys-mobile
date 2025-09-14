@@ -1,9 +1,9 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { CustomizedType } from "../types/customizedType";
+import { Customized } from "../types/customized";
 
 type CustomizedContextType = {
-  customized: CustomizedType;
-  setCustomized: (customized: CustomizedType) => void;
+  customized: Customized;
+  setCustomized: (customized: Customized) => void;
 };
 
 const CustomizedContext = createContext<CustomizedContextType | undefined>(
@@ -23,7 +23,7 @@ export const useCustomizedContext = () => {
 };
 
 export const CustomizedProvider = ({ children }: { children: ReactNode }) => {
-  const [customized, setCustomized] = useState<CustomizedType>({});
+  const [customized, setCustomized] = useState<Customized>({});
 
   return (
     <CustomizedContext.Provider value={{ customized, setCustomized }}>

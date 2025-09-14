@@ -8,11 +8,13 @@ import { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { useCustomizedContext } from "../context/CustomizedProvider";
-import { HotelRoomSchema } from "../schemas/hotelRoomSchema";
+import { HotelRoomCustomized } from "../types/customized";
 import AddHotelBottomScheetContent from "./AddHotelBottomSheetContent";
 import AddServiceBottomScheetContent from "./AddServiceBottomScheetContent";
-import NoHotelOrServiceSelected from "./NoHotelOrServiceSelected";
 import CardHotelRoomTitle from "./CardHotelRoomTitle";
+import NoHotelOrServiceSelected from "./NoHotelOrServiceSelected";
+import HotelOrServiceSelected from "./HotelOrServiceSelected";
+import Badge from "@/components/Badge";
 
 type ScreenHotelRoomProps = {
   onPressPrevious: () => void;
@@ -41,29 +43,36 @@ const ScreenHotelRoom = ({
         customized?.search?.endStayDate!
       ) + 1;
 
-    const hotelRooms: HotelRoomSchema[] = Array.from(
+    const hotelRoomCustomized: HotelRoomCustomized[] = Array.from(
       { length: night },
       (_, index) => ({
-        day: index + 1,
-        date: addDays(
-          new Date(customized?.search?.startStayDate!),
-          index
-        ).toISOString(),
-        isCheckout: index !== 0,
-        activities: [],
+        payload: {
+          day: index + 1,
+          date: addDays(
+            new Date(customized?.search?.startStayDate!),
+            index
+          ).toISOString(),
+          isCheckout: index === night - 1,
+          checkIn: index !== night - 1,
+          activities: [],
+        },
+        response: null,
       })
     );
 
     setCustomized({
       ...customized,
-      hotelRoom: hotelRooms,
+      hotelRoomCustomized: hotelRoomCustomized,
     });
   };
 
   const onSubmit = () => {
-    const isHotelAndServiceAdded = customized?.hotelRoom?.some(
+    console.log(JSON.stringify(customized?.hotelRoomCustomized));
+
+    const isHotelAndServiceAdded = customized?.hotelRoomCustomized?.every(
       (hotelRoom) =>
-        !!hotelRoom.hotelId || !!hotelRoom?.activities?.[0]?.packageElementId
+        !!hotelRoom?.payload?.hotelId ||
+        !!hotelRoom?.payload?.activities?.[0]?.packageElementId
     );
 
     if (isHotelAndServiceAdded) {
@@ -87,31 +96,64 @@ const ScreenHotelRoom = ({
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        {customized?.hotelRoom?.map((value, index) => (
+        {customized?.hotelRoomCustomized?.map((value, index) => (
           <Card
             key={index}
-            className={`${index === 0 && "mt-4"} ${
-              index === customized?.hotelRoom?.length! - 1 && "mb-4"
-            } m-2 mx-4`}
-            title={<CardHotelRoomTitle day={value?.day!} date={value?.date!} />}
+            className={`${index === 0 && "mt-4"} m-2 mx-4`}
+            title={
+              <CardHotelRoomTitle
+                day={value?.payload?.day!}
+                date={value?.payload?.date!}
+              />
+            }
           >
-            <NoHotelOrServiceSelected
-              hideAddHotel={customized?.hotelRoom?.length! - 1 === index}
-              onPressAddHotel={() =>
-                setModalBottomSheet({
-                  datePicked: value.date ?? null,
-                  type: "hotel",
-                  show: true,
-                })
-              }
-              onPressAddService={() =>
-                setModalBottomSheet({
-                  datePicked: value.date ?? null,
-                  type: "service",
-                  show: true,
-                })
-              }
-            />
+            <View className="mb-3 gap-2">
+              {value?.payload?.hotelId && (
+                <Badge text="Check In" variant="success" />
+              )}
+              {customized?.hotelRoomCustomized?.[index - 1]?.payload
+                ?.hotelId && (
+                <Badge
+                  text={`Check Out : End of Stay Day ${index}`}
+                  variant="danger"
+                />
+              )}
+            </View>
+
+            {value?.payload?.hotelId ||
+            value?.payload?.activities?.[0]?.packageElementId ? (
+              <HotelOrServiceSelected
+                payload={value?.payload}
+                response={value?.response!}
+                onPressAddService={() =>
+                  setModalBottomSheet({
+                    datePicked: value?.payload?.date ?? null,
+                    type: "service",
+                    show: true,
+                  })
+                }
+              />
+            ) : (
+              <NoHotelOrServiceSelected
+                hideAddHotel={
+                  customized?.hotelRoomCustomized?.length! - 1 === index
+                }
+                onPressAddHotel={() =>
+                  setModalBottomSheet({
+                    datePicked: value?.payload?.date ?? null,
+                    type: "hotel",
+                    show: true,
+                  })
+                }
+                onPressAddService={() =>
+                  setModalBottomSheet({
+                    datePicked: value?.payload?.date ?? null,
+                    type: "service",
+                    show: true,
+                  })
+                }
+              />
+            )}
           </Card>
         ))}
       </ScrollView>
@@ -133,6 +175,13 @@ const ScreenHotelRoom = ({
         {modalBottomSheet.type === "hotel" && (
           <AddHotelBottomScheetContent
             datePicked={modalBottomSheet.datePicked}
+            onCloseModalBottomSheet={() =>
+              setModalBottomSheet({
+                datePicked: null,
+                type: "idle",
+                show: false,
+              })
+            }
           />
         )}
         {modalBottomSheet.type === "service" && (

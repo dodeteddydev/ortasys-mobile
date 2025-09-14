@@ -6,10 +6,11 @@ import loading from "@/assets/images/vectors/loading.png";
 import error from "@/assets/images/vectors/error.png";
 
 type NetworkImageProps = {
+  className?: string;
   path: string;
 };
 
-const NetworkImage = ({ path }: NetworkImageProps) => {
+const NetworkImage = ({ className, path }: NetworkImageProps) => {
   const [source, setSource] = useState<ImageSourcePropType | { uri: string }>(
     loading
   );
@@ -24,7 +25,7 @@ const NetworkImage = ({ path }: NetworkImageProps) => {
   }, [data]);
 
   return (
-    <View className="h-24 w-24 bg-gray-200 rounded-lg shadow-sm">
+    <View className={`h-24 w-24 bg-gray-200 rounded-lg shadow-sm ${className}`}>
       <Image
         style={{
           width: "100%",
@@ -32,7 +33,7 @@ const NetworkImage = ({ path }: NetworkImageProps) => {
           borderRadius: 6,
         }}
         source={isLoading ? loading : source}
-        contentFit="cover"
+        contentFit="contain"
         transition={1000}
       />
     </View>

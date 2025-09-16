@@ -14,8 +14,8 @@ export const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use(
-  (config) => {
-    const accessToken = Storage.getToken(accessTokenKey);
+  async (config) => {
+    const accessToken = await Storage.getToken(accessTokenKey);
 
     if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`;
 
@@ -27,7 +27,7 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error: ErrorResponse) => {
-    const refreshToken = Storage.getToken(refreshTokenKey);
+    const refreshToken = await Storage.getToken(refreshTokenKey);
 
     if (refreshToken && error.response?.status === 401) {
       try {
@@ -37,8 +37,8 @@ axiosInstance.interceptors.response.use(
 
         const data = authRefresh.data.data;
 
-        Storage.saveToken(accessTokenKey, data.accessToken);
-        Storage.saveToken(refreshTokenKey, data.refreshToken);
+        await Storage.saveToken(accessTokenKey, data.accessToken);
+        await Storage.saveToken(refreshTokenKey, data.refreshToken);
       } catch (err) {
         const errAxios = err as ErrorResponse;
         return Promise.reject(errAxios);

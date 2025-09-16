@@ -64,8 +64,8 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
       .finally(() => setIsLoadingProfile(false));
   };
 
-  const getToken = () => {
-    const token = Storage.getToken(accessTokenKey);
+  const getToken = async () => {
+    const token = await Storage.getToken(accessTokenKey);
 
     if (token) {
       setIsLoggedIn(true);
@@ -77,8 +77,8 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const actionLogout = async () => {
-    Storage.deleteToken(accessTokenKey),
-      Storage.deleteToken(refreshTokenKey),
+    await Storage.deleteToken(accessTokenKey),
+      await Storage.deleteToken(refreshTokenKey),
       setIsLoggedIn(false);
     router.replace("/");
   };

@@ -40,9 +40,9 @@ const Index = () => {
 
   const onLogin = (data: LoginSchema) => {
     login.mutate(data as LoginRequest, {
-      onSuccess: ({ data }) => {
-        Storage.saveToken(accessTokenKey, data.accessToken);
-        Storage.saveToken(refreshTokenKey, data.refreshToken);
+      onSuccess: async ({ data }) => {
+        await Storage.saveToken(accessTokenKey, data.accessToken);
+        await Storage.saveToken(refreshTokenKey, data.refreshToken);
         setTimeout(() => router.replace("/home"), 2050);
         Toast.show({
           type: "success",

@@ -14,6 +14,7 @@ import CardItemRoomBottomSheetContent from "./CardItemRoomBottomSheetContent";
 type CardItemHotelBottomSheetContentProps = {
   isOpenRoom: boolean;
   datePicked: string | null;
+  day: number | null;
   dataHotel: HotelSimpleResponse;
   onPressRoom: () => void;
   onCloseModalBottomSheet: () => void;
@@ -23,6 +24,7 @@ const CardItemHotelBottomSheetContent = ({
   isOpenRoom,
   datePicked,
   dataHotel,
+  day,
   onPressRoom,
   onCloseModalBottomSheet,
 }: CardItemHotelBottomSheetContentProps) => {
@@ -101,6 +103,7 @@ const CardItemHotelBottomSheetContent = ({
                   key={index}
                   isOpenRate={currentRateOpen === index}
                   datePicked={datePicked}
+                  day={day}
                   dataHotelAndRoom={{
                     hotel: dataHotel,
                     room: item,

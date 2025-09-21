@@ -1,37 +1,45 @@
 import Button from "@/components/Button";
 import HotelStar from "@/components/HotelStar";
+import ModalGeneral from "@/components/Modal";
 import NetworkImage from "@/components/NetworkImage";
 import { colors } from "@/constants/colors";
 import { currencyFormat } from "@/utilities/currencyFormat";
 import { Feather } from "@expo/vector-icons";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Dimensions,
   ScrollView,
   Text,
   TouchableOpacity,
+  useWindowDimensions,
   View,
 } from "react-native";
+import RenderHtml from "react-native-render-html";
+import Toast from "react-native-toast-message";
 import { useCustomizedContext } from "../context/CustomizedProvider";
 import { HotelRoomSchema } from "../schemas/hotelRoomSchema";
-import { ResponseCustomized } from "../types/customized";
+import { HotelRoomCustomized, ResponseCustomized } from "../types/customized";
+import { RoomAvailableResponse } from "../types/roomAvailableResponse";
 import NoHotelOrServiceSelected from "./NoHotelOrServiceSelected";
-import ModalGeneral from "@/components/Modal";
-import RenderHtml from "react-native-render-html";
+import { RoomAvailableService } from "../services/roomAvailableService";
+import { addDays, set } from "date-fns";
+import { ErrorResponse } from "@/types/responseType";
 
 type HotelOrServiceSelectedProps = {
+  index: number;
   payload: HotelRoomSchema;
   response: ResponseCustomized;
   onPressAddService?: () => void;
 };
 
 const HotelOrServiceSelected = ({
+  index,
   payload,
-  response: { hotel, room, contract },
+  response: { partOfDay, hotel, room, contract },
   onPressAddService,
 }: HotelOrServiceSelectedProps) => {
-  const { width } = Dimensions.get("window");
-  const { customized } = useCustomizedContext();
+  const { width } = useWindowDimensions();
+  const { customized, setCustomized } = useCustomizedContext();
   const [night, setNight] = useState<number>(1);
 
   const handleAddNight = () => {
@@ -51,12 +59,93 @@ const HotelOrServiceSelected = ({
 
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  const tagsStyles = useMemo(
-    () => ({
-      p: { color: "#9ca3af" },
-    }),
-    []
-  );
+  const handleSetCustomized = (value: RoomAvailableResponse) => {
+    const availableRoom: HotelRoomCustomized[] = Object.entries(value)
+      .map(([key, value]) => ({
+        key,
+        value,
+      }))
+      .map(({ key, value }, index) => ({
+        payload: {
+          ...payload,
+          date: key,
+          day: payload?.day! + index + 1,
+          contractRateId: value?.contractRateId,
+          rate: value?.rate,
+          base: value?.base,
+          hotelRoomConfigurationId: value?.hotelRoomConfigurationId,
+          markupAgent: value?.markupAgent,
+          markupHotel: value?.markupHotel,
+        },
+        response: {
+          ...{ hotel, room, contract },
+          partOfDay: payload?.day,
+          hotel: hotel,
+          room: room,
+          contract: { ...contract, value },
+        },
+      }));
+
+    const merged = new Map();
+
+    [
+      ...(customized.hotelRoomCustomized?.map((item) =>
+        item.response?.partOfDay === payload?.day
+          ? {
+              payload: {
+                day: item.payload.day,
+                date: item.payload.date,
+                isCheckout: payload?.isCheckout,
+                checkIn: payload?.checkIn,
+                activities: [],
+              },
+              response: null,
+            }
+          : item
+      ) ?? []),
+      ...availableRoom,
+    ].forEach((item) => {
+      merged.set(item.payload.day, item);
+    });
+
+    const newHotelRoomCustomized = Array.from(merged.values()).sort(
+      (a, b) => a.id - b.id
+    );
+
+    setCustomized({
+      ...customized,
+      hotelRoomCustomized: newHotelRoomCustomized,
+    });
+  };
+
+  const [loadingCheckRoom, setLoadingCheckRoom] = useState<boolean>(false);
+  const handleCheckRoom = () => {
+    setLoadingCheckRoom(true);
+    RoomAvailableService.get(payload?.hotelRoomId!, {
+      date: addDays(new Date(payload?.date!), 1).toISOString(),
+      night: night - 1,
+      adult: customized?.search?.adult ?? 0,
+      child: customized?.search?.child ?? 0,
+      contractRateId: payload?.contractRateId,
+    })
+      .then((res) => {
+        handleSetCustomized(res.data);
+      })
+      .catch((e: ErrorResponse) =>
+        Toast.show({
+          type: "error",
+          text1: "Something went wrong",
+          text2: e.response?.data.message,
+        })
+      )
+      .finally(() => {
+        setLoadingCheckRoom(false);
+      });
+  };
+
+  useEffect(() => {
+    setNight(1);
+  }, [customized.hotelRoomCustomized?.[index]?.payload?.contractRateId]);
 
   return (
     <View>
@@ -91,36 +180,46 @@ const HotelOrServiceSelected = ({
       </View>
 
       {/* CHECK ROOM SECTION */}
-      <View className="flex flex-row justify-end items-center gap-2 mt-3">
-        <View className="flex flex-row gap-4 items-center border border-primary rounded-lg px-4 h-10">
-          <View className="flex flex-row items-center gap-4">
-            <TouchableOpacity activeOpacity={0.8} onPress={handleRemoveNight}>
-              <Feather
-                name="arrow-left-circle"
-                size={22}
-                color={colors.primary}
-              />
-            </TouchableOpacity>
-            <Text className="text-gray-400 font-bold">{night}</Text>
-            <TouchableOpacity activeOpacity={0.8} onPress={handleAddNight}>
-              <Feather
-                name="arrow-right-circle"
-                size={22}
-                color={colors.primary}
-              />
-            </TouchableOpacity>
+      {!partOfDay &&
+        (!customized?.hotelRoomCustomized?.[index + 2]?.response?.partOfDay ||
+          customized?.hotelRoomCustomized?.[index + 1]?.response?.partOfDay ===
+            payload?.day) && (
+          <View className="flex flex-row justify-end items-center gap-2 mt-3">
+            <View className="flex flex-row gap-4 items-center border border-primary rounded-lg px-4 h-10">
+              <View className="flex flex-row items-center gap-4">
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={handleRemoveNight}
+                >
+                  <Feather
+                    name="arrow-left-circle"
+                    size={22}
+                    color={colors.primary}
+                  />
+                </TouchableOpacity>
+                <Text className="text-gray-400 font-bold">{night}</Text>
+                <TouchableOpacity activeOpacity={0.8} onPress={handleAddNight}>
+                  <Feather
+                    name="arrow-right-circle"
+                    size={22}
+                    color={colors.primary}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <Text className="text-primary font-bold">Night</Text>
+            </View>
+
+            <Button
+              loading={loadingCheckRoom}
+              disabled={disabledCheckRoom}
+              className="px-4 h-10"
+              classNameText="text-sm text-white font-semibold"
+              text="Check Room"
+              onPress={handleCheckRoom}
+            />
           </View>
-
-          <Text className="text-primary font-bold">Night</Text>
-        </View>
-
-        <Button
-          disabled={disabledCheckRoom}
-          className="px-4 h-10"
-          classNameText="text-sm text-white font-semibold"
-          text="Check Room"
-        />
-      </View>
+        )}
 
       {/* SERVICE SECTION */}
       <View className="border-t border-gray-400 mt-4">
@@ -190,12 +289,8 @@ const HotelOrServiceSelected = ({
             <RenderHtml
               contentWidth={width}
               source={{
-                html: contract?.policies?.benefit
-                  .replace(/<li>/g, "<p>")
-                  .replace(/<\/li>/g, "</p>")
-                  .replace(/<\/?ul>/g, ""),
+                html: contract?.policies?.benefit,
               }}
-              tagsStyles={tagsStyles}
             />
           </View>
 

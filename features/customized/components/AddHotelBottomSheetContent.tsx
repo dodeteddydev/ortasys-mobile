@@ -11,11 +11,13 @@ import CardItemHotelBottomSheetContent from "./CardItemHotelBottomSheetContent";
 
 export type AddHotelBottomSheetContentProps = {
   datePicked: string | null;
+  day: number | null;
   onCloseModalBottomSheet: () => void;
 };
 
 const AddHotelBottomSheetContent = ({
   datePicked,
+  day,
   onCloseModalBottomSheet,
 }: AddHotelBottomSheetContentProps) => {
   const { customized } = useCustomizedContext();
@@ -65,6 +67,7 @@ const AddHotelBottomSheetContent = ({
                   <CardItemHotelBottomSheetContent
                     isOpenRoom={currentRoomOpen === index}
                     datePicked={datePicked}
+                    day={day}
                     dataHotel={item}
                     onPressRoom={() => setCurrentRoomOpen(index)}
                     onCloseModalBottomSheet={onCloseModalBottomSheet}

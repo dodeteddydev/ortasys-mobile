@@ -3,7 +3,7 @@ import { calculateNights } from "@/utilities/calculateNights";
 import { currencyFormat } from "@/utilities/currencyFormat";
 import { Feather } from "@expo/vector-icons";
 import { useMemo } from "react";
-import { Dimensions, Text, View } from "react-native";
+import { Text, useWindowDimensions, View } from "react-native";
 import RenderHtml from "react-native-render-html";
 import { useCustomizedContext } from "../context/CustomizedProvider";
 import { useGetContract } from "../hooks/useGetContract";
@@ -14,6 +14,7 @@ import { RoomSimpleResponse } from "../types/roomSimpleResponse";
 type CardItemRoomBottomSheetContentProps = {
   isOpenRate: boolean;
   datePicked: string | null;
+  day: number | null;
   dataHotelAndRoom: { hotel: HotelSimpleResponse; room: RoomSimpleResponse };
   onPressRate: () => void;
   onCloseModalBottomSheet: () => void;
@@ -22,11 +23,12 @@ type CardItemRoomBottomSheetContentProps = {
 const CardItemRoomBottomSheetContent = ({
   isOpenRate,
   datePicked,
+  day,
   dataHotelAndRoom,
   onPressRate,
   onCloseModalBottomSheet,
 }: CardItemRoomBottomSheetContentProps) => {
-  const { width } = Dimensions.get("window");
+  const { width } = useWindowDimensions();
   const { customized, setCustomized } = useCustomizedContext();
   const { data, isPending, isError, error } = useGetContract({
     enabled: isOpenRate && !!datePicked,
@@ -42,13 +44,6 @@ const CardItemRoomBottomSheetContent = ({
       startStayDate: new Date(customized?.search?.startStayDate!).toISOString(),
     },
   });
-
-  const tagsStyles = useMemo(
-    () => ({
-      p: { color: "#9ca3af" },
-    }),
-    []
-  );
 
   const handleAddRoom = (data: ContractResponse) => {
     const newHotelRoomCustomized = customized?.hotelRoomCustomized?.map(
@@ -74,7 +69,19 @@ const CardItemRoomBottomSheetContent = ({
               contract: data,
             },
           };
+        } else if (hotelRoom?.response?.partOfDay === day) {
+          return {
+            payload: {
+              day: hotelRoom?.payload?.day,
+              date: hotelRoom?.payload?.date,
+              isCheckout: hotelRoom?.payload?.isCheckout,
+              checkIn: hotelRoom?.payload?.checkIn,
+              activities: [],
+            },
+            response: null,
+          };
         }
+
         return hotelRoom;
       }
     );
@@ -129,12 +136,8 @@ const CardItemRoomBottomSheetContent = ({
                   <RenderHtml
                     contentWidth={width}
                     source={{
-                      html: item?.policies?.benefit
-                        .replace(/<li>/g, "<p>")
-                        .replace(/<\/li>/g, "</p>")
-                        .replace(/<\/?ul>/g, ""),
+                      html: item?.policies?.benefit,
                     }}
-                    tagsStyles={tagsStyles}
                   />
 
                   <View className="flex flex-row items-center gap-2 pe-3">

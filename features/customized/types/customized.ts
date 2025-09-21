@@ -5,6 +5,7 @@ import { HotelSimpleResponse } from "./hotelSimpleResponse";
 import { RoomSimpleResponse } from "./roomSimpleResponse";
 
 export type ResponseCustomized = {
+  partOfDay?: number;
   hotel: HotelSimpleResponse;
   room: RoomSimpleResponse;
   contract: ContractResponse;

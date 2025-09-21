@@ -1,20 +1,22 @@
+import Badge from "@/components/Badge";
 import Card from "@/components/Card";
 import ModalBottomSheet from "@/components/ModalBottomSheet";
 import StepperButton from "@/components/StepperButton";
 import ToastCustom from "@/components/ToastCustom";
+import { colors } from "@/constants/colors";
 import { calculateNights } from "@/utilities/calculateNights";
+import { FontAwesome } from "@expo/vector-icons";
 import { addDays } from "date-fns";
 import { useEffect, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { useCustomizedContext } from "../context/CustomizedProvider";
 import { HotelRoomCustomized } from "../types/customized";
 import AddHotelBottomScheetContent from "./AddHotelBottomSheetContent";
 import AddServiceBottomScheetContent from "./AddServiceBottomScheetContent";
 import CardHotelRoomTitle from "./CardHotelRoomTitle";
-import NoHotelOrServiceSelected from "./NoHotelOrServiceSelected";
 import HotelOrServiceSelected from "./HotelOrServiceSelected";
-import Badge from "@/components/Badge";
+import NoHotelOrServiceSelected from "./NoHotelOrServiceSelected";
 
 type ScreenHotelRoomProps = {
   onPressPrevious: () => void;
@@ -28,10 +30,12 @@ const ScreenHotelRoom = ({
   const { customized, setCustomized } = useCustomizedContext();
   const [modalBottomSheet, setModalBottomSheet] = useState<{
     datePicked: string | null;
+    day: number | null;
     type: "hotel" | "service" | "idle";
     show: boolean;
   }>({
     datePicked: null,
+    day: null,
     type: "idle",
     show: false,
   });
@@ -63,6 +67,26 @@ const ScreenHotelRoom = ({
     setCustomized({
       ...customized,
       hotelRoomCustomized: hotelRoomCustomized,
+    });
+  };
+
+  const handleDelete = (index: number, day: number) => {
+    setCustomized({
+      ...customized,
+      hotelRoomCustomized: customized?.hotelRoomCustomized?.map((value, i) =>
+        i === index || value?.response?.partOfDay === day
+          ? {
+              payload: {
+                day: value?.payload?.day,
+                date: value?.payload?.date,
+                isCheckout: value?.payload?.isCheckout,
+                checkIn: value?.payload?.checkIn,
+                activities: [],
+              },
+              response: null,
+            }
+          : value
+      ),
     });
   };
 
@@ -102,32 +126,62 @@ const ScreenHotelRoom = ({
             className={`${index === 0 && "mt-4"} m-2 mx-4`}
             title={
               <CardHotelRoomTitle
-                day={value?.payload?.day!}
-                date={value?.payload?.date!}
+                payload={value?.payload}
+                response={value?.response!}
+                onPressEdit={() =>
+                  setModalBottomSheet({
+                    datePicked: value?.payload?.date ?? null,
+                    day: value?.payload?.day ?? null,
+                    type: "hotel",
+                    show: true,
+                  })
+                }
+                onPressDelete={() => handleDelete(index, value?.payload?.day!)}
               />
             }
           >
-            <View className="mb-3 gap-2">
-              {value?.payload?.hotelId && (
-                <Badge text="Check In" variant="success" />
-              )}
-              {customized?.hotelRoomCustomized?.[index - 1]?.payload
-                ?.hotelId && (
-                <Badge
-                  text={`Check Out : End of Stay Day ${index}`}
-                  variant="danger"
+            {!value?.response?.partOfDay ? (
+              <View className="mb-3 gap-2">
+                {value?.payload?.hotelId && (
+                  <Badge text="Check In" variant="success" />
+                )}
+                {customized?.hotelRoomCustomized?.[index - 1]?.payload
+                  ?.hotelId && (
+                  <Badge
+                    text={`Check Out : End of Stay Day ${
+                      customized?.hotelRoomCustomized?.[index - 1]?.response
+                        ?.partOfDay
+                        ? customized?.hotelRoomCustomized?.[index - 1]?.response
+                            ?.partOfDay
+                        : index
+                    }`}
+                    variant="danger"
+                  />
+                )}
+              </View>
+            ) : (
+              <View className="flex flex-row items-center mb-3 gap-2">
+                <FontAwesome
+                  name="lock"
+                  size={20}
+                  color={colors.grayInactive}
                 />
-              )}
-            </View>
+                <Text className="text-primary text-lg font-bold">
+                  Part of a consecutive stay day {value?.response?.partOfDay}
+                </Text>
+              </View>
+            )}
 
             {value?.payload?.hotelId ||
             value?.payload?.activities?.[0]?.packageElementId ? (
               <HotelOrServiceSelected
+                index={index}
                 payload={value?.payload}
                 response={value?.response!}
                 onPressAddService={() =>
                   setModalBottomSheet({
                     datePicked: value?.payload?.date ?? null,
+                    day: value?.payload?.day ?? null,
                     type: "service",
                     show: true,
                   })
@@ -141,6 +195,7 @@ const ScreenHotelRoom = ({
                 onPressAddHotel={() =>
                   setModalBottomSheet({
                     datePicked: value?.payload?.date ?? null,
+                    day: value?.payload?.day ?? null,
                     type: "hotel",
                     show: true,
                   })
@@ -148,6 +203,7 @@ const ScreenHotelRoom = ({
                 onPressAddService={() =>
                   setModalBottomSheet({
                     datePicked: value?.payload?.date ?? null,
+                    day: value?.payload?.day ?? null,
                     type: "service",
                     show: true,
                   })
@@ -169,15 +225,22 @@ const ScreenHotelRoom = ({
         }`}
         show={modalBottomSheet.show}
         onClose={() =>
-          setModalBottomSheet({ datePicked: null, type: "idle", show: false })
+          setModalBottomSheet({
+            datePicked: null,
+            day: null,
+            type: "idle",
+            show: false,
+          })
         }
       >
         {modalBottomSheet.type === "hotel" && (
           <AddHotelBottomScheetContent
             datePicked={modalBottomSheet.datePicked}
+            day={modalBottomSheet.day}
             onCloseModalBottomSheet={() =>
               setModalBottomSheet({
                 datePicked: null,
+                day: null,
                 type: "idle",
                 show: false,
               })

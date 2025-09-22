@@ -7,7 +7,7 @@ type DropdownInputFieldProps<T> = {
   label?: string;
   disabled?: boolean;
   placeholder?: string;
-  value?: string;
+  value?: string | number;
   data: T[];
   onChange: (value: T) => void;
   error?: string;

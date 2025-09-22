@@ -248,7 +248,9 @@ const ScreenHotelRoom = ({
           />
         )}
         {modalBottomSheet.type === "service" && (
-          <AddServiceBottomScheetContent />
+          <AddServiceBottomScheetContent
+            datePicked={modalBottomSheet.datePicked}
+          />
         )}
       </ModalBottomSheet>
 

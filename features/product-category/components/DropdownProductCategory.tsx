@@ -4,8 +4,9 @@ import { useGetProductCategory } from "../hooks/useGetProductCategory";
 import { ProductCategoryResponse } from "../types/productCategoryResponse";
 
 type DropdownProductCategoryProps = {
+  label?: string;
   enabled?: boolean;
-  value?: string;
+  value?: number;
   onChange: (value: SelectOptions & ProductCategoryResponse) => void;
   error?: string;
 };

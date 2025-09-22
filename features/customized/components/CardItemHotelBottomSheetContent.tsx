@@ -55,8 +55,12 @@ const CardItemHotelBottomSheetContent = ({
   };
 
   return (
-    <View className="mb-4 p-4 bg-white rounded-lg shadow-lg gap-3">
-      <View className="flex flex-row items-center">
+    <View className="mb-4 p-4 bg-white rounded-lg shadow-lg">
+      <View
+        className={`flex flex-row items-center ${
+          isOpenRoom && "border-b border-gray-200 mb-3 pb-3"
+        }`}
+      >
         <View className="flex-1 flex flex-row items-center gap-3">
           <NetworkImage path={dataHotel?.logoPath} />
           <View>

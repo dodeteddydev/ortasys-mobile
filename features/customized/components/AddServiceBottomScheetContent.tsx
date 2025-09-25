@@ -10,15 +10,18 @@ import DataNotFound from "@/components/DataNotFound";
 import { Text } from "react-native";
 import { useState } from "react";
 import CardItemServiceBottomSheetContent from "./CardItemServiceBottomSheetContent";
+import { PackageSimpleResponse } from "../types/packageSimpleResponse";
 
 export type AddServiceBottomScheetContentProps = {
   datePicked: string | null;
+  onCloseModalBottomSheet: () => void;
 };
 
 const AddServiceBottomScheetContent = ({
   datePicked,
+  onCloseModalBottomSheet,
 }: AddServiceBottomScheetContentProps) => {
-  const { customized } = useCustomizedContext();
+  const { customized, setCustomized } = useCustomizedContext();
 
   const { value, debouncedValue, setValue } = useDebounce<string>();
 
@@ -37,6 +40,67 @@ const AddServiceBottomScheetContent = ({
       date: datePicked!,
     },
   });
+
+  const handleAddService = (data: PackageSimpleResponse) => {
+    const newHotelRoomCustomized = customized?.hotelRoomCustomized?.map(
+      (hotelRoom) => {
+        if (hotelRoom.payload.date === datePicked) {
+          return {
+            ...hotelRoom,
+            payload: {
+              ...hotelRoom?.payload,
+              activities: [
+                ...(hotelRoom?.payload?.activities || []),
+                {
+                  day: hotelRoom?.payload?.day,
+                  date: hotelRoom?.payload?.date,
+                  priceAdult: data?.priceAdult,
+                  priceChild: data?.priceChild,
+                  packageCategoryId: data?.packageCategory?.id,
+                  packageElementId: data?.id,
+                  location: data?.location,
+                  rate:
+                    (customized?.search?.adult ?? 0 * data?.priceAdult) +
+                    (customized?.search?.child ?? 0 * data?.priceChild),
+                  totalItem: null,
+                  pricePerItem: data?.pricePerItem,
+                  isPricePerItem: false,
+                  description: data?.description,
+                  base: data?.base,
+                  markup: data?.markup,
+                  markupAgent: data?.markupAgent,
+                  adult: customized?.search?.adult,
+                  child: customized?.search?.child,
+                },
+              ],
+            },
+            response: hotelRoom?.response
+              ? {
+                  ...hotelRoom?.response,
+                  activities: [
+                    ...(hotelRoom?.response?.activities || []),
+                    data,
+                  ],
+                }
+              : {
+                  activities: [
+                    ...(hotelRoom?.response?.activities || []),
+                    data,
+                  ],
+                },
+          };
+        }
+
+        return hotelRoom;
+      }
+    );
+
+    setCustomized({
+      ...customized,
+      hotelRoomCustomized: newHotelRoomCustomized,
+    });
+    onCloseModalBottomSheet();
+  };
 
   return (
     <>
@@ -57,35 +121,46 @@ const AddServiceBottomScheetContent = ({
         />
       </View>
 
-      {product && (
-        <View className="flex-1">
-          {isPending || isError ? (
-            isPending ? (
-              <Loading />
-            ) : (
-              <Error statusCode={error?.status ?? "Unexpected error"} />
-            )
-          ) : (
-            <>
-              {data?.data?.length! > 0 ? (
-                <FlatList
-                  data={data?.data}
-                  keyExtractor={(_, index) => index.toString()}
-                  refreshing={isPending}
-                  onRefresh={() => refetch()}
-                  keyboardShouldPersistTaps="handled"
-                  contentContainerStyle={{ padding: 12 }}
-                  renderItem={({ item }) => (
-                    <CardItemServiceBottomSheetContent dataPackage={item} />
-                  )}
-                />
+      <View className="flex-1">
+        {product ? (
+          <>
+            {isPending || isError ? (
+              isPending ? (
+                <Loading />
               ) : (
-                <DataNotFound />
-              )}
-            </>
-          )}
-        </View>
-      )}
+                <Error statusCode={error?.status ?? "Unexpected error"} />
+              )
+            ) : (
+              <>
+                {data?.data?.length! > 0 ? (
+                  <FlatList
+                    data={data?.data}
+                    keyExtractor={(_, index) => index.toString()}
+                    refreshing={isPending}
+                    onRefresh={() => refetch()}
+                    keyboardShouldPersistTaps="handled"
+                    contentContainerStyle={{ padding: 12 }}
+                    renderItem={({ item }) => (
+                      <CardItemServiceBottomSheetContent
+                        dataPackage={item}
+                        onPressSelect={() => handleAddService(item)}
+                      />
+                    )}
+                  />
+                ) : (
+                  <DataNotFound />
+                )}
+              </>
+            )}
+          </>
+        ) : (
+          <View className="flex-1 justify-center items-center">
+            <Text className="text-primary font-semibold">
+              Please select a product category to show list of products
+            </Text>
+          </View>
+        )}
+      </View>
     </>
   );
 };

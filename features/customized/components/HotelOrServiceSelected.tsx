@@ -2,41 +2,30 @@ import Button from "@/components/Button";
 import HotelStar from "@/components/HotelStar";
 import ModalGeneral from "@/components/Modal";
 import NetworkImage from "@/components/NetworkImage";
-import { colors } from "@/constants/colors";
+import { ErrorResponse } from "@/types/responseType";
 import { currencyFormat } from "@/utilities/currencyFormat";
-import { Feather } from "@expo/vector-icons";
-import { useEffect, useMemo, useState } from "react";
-import {
-  Dimensions,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { addDays } from "date-fns";
+import { useEffect, useState } from "react";
+import { ScrollView, Text, useWindowDimensions, View } from "react-native";
 import RenderHtml from "react-native-render-html";
 import Toast from "react-native-toast-message";
 import { useCustomizedContext } from "../context/CustomizedProvider";
 import { HotelRoomSchema } from "../schemas/hotelRoomSchema";
+import { RoomAvailableService } from "../services/roomAvailableService";
 import { HotelRoomCustomized, ResponseCustomized } from "../types/customized";
 import { RoomAvailableResponse } from "../types/roomAvailableResponse";
-import NoHotelOrServiceSelected from "./NoHotelOrServiceSelected";
-import { RoomAvailableService } from "../services/roomAvailableService";
-import { addDays, set } from "date-fns";
-import { ErrorResponse } from "@/types/responseType";
+import ButtonCounter from "./ButtonCounter";
 
 type HotelOrServiceSelectedProps = {
   index: number;
   payload: HotelRoomSchema;
   response: ResponseCustomized;
-  onPressAddService?: () => void;
 };
 
 const HotelOrServiceSelected = ({
   index,
   payload,
-  response: { partOfDay, hotel, room, contract },
-  onPressAddService,
+  response: { partOfDay, hotel, room, contract, activities },
 }: HotelOrServiceSelectedProps) => {
   const { width } = useWindowDimensions();
   const { customized, setCustomized } = useCustomizedContext();
@@ -80,9 +69,10 @@ const HotelOrServiceSelected = ({
         response: {
           ...{ hotel, room, contract },
           partOfDay: payload?.day,
-          hotel: hotel,
-          room: room,
-          contract: { ...contract, value },
+          hotel: hotel!,
+          room: room!,
+          contract: { ...contract!, value },
+          activities: [],
         },
       }));
 
@@ -151,10 +141,10 @@ const HotelOrServiceSelected = ({
     <View>
       {/* HOTEL SECTION */}
       <View className="flex flex-row items-center gap-2">
-        <NetworkImage className="h-20 w-28" path={room?.roomImage} />
+        <NetworkImage className="h-20 w-28" path={room?.roomImage!} />
 
         <View className="flex-1">
-          <HotelStar star={hotel?.star} />
+          <HotelStar star={hotel?.star!} />
           <Text className="text-primary font-semibold">
             {room?.roomTypeDescription}
           </Text>
@@ -185,30 +175,12 @@ const HotelOrServiceSelected = ({
           customized?.hotelRoomCustomized?.[index + 1]?.response?.partOfDay ===
             payload?.day) && (
           <View className="flex flex-row justify-end items-center gap-2 mt-3">
-            <View className="flex flex-row gap-4 items-center border border-primary rounded-lg px-4 h-10">
-              <View className="flex flex-row items-center gap-4">
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  onPress={handleRemoveNight}
-                >
-                  <Feather
-                    name="arrow-left-circle"
-                    size={22}
-                    color={colors.primary}
-                  />
-                </TouchableOpacity>
-                <Text className="text-gray-400 font-bold">{night}</Text>
-                <TouchableOpacity activeOpacity={0.8} onPress={handleAddNight}>
-                  <Feather
-                    name="arrow-right-circle"
-                    size={22}
-                    color={colors.primary}
-                  />
-                </TouchableOpacity>
-              </View>
-
-              <Text className="text-primary font-bold">Night</Text>
-            </View>
+            <ButtonCounter
+              value={night}
+              label="Night"
+              onPressArrowLeft={handleRemoveNight}
+              onPressArrowRight={handleAddNight}
+            />
 
             <Button
               loading={loadingCheckRoom}
@@ -221,18 +193,6 @@ const HotelOrServiceSelected = ({
           </View>
         )}
 
-      {/* SERVICE SECTION */}
-      <View className="border-t border-gray-400 mt-4">
-        {payload?.activities?.length! > 0 ? (
-          <></>
-        ) : (
-          <NoHotelOrServiceSelected
-            hideAddHotel
-            onPressAddService={onPressAddService}
-          />
-        )}
-      </View>
-
       {/* MODAL DETAIL ROOM */}
       <ModalGeneral
         show={showModal}
@@ -244,7 +204,7 @@ const HotelOrServiceSelected = ({
       >
         <View className="gap-3" style={{ width: width - 100 }}>
           {/* GALERY */}
-          {room?.galleries?.length > 0 ? (
+          {room?.galleries?.length! > 0 ? (
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -261,7 +221,7 @@ const HotelOrServiceSelected = ({
           {/* AMENITIES */}
           <View>
             <Text className="text-lg font-bold">Amenities</Text>
-            {room?.attributes?.length > 0 ? (
+            {room?.attributes?.length! > 0 ? (
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -289,7 +249,7 @@ const HotelOrServiceSelected = ({
             <RenderHtml
               contentWidth={width}
               source={{
-                html: contract?.policies?.benefit,
+                html: contract?.policies?.benefit!,
               }}
             />
           </View>

@@ -12,9 +12,6 @@ export class PackageSimpleService {
           params,
         }
       )
-      .then((response) => {
-        console.log(response);
-        return response.data;
-      });
+      .then((response) => response.data);
   }
 }

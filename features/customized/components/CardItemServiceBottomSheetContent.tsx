@@ -6,10 +6,12 @@ import Button from "@/components/Button";
 
 type CardItemServiceBottomSheetContentProps = {
   dataPackage: PackageSimpleResponse;
+  onPressSelect: () => void;
 };
 
 const CardItemServiceBottomSheetContent = ({
   dataPackage,
+  onPressSelect,
 }: CardItemServiceBottomSheetContentProps) => {
   return (
     <View className="mb-4 px-4 pb-4 bg-white rounded-lg shadow-lg">
@@ -17,7 +19,7 @@ const CardItemServiceBottomSheetContent = ({
         {dataPackage?.productName}
       </Text>
 
-      <View className="flex flex-row items-center gap-3">
+      <View className="flex flex-row gap-3">
         <NetworkImage path={dataPackage?.productImage} />
 
         <View className="flex-1">
@@ -31,12 +33,14 @@ const CardItemServiceBottomSheetContent = ({
           </Text>
         </View>
 
-        <Button
-          className="px-4 py-2"
-          classNameText="text-lg font-semibold text-white"
-          text="Select"
-          onPress={() => {}}
-        />
+        <View className="self-center">
+          <Button
+            className="px-4 py-2"
+            classNameText="text-lg font-semibold text-white"
+            text="Select"
+            onPress={onPressSelect}
+          />
+        </View>
       </View>
     </View>
   );

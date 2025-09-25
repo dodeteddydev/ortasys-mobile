@@ -17,6 +17,7 @@ import AddServiceBottomScheetContent from "./AddServiceBottomScheetContent";
 import CardHotelRoomTitle from "./CardHotelRoomTitle";
 import HotelOrServiceSelected from "./HotelOrServiceSelected";
 import NoHotelOrServiceSelected from "./NoHotelOrServiceSelected";
+import ServiceItem from "./ServiceItem";
 
 type ScreenHotelRoomProps = {
   onPressPrevious: () => void;
@@ -174,23 +175,59 @@ const ScreenHotelRoom = ({
 
             {value?.payload?.hotelId ||
             value?.payload?.activities?.[0]?.packageElementId ? (
-              <HotelOrServiceSelected
-                index={index}
-                payload={value?.payload}
-                response={value?.response!}
-                onPressAddService={() =>
-                  setModalBottomSheet({
-                    datePicked: value?.payload?.date ?? null,
-                    day: value?.payload?.day ?? null,
-                    type: "service",
-                    show: true,
-                  })
-                }
-              />
+              <>
+                {value?.payload?.hotelId ? (
+                  <HotelOrServiceSelected
+                    index={index}
+                    payload={value?.payload}
+                    response={value?.response!}
+                  />
+                ) : (
+                  customized?.hotelRoomCustomized?.length! - 1 !== index && (
+                    <NoHotelOrServiceSelected
+                      hideAddService
+                      text="No hotel selected for this night"
+                      onPressAddHotel={() =>
+                        setModalBottomSheet({
+                          datePicked: value?.payload?.date ?? null,
+                          day: value?.payload?.day ?? null,
+                          type: "hotel",
+                          show: true,
+                        })
+                      }
+                    />
+                  )
+                )}
+
+                {value?.response?.activities?.length! > 0 && (
+                  <View className="border-b border-gray-200 my-3" />
+                )}
+
+                {value?.response?.activities?.map((activity, index) => (
+                  <ServiceItem key={index} data={activity} />
+                ))}
+                <NoHotelOrServiceSelected
+                  hideAddHotel
+                  text="Add other service for this night"
+                  onPressAddService={() =>
+                    setModalBottomSheet({
+                      datePicked: value?.payload?.date ?? null,
+                      day: value?.payload?.day ?? null,
+                      type: "service",
+                      show: true,
+                    })
+                  }
+                />
+              </>
             ) : (
               <NoHotelOrServiceSelected
                 hideAddHotel={
                   customized?.hotelRoomCustomized?.length! - 1 === index
+                }
+                text={
+                  customized?.hotelRoomCustomized?.length! - 1 === index
+                    ? "No service selected for this night"
+                    : "No hotel or service selected for this night"
                 }
                 onPressAddHotel={() =>
                   setModalBottomSheet({
@@ -250,6 +287,14 @@ const ScreenHotelRoom = ({
         {modalBottomSheet.type === "service" && (
           <AddServiceBottomScheetContent
             datePicked={modalBottomSheet.datePicked}
+            onCloseModalBottomSheet={() =>
+              setModalBottomSheet({
+                datePicked: null,
+                day: null,
+                type: "idle",
+                show: false,
+              })
+            }
           />
         )}
       </ModalBottomSheet>

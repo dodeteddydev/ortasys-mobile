@@ -61,12 +61,14 @@ const CardItemRoomBottomSheetContent = ({
               hotelRoomConfigurationId: data?.hotelRoomConfigurationId,
               markupAgent: data?.markupAgent,
               markupHotel: data?.markupHotel,
+              activities: [...(hotelRoom?.payload?.activities || [])],
             },
             response: {
               ...hotelRoom?.response,
               hotel: dataHotelAndRoom?.hotel,
               room: dataHotelAndRoom?.room,
               contract: data,
+              activities: [...(hotelRoom?.response?.activities || [])],
             },
           };
         } else if (hotelRoom?.response?.partOfDay === day) {

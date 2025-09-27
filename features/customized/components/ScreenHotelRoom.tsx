@@ -92,9 +92,9 @@ const ScreenHotelRoom = ({
   };
 
   const onSubmit = () => {
-    console.log(JSON.stringify(customized?.hotelRoomCustomized));
+    const hotelRooms = customized?.hotelRoomCustomized ?? [];
 
-    const isHotelAndServiceAdded = customized?.hotelRoomCustomized?.every(
+    const isHotelAndServiceAdded = hotelRooms.every(
       (hotelRoom) =>
         !!hotelRoom?.payload?.hotelId ||
         !!hotelRoom?.payload?.activities?.[0]?.packageElementId
@@ -106,13 +106,15 @@ const ScreenHotelRoom = ({
       Toast.show({
         type: "error",
         text1: "Almost there 👋",
-        text2: "Add a hotel or service to continue.",
+        text2: "Please add at least one hotel or service each day to continue.",
       });
     }
   };
 
   useEffect(() => {
-    handleInitialListHotelRoom();
+    if (!customized?.hotelRoomCustomized?.length) {
+      handleInitialListHotelRoom();
+    }
   }, []);
 
   return (
@@ -121,10 +123,10 @@ const ScreenHotelRoom = ({
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        {customized?.hotelRoomCustomized?.map((value, index) => (
+        {customized?.hotelRoomCustomized?.map((value, idxHotelRoom) => (
           <Card
-            key={index}
-            className={`${index === 0 && "mt-4"} m-2 mx-4`}
+            key={idxHotelRoom}
+            className={`${idxHotelRoom === 0 && "mt-4"} m-2 mx-4`}
             title={
               <CardHotelRoomTitle
                 payload={value?.payload}
@@ -137,7 +139,9 @@ const ScreenHotelRoom = ({
                     show: true,
                   })
                 }
-                onPressDelete={() => handleDelete(index, value?.payload?.day!)}
+                onPressDelete={() =>
+                  handleDelete(idxHotelRoom, value?.payload?.day!)
+                }
               />
             }
           >
@@ -146,15 +150,15 @@ const ScreenHotelRoom = ({
                 {value?.payload?.hotelId && (
                   <Badge text="Check In" variant="success" />
                 )}
-                {customized?.hotelRoomCustomized?.[index - 1]?.payload
+                {customized?.hotelRoomCustomized?.[idxHotelRoom - 1]?.payload
                   ?.hotelId && (
                   <Badge
                     text={`Check Out : End of Stay Day ${
-                      customized?.hotelRoomCustomized?.[index - 1]?.response
-                        ?.partOfDay
-                        ? customized?.hotelRoomCustomized?.[index - 1]?.response
-                            ?.partOfDay
-                        : index
+                      customized?.hotelRoomCustomized?.[idxHotelRoom - 1]
+                        ?.response?.partOfDay
+                        ? customized?.hotelRoomCustomized?.[idxHotelRoom - 1]
+                            ?.response?.partOfDay
+                        : idxHotelRoom
                     }`}
                     variant="danger"
                   />
@@ -178,12 +182,13 @@ const ScreenHotelRoom = ({
               <>
                 {value?.payload?.hotelId ? (
                   <HotelOrServiceSelected
-                    index={index}
+                    index={idxHotelRoom}
                     payload={value?.payload}
                     response={value?.response!}
                   />
                 ) : (
-                  customized?.hotelRoomCustomized?.length! - 1 !== index && (
+                  customized?.hotelRoomCustomized?.length! - 1 !==
+                    idxHotelRoom && (
                     <NoHotelOrServiceSelected
                       hideAddService
                       text="No hotel selected for this night"
@@ -203,8 +208,13 @@ const ScreenHotelRoom = ({
                   <View className="border-b border-gray-200 my-3" />
                 )}
 
-                {value?.response?.activities?.map((activity, index) => (
-                  <ServiceItem key={index} data={activity} />
+                {value?.response?.activities?.map((activity, idxActivity) => (
+                  <ServiceItem
+                    key={idxActivity}
+                    idxHotelRoom={idxHotelRoom}
+                    idxActivity={idxActivity}
+                    data={activity}
+                  />
                 ))}
                 <NoHotelOrServiceSelected
                   hideAddHotel
@@ -222,10 +232,10 @@ const ScreenHotelRoom = ({
             ) : (
               <NoHotelOrServiceSelected
                 hideAddHotel={
-                  customized?.hotelRoomCustomized?.length! - 1 === index
+                  customized?.hotelRoomCustomized?.length! - 1 === idxHotelRoom
                 }
                 text={
-                  customized?.hotelRoomCustomized?.length! - 1 === index
+                  customized?.hotelRoomCustomized?.length! - 1 === idxHotelRoom
                     ? "No service selected for this night"
                     : "No hotel or service selected for this night"
                 }

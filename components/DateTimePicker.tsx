@@ -2,16 +2,9 @@ import DatePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import { useEffect, useState } from "react";
-import {
-  Button,
-  Modal,
-  Platform,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
-import { TextInputField } from "./TextInputField";
+import { Button, Platform, TouchableWithoutFeedback, View } from "react-native";
 import ModalGeneral from "./Modal";
-import { colors } from "@/constants/colors";
+import { TextInputField } from "./TextInputField";
 
 interface DateTimePickerProps {
   label?: string;
@@ -21,6 +14,7 @@ interface DateTimePickerProps {
   error?: string;
   disabled?: boolean;
   minimumDate?: Date;
+  isTime?: boolean;
 }
 
 const DateTimePicker = ({ ...props }: DateTimePickerProps) => {
@@ -71,7 +65,7 @@ const DateTimePicker = ({ ...props }: DateTimePickerProps) => {
       {showDateTimePicker && Platform.OS === "ios" && (
         <ModalGeneral show={showDateTimePicker}>
           <DatePicker
-            mode="date"
+            mode={props.isTime ? "time" : "date"}
             display="spinner"
             minimumDate={props.minimumDate}
             value={tempDate}
@@ -91,7 +85,7 @@ const DateTimePicker = ({ ...props }: DateTimePickerProps) => {
 
       {showDateTimePicker && Platform.OS === "android" && (
         <DatePicker
-          mode="date"
+          mode={props.isTime ? "time" : "date"}
           display="spinner"
           minimumDate={props.minimumDate}
           value={tempDate}

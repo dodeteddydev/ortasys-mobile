@@ -1,3 +1,4 @@
+import { GuestInformationSchema } from "../schemas/guestInformationSchema";
 import { HotelRoomSchema } from "../schemas/hotelRoomSchema";
 import { SearchSchema } from "../schemas/searchShema";
 import { ContractResponse } from "./contractResponse";
@@ -21,4 +22,5 @@ export type HotelRoomCustomized = {
 export type Customized = {
   search?: SearchSchema;
   hotelRoomCustomized?: HotelRoomCustomized[];
+  guestInformation?: GuestInformationSchema;
 };

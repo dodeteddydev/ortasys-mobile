@@ -1,13 +1,18 @@
 import Stepper from "@/components/Stepper";
 import { stepper } from "@/constants/stepper";
+import ScreenGuestInformation from "@/features/customized/components/ScreenGuestInformation";
 import ScreenHotelRoom from "@/features/customized/components/ScreenHotelRoom";
+import ScreenPayment from "@/features/customized/components/ScreenPayment";
 import ScreenSearch from "@/features/customized/components/ScreenSearch";
 import { CustomizedProvider } from "@/features/customized/context/CustomizedProvider";
+import { BookingRequest } from "@/features/customized/types/bookingRequest";
 import { useState } from "react";
-import { KeyboardAvoidingView, Platform, Text } from "react-native";
+import { KeyboardAvoidingView, Platform } from "react-native";
 
 const CreateScreen = () => {
   const [step, setStep] = useState<string>(stepper.search);
+
+  const handleSubmit = (data: BookingRequest) => {};
 
   return (
     <KeyboardAvoidingView
@@ -24,7 +29,7 @@ const CreateScreen = () => {
               id: stepper.search,
               label: "Search",
               content: (
-                <ScreenSearch onSubmit={() => setStep(stepper.hotelRoom)} />
+                <ScreenSearch onSearch={() => setStep(stepper.hotelRoom)} />
               ),
             },
             {
@@ -40,12 +45,17 @@ const CreateScreen = () => {
             {
               id: stepper.guest,
               label: "Guest Information",
-              content: <Text>Guest</Text>,
+              content: (
+                <ScreenGuestInformation
+                  onPressPrevious={() => setStep(stepper.hotelRoom)}
+                  onPressNext={() => setStep(stepper.payment)}
+                />
+              ),
             },
             {
               id: stepper.payment,
               label: "Payment",
-              content: <Text>Payment</Text>,
+              content: <ScreenPayment onSubmit={handleSubmit} />,
             },
           ]}
         />

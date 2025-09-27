@@ -18,6 +18,7 @@ type TextInputFieldProps = TextInputProps & {
   secureTextEntry?: boolean;
   keyboardType?: KeyboardTypeOptions;
   disabled?: boolean;
+  textarea?: boolean;
 };
 
 export const TextInputField = ({
@@ -29,6 +30,7 @@ export const TextInputField = ({
   secureTextEntry,
   keyboardType,
   disabled,
+  textarea = false,
   ...props
 }: TextInputFieldProps) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
@@ -38,34 +40,43 @@ export const TextInputField = ({
 
   return (
     <View className={`${(error || label) && "gap-1"}`}>
-      <Text className={`font-semibold ${error && "text-red-500"}`}>
-        {label}
-      </Text>
+      {label && (
+        <Text className={`font-semibold ${error && "text-red-500"}`}>
+          {label}
+        </Text>
+      )}
+
       <View
-        className={`flex-row items-center w-full h-16 border rounded-lg px-2 ${
+        className={`flex-row items-center w-full border rounded-lg px-2 ${
           isFocused && !error
             ? "border-primary"
             : (isFocused && error) || error
             ? "border-red-500"
             : "border-gray-400"
         } ${disabled && "bg-gray-100"}`}
+        style={{
+          minHeight: textarea ? 100 : 55,
+          alignItems: textarea ? "flex-start" : "center",
+        }}
       >
         <TextInput
           {...props}
-          className="flex-1 h-16"
+          className="flex-1"
           placeholder={placeholder}
           placeholderTextColor={error ? "red" : "gray"}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           value={value}
           onChangeText={onChangeText}
-          secureTextEntry={!showPassword}
+          secureTextEntry={!textarea && !showPassword}
           autoCapitalize="none"
           keyboardType={keyboardType}
           editable={props.editable ?? !disabled}
+          multiline={textarea}
+          textAlignVertical={textarea ? "top" : "center"}
         />
 
-        {secureTextEntry && (
+        {!textarea && secureTextEntry && (
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => setShowPassword(!showPassword)}
@@ -78,6 +89,7 @@ export const TextInputField = ({
           </TouchableOpacity>
         )}
       </View>
+
       {error && <Text className="text-red-500">{error}</Text>}
     </View>
   );

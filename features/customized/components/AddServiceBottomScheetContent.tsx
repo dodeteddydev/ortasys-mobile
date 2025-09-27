@@ -104,7 +104,7 @@ const AddServiceBottomScheetContent = ({
 
   return (
     <>
-      <View className="px-3 pb-3">
+      <View className="px-3 pb-3 gap-3">
         <DropdownProductCategory
           value={product?.value}
           onChange={(value) =>

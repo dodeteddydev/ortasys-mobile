@@ -14,10 +14,10 @@ import { searchSchema, SearchSchema } from "../schemas/searchShema";
 import StepperButton from "@/components/StepperButton";
 
 type ScreenSearchProps = {
-  onSubmit: () => void;
+  onSearch: () => void;
 };
 
-const ScreenSearch = ({ onSubmit }: ScreenSearchProps) => {
+const ScreenSearch = ({ onSearch }: ScreenSearchProps) => {
   const { customized, setCustomized } = useCustomizedContext();
 
   const {
@@ -41,11 +41,11 @@ const ScreenSearch = ({ onSubmit }: ScreenSearchProps) => {
     },
   });
 
-  const onSearch = (data: SearchSchema) => {
+  const handleSearch = (data: SearchSchema) => {
     setCustomized({
       search: data,
     });
-    onSubmit();
+    onSearch();
   };
 
   return (
@@ -180,7 +180,7 @@ const ScreenSearch = ({ onSubmit }: ScreenSearchProps) => {
         <Button
           className="m-6 mb-10 w-full h-14"
           text="Search"
-          onPress={handleSubmit(onSearch)}
+          onPress={handleSubmit(handleSearch)}
         />
       </StepperButton>
     </View>

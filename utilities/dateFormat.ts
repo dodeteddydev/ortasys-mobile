@@ -2,7 +2,7 @@ import { format } from "date-fns";
 
 export const dateFormat = (
   date: string,
-  formatType: "dash" | "slash" | "long" | "day-long" = "dash"
+  formatType: "dash" | "slash" | "long" | "day-long" | "time" = "dash"
 ): string => {
   let formatStr: string;
 
@@ -15,6 +15,9 @@ export const dateFormat = (
       break;
     case "day-long":
       formatStr = "EEEE, d MMMM yyyy";
+      break;
+    case "time":
+      formatStr = "HH:mm";
       break;
     case "dash":
     default:

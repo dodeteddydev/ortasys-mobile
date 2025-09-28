@@ -30,7 +30,7 @@ const CardItemRoomBottomSheetContent = ({
 }: CardItemRoomBottomSheetContentProps) => {
   const { width } = useWindowDimensions();
   const { customized, setCustomized } = useCustomizedContext();
-  const { data, isPending, isError, error } = useGetContract({
+  const { data, isFetching, isError, error } = useGetContract({
     enabled: isOpenRate && !!datePicked,
     roomId: dataHotelAndRoom?.room?.id,
     params: {
@@ -41,7 +41,7 @@ const CardItemRoomBottomSheetContent = ({
       ),
       adult: customized?.search?.adult,
       child: customized?.search?.child,
-      startStayDate: new Date(customized?.search?.startStayDate!).toISOString(),
+      startStayDate: customized?.search?.startStayDate,
     },
   });
 
@@ -110,7 +110,7 @@ const CardItemRoomBottomSheetContent = ({
         </View>
 
         <Button
-          loading={isPending && isOpenRate}
+          loading={isFetching && isOpenRate}
           className="px-4 py-2"
           classNameText="text-sm font-semibold text-white"
           text="Rate"
@@ -118,7 +118,7 @@ const CardItemRoomBottomSheetContent = ({
         />
       </View>
 
-      {isOpenRate && !isPending && (
+      {isOpenRate && !isFetching && (
         <>
           {isError ? (
             <Text className="text-red-500 text-sm text-center">

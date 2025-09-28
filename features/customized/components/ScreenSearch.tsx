@@ -1,17 +1,17 @@
 import Button from "@/components/Button";
 import Card from "@/components/Card";
 import DateTimePicker from "@/components/DateTimePicker";
+import StepperButton from "@/components/StepperButton";
 import { TextInputField } from "@/components/TextInputField";
 import DropdownCountry from "@/features/country/components/DropdownCountry";
 import DropdownState from "@/features/state/components/DropdownState";
-import { dateFormat } from "@/utilities/dateFormat";
+import { dateFormat, normalizeDate } from "@/utilities/dateFormat";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addDays } from "date-fns";
 import { Controller, useForm } from "react-hook-form";
 import { ScrollView, View } from "react-native";
 import { useCustomizedContext } from "../context/CustomizedProvider";
 import { searchSchema, SearchSchema } from "../schemas/searchShema";
-import StepperButton from "@/components/StepperButton";
 
 type ScreenSearchProps = {
   onSearch: () => void;
@@ -65,7 +65,7 @@ const ScreenSearch = ({ onSearch }: ScreenSearchProps) => {
                   placeholder="Select Check In Date"
                   value={dateFormat(value!, "long")}
                   onChangeDate={(date) => {
-                    onChange(dateFormat(date));
+                    onChange(normalizeDate(date));
                     setValue("endStayDate", undefined);
                   }}
                   error={errors.startStayDate?.message}
@@ -83,7 +83,7 @@ const ScreenSearch = ({ onSearch }: ScreenSearchProps) => {
                   disabled={!watch("startStayDate")}
                   minimumDate={addDays(new Date(watch("startStayDate")!), 1)}
                   value={dateFormat(value!, "long")}
-                  onChangeDate={(date) => onChange(dateFormat(date))}
+                  onChangeDate={(date) => onChange(normalizeDate(date))}
                   error={errors.endStayDate?.message}
                 />
               )}

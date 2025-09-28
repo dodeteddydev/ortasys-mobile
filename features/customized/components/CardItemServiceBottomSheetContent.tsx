@@ -25,12 +25,20 @@ const CardItemServiceBottomSheetContent = ({
         <View className="flex-1">
           <Text className="text-primary">{dataPackage?.vendorName}</Text>
           <Text className="text-gray-400">{dataPackage?.description}</Text>
-          <Text className="text-gray-400">
-            {currencyFormat(dataPackage?.priceAdult)} x Adult
-          </Text>
-          <Text className="text-gray-400">
-            {currencyFormat(dataPackage?.priceChild)} x Child
-          </Text>
+          {dataPackage?.packageCategory?.isPricePerItem ? (
+            <Text className="text-gray-400">
+              {currencyFormat(dataPackage?.pricePerItem)} x
+            </Text>
+          ) : (
+            <>
+              <Text className="text-gray-400">
+                {currencyFormat(dataPackage?.priceAdult)} x Adult
+              </Text>
+              <Text className="text-gray-400">
+                {currencyFormat(dataPackage?.priceChild)} x Child
+              </Text>
+            </>
+          )}
         </View>
 
         <View className="self-center">

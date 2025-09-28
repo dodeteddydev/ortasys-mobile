@@ -64,7 +64,7 @@ const ScreenGuestInformation = ({
               render={({ field: { onChange, value } }) => (
                 <TextInputField
                   label="First Name"
-                  placeholder="John"
+                  placeholder="Enter your first name"
                   value={value}
                   onChangeText={(value) => onChange(value)}
                   error={errors.guestFirstName?.message}
@@ -78,7 +78,7 @@ const ScreenGuestInformation = ({
               render={({ field: { onChange, value } }) => (
                 <TextInputField
                   label="Last Name"
-                  placeholder="Doe"
+                  placeholder="Enter your last name"
                   value={value}
                   onChangeText={(value) => onChange(value)}
                   error={errors.guestLastName?.message}
@@ -92,7 +92,7 @@ const ScreenGuestInformation = ({
               render={({ field: { onChange, value } }) => (
                 <TextInputField
                   label="Email"
-                  placeholder="johndoe@example.com"
+                  placeholder="Enter your email address"
                   value={value}
                   onChangeText={(value) => onChange(value)}
                   keyboardType="email-address"
@@ -107,7 +107,7 @@ const ScreenGuestInformation = ({
               render={({ field: { onChange, value } }) => (
                 <TextInputField
                   label="Phone"
-                  placeholder="08712345678"
+                  placeholder="Enter your phone number"
                   value={value}
                   onChangeText={(value) => onChange(value)}
                   keyboardType="phone-pad"
@@ -134,7 +134,7 @@ const ScreenGuestInformation = ({
               render={({ field: { onChange, value } }) => (
                 <TextInputField
                   label="Zip Code"
-                  placeholder="Please enter your zip code (optional)"
+                  placeholder="Enter your zip code (optional)"
                   value={value}
                   onChangeText={(value) => onChange(value)}
                   error={errors.guestZipCode?.message}
@@ -148,7 +148,7 @@ const ScreenGuestInformation = ({
               render={({ field: { onChange, value } }) => (
                 <TextInputField
                   label="Special Request"
-                  placeholder="Please enter your special request (optional)"
+                  placeholder="Enter your special request (optional)"
                   value={value}
                   onChangeText={(value) => onChange(value)}
                   error={errors.specialRequest?.message}

@@ -18,6 +18,8 @@ import CardHotelRoomTitle from "./CardHotelRoomTitle";
 import HotelOrServiceSelected from "./HotelOrServiceSelected";
 import NoHotelOrServiceSelected from "./NoHotelOrServiceSelected";
 import ServiceItem from "./ServiceItem";
+import HorizontalDataPreview from "./HorizontalDataPreview";
+import { currencyFormat } from "@/utilities/currencyFormat";
 
 type ScreenHotelRoomProps = {
   onPressPrevious: () => void;
@@ -82,9 +84,18 @@ const ScreenHotelRoom = ({
                 date: value?.payload?.date,
                 isCheckout: value?.payload?.isCheckout,
                 checkIn: value?.payload?.checkIn,
-                activities: [],
+                activities:
+                  value?.payload?.activities?.length! > 0
+                    ? value?.payload?.activities
+                    : [],
               },
-              response: null,
+              response: {
+                ...value?.response,
+                activities:
+                  value?.response?.activities?.length! > 0
+                    ? value?.response?.activities
+                    : [],
+              },
             }
           : value
       ),
@@ -123,102 +134,151 @@ const ScreenHotelRoom = ({
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        {customized?.hotelRoomCustomized?.map((value, idxHotelRoom) => (
-          <Card
-            key={idxHotelRoom}
-            className={`${idxHotelRoom === 0 && "mt-4"} m-2 mx-4`}
-            title={
-              <CardHotelRoomTitle
-                payload={value?.payload}
-                response={value?.response!}
-                onPressEdit={() =>
-                  setModalBottomSheet({
-                    datePicked: value?.payload?.date ?? null,
-                    day: value?.payload?.day ?? null,
-                    type: "hotel",
-                    show: true,
-                  })
-                }
-                onPressDelete={() =>
-                  handleDelete(idxHotelRoom, value?.payload?.day!)
-                }
-              />
-            }
-          >
-            {!value?.response?.partOfDay ? (
-              <View className="mb-3 gap-2">
-                {value?.payload?.hotelId && (
-                  <Badge text="Check In" variant="success" />
-                )}
-                {customized?.hotelRoomCustomized?.[idxHotelRoom - 1]?.payload
-                  ?.hotelId && (
-                  <Badge
-                    text={`Check Out : End of Stay Day ${
-                      customized?.hotelRoomCustomized?.[idxHotelRoom - 1]
-                        ?.response?.partOfDay
-                        ? customized?.hotelRoomCustomized?.[idxHotelRoom - 1]
-                            ?.response?.partOfDay
-                        : idxHotelRoom
-                    }`}
-                    variant="danger"
-                  />
-                )}
-              </View>
-            ) : (
-              <View className="flex flex-row items-center mb-3 gap-2">
-                <FontAwesome
-                  name="lock"
-                  size={20}
-                  color={colors.grayInactive}
+        {customized?.hotelRoomCustomized?.map((value, idxHotelRoom) => {
+          const total =
+            (value?.response?.contract?.rate ?? 0) +
+            (value?.payload?.activities?.reduce((sum, activity) => {
+              if (!activity) return sum;
+
+              if (activity.isPricePerItem) {
+                return (
+                  sum + (activity.pricePerItem ?? 0) * (activity.totalItem ?? 0)
+                );
+              }
+
+              return (
+                sum +
+                (activity.adult ?? 0) * (activity.priceAdult ?? 0) +
+                (activity.child ?? 0) * (activity.priceChild ?? 0)
+              );
+            }, 0) ?? 0);
+
+          return (
+            <Card
+              key={idxHotelRoom}
+              className={`${idxHotelRoom === 0 && "mt-4"} m-2 mx-4`}
+              title={
+                <CardHotelRoomTitle
+                  payload={value?.payload}
+                  response={value?.response!}
+                  onPressEdit={() =>
+                    setModalBottomSheet({
+                      datePicked: value?.payload?.date ?? null,
+                      day: value?.payload?.day ?? null,
+                      type: "hotel",
+                      show: true,
+                    })
+                  }
+                  onPressDelete={() =>
+                    handleDelete(idxHotelRoom, value?.payload?.day!)
+                  }
                 />
-                <Text className="text-primary text-lg font-bold">
-                  Part of a consecutive stay day {value?.response?.partOfDay}
-                </Text>
-              </View>
-            )}
-
-            {value?.payload?.hotelId ||
-            value?.payload?.activities?.[0]?.packageElementId ? (
-              <>
-                {value?.payload?.hotelId ? (
-                  <HotelOrServiceSelected
-                    index={idxHotelRoom}
-                    payload={value?.payload}
-                    response={value?.response!}
-                  />
-                ) : (
-                  customized?.hotelRoomCustomized?.length! - 1 !==
-                    idxHotelRoom && (
-                    <NoHotelOrServiceSelected
-                      hideAddService
-                      text="No hotel selected for this night"
-                      onPressAddHotel={() =>
-                        setModalBottomSheet({
-                          datePicked: value?.payload?.date ?? null,
-                          day: value?.payload?.day ?? null,
-                          type: "hotel",
-                          show: true,
-                        })
-                      }
+              }
+            >
+              {!value?.response?.partOfDay ? (
+                <View className="mb-3 gap-2">
+                  {value?.payload?.hotelId && (
+                    <Badge text="Check In" variant="success" />
+                  )}
+                  {customized?.hotelRoomCustomized?.[idxHotelRoom - 1]?.payload
+                    ?.hotelId && (
+                    <Badge
+                      text={`Check Out : End of Stay Day ${
+                        customized?.hotelRoomCustomized?.[idxHotelRoom - 1]
+                          ?.response?.partOfDay
+                          ? customized?.hotelRoomCustomized?.[idxHotelRoom - 1]
+                              ?.response?.partOfDay
+                          : idxHotelRoom
+                      }`}
+                      variant="danger"
                     />
-                  )
-                )}
-
-                {value?.response?.activities?.length! > 0 && (
-                  <View className="border-b border-gray-200 my-3" />
-                )}
-
-                {value?.response?.activities?.map((activity, idxActivity) => (
-                  <ServiceItem
-                    key={idxActivity}
-                    idxHotelRoom={idxHotelRoom}
-                    idxActivity={idxActivity}
-                    data={activity}
+                  )}
+                </View>
+              ) : (
+                <View className="flex flex-row items-center mb-3 gap-2">
+                  <FontAwesome
+                    name="lock"
+                    size={20}
+                    color={colors.grayInactive}
                   />
-                ))}
+                  <Text className="text-primary text-lg font-bold">
+                    Part of a consecutive stay day {value?.response?.partOfDay}
+                  </Text>
+                </View>
+              )}
+
+              {value?.payload?.hotelId ||
+              value?.payload?.activities?.[0]?.packageElementId ? (
+                <>
+                  {value?.payload?.hotelId ? (
+                    <HotelOrServiceSelected
+                      index={idxHotelRoom}
+                      payload={value?.payload}
+                      response={value?.response!}
+                    />
+                  ) : (
+                    customized?.hotelRoomCustomized?.length! - 1 !==
+                      idxHotelRoom && (
+                      <NoHotelOrServiceSelected
+                        hideAddService
+                        text="No hotel selected for this night"
+                        onPressAddHotel={() =>
+                          setModalBottomSheet({
+                            datePicked: value?.payload?.date ?? null,
+                            day: value?.payload?.day ?? null,
+                            type: "hotel",
+                            show: true,
+                          })
+                        }
+                      />
+                    )
+                  )}
+
+                  {value?.response?.activities?.length! > 0 && (
+                    <View className="border-b border-gray-200 my-3" />
+                  )}
+
+                  {value?.response?.activities?.map((activity, idxActivity) => (
+                    <ServiceItem
+                      key={idxActivity}
+                      idxHotelRoom={idxHotelRoom}
+                      idxActivity={idxActivity}
+                      data={activity}
+                    />
+                  ))}
+                  <NoHotelOrServiceSelected
+                    hideAddHotel
+                    text="Add other service for this night"
+                    onPressAddService={() =>
+                      setModalBottomSheet({
+                        datePicked: value?.payload?.date ?? null,
+                        day: value?.payload?.day ?? null,
+                        type: "service",
+                        show: true,
+                      })
+                    }
+                  />
+                </>
+              ) : (
                 <NoHotelOrServiceSelected
-                  hideAddHotel
-                  text="Add other service for this night"
+                  hideAddHotel={
+                    customized?.hotelRoomCustomized?.length! - 1 ===
+                    idxHotelRoom
+                  }
+                  text={
+                    customized?.hotelRoomCustomized?.length! - 1 ===
+                    idxHotelRoom
+                      ? "No service selected for this night"
+                      : "No hotel or service selected for this night"
+                  }
+                  onPressAddHotel={() =>
+                    setModalBottomSheet({
+                      datePicked: value?.payload?.date ?? null,
+                      day: value?.payload?.day ?? null,
+                      type: "hotel",
+                      show: true,
+                    })
+                  }
                   onPressAddService={() =>
                     setModalBottomSheet({
                       datePicked: value?.payload?.date ?? null,
@@ -228,37 +288,24 @@ const ScreenHotelRoom = ({
                     })
                   }
                 />
-              </>
-            ) : (
-              <NoHotelOrServiceSelected
-                hideAddHotel={
-                  customized?.hotelRoomCustomized?.length! - 1 === idxHotelRoom
+              )}
+
+              <View className="border-b border-gray-200 my-4" />
+
+              <HorizontalDataPreview
+                icon={
+                  <FontAwesome
+                    name="money"
+                    size={24}
+                    color={colors.grayInactive}
+                  />
                 }
-                text={
-                  customized?.hotelRoomCustomized?.length! - 1 === idxHotelRoom
-                    ? "No service selected for this night"
-                    : "No hotel or service selected for this night"
-                }
-                onPressAddHotel={() =>
-                  setModalBottomSheet({
-                    datePicked: value?.payload?.date ?? null,
-                    day: value?.payload?.day ?? null,
-                    type: "hotel",
-                    show: true,
-                  })
-                }
-                onPressAddService={() =>
-                  setModalBottomSheet({
-                    datePicked: value?.payload?.date ?? null,
-                    day: value?.payload?.day ?? null,
-                    type: "service",
-                    show: true,
-                  })
-                }
+                title="Total"
+                description={currencyFormat(total)}
               />
-            )}
-          </Card>
-        ))}
+            </Card>
+          );
+        })}
       </ScrollView>
 
       <StepperButton onPressPrevious={onPressPrevious} onPressNext={onSubmit} />
@@ -311,7 +358,7 @@ const ScreenHotelRoom = ({
 
       <Toast
         position="bottom"
-        bottomOffset={150}
+        bottomOffset={105}
         visibilityTime={3000}
         config={{
           error: (value) => (

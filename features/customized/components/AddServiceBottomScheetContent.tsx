@@ -27,7 +27,7 @@ const AddServiceBottomScheetContent = ({
 
   const [product, setProduct] = useState<{ label: string; value: number }>();
 
-  const { data, isPending, isError, error, refetch } = useGetPackageSimple({
+  const { data, isFetching, isError, error, refetch } = useGetPackageSimple({
     enabled:
       !!customized?.search?.country &&
       !!customized?.search?.state &&
@@ -59,12 +59,10 @@ const AddServiceBottomScheetContent = ({
                   packageCategoryId: data?.packageCategory?.id,
                   packageElementId: data?.id,
                   location: data?.location,
-                  rate:
-                    (customized?.search?.adult ?? 0 * data?.priceAdult) +
-                    (customized?.search?.child ?? 0 * data?.priceChild),
+                  rate: 0,
                   totalItem: null,
                   pricePerItem: data?.pricePerItem,
-                  isPricePerItem: false,
+                  isPricePerItem: data?.packageCategory?.isPricePerItem,
                   description: data?.description,
                   base: data?.base,
                   markup: data?.markup,
@@ -124,8 +122,8 @@ const AddServiceBottomScheetContent = ({
       <View className="flex-1">
         {product ? (
           <>
-            {isPending || isError ? (
-              isPending ? (
+            {isFetching || isError ? (
+              isFetching ? (
                 <Loading />
               ) : (
                 <Error statusCode={error?.status ?? "Unexpected error"} />
@@ -136,7 +134,7 @@ const AddServiceBottomScheetContent = ({
                   <FlatList
                     data={data?.data}
                     keyExtractor={(_, index) => index.toString()}
-                    refreshing={isPending}
+                    refreshing={isFetching}
                     onRefresh={() => refetch()}
                     keyboardShouldPersistTaps="handled"
                     contentContainerStyle={{ padding: 12 }}

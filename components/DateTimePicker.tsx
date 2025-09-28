@@ -15,6 +15,7 @@ interface DateTimePickerProps {
   disabled?: boolean;
   minimumDate?: Date;
   isTime?: boolean;
+  minHeight?: number;
 }
 
 const DateTimePicker = ({ ...props }: DateTimePickerProps) => {

@@ -25,7 +25,7 @@ type HotelOrServiceSelectedProps = {
 const HotelOrServiceSelected = ({
   index,
   payload,
-  response: { partOfDay, hotel, room, contract, activities },
+  response: { partOfDay, hotel, room, contract },
 }: HotelOrServiceSelectedProps) => {
   const { width } = useWindowDimensions();
   const { customized, setCustomized } = useCustomizedContext();

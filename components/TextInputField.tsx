@@ -19,6 +19,8 @@ type TextInputFieldProps = TextInputProps & {
   keyboardType?: KeyboardTypeOptions;
   disabled?: boolean;
   textarea?: boolean;
+  classNameContainer?: string;
+  minHeight?: number;
 };
 
 export const TextInputField = ({
@@ -31,6 +33,8 @@ export const TextInputField = ({
   keyboardType,
   disabled,
   textarea = false,
+  classNameContainer,
+  minHeight,
   ...props
 }: TextInputFieldProps) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
@@ -47,15 +51,15 @@ export const TextInputField = ({
       )}
 
       <View
-        className={`flex-row items-center w-full border rounded-lg px-2 ${
+        className={`flex-row items-center w-full min-h-14 border rounded-lg px-2 ${
           isFocused && !error
             ? "border-primary"
             : (isFocused && error) || error
             ? "border-red-500"
             : "border-gray-400"
-        } ${disabled && "bg-gray-100"}`}
+        } ${disabled && "bg-gray-100"} ${classNameContainer}`}
         style={{
-          minHeight: textarea ? 100 : 55,
+          minHeight: textarea ? 100 : minHeight || 55,
           alignItems: textarea ? "flex-start" : "center",
         }}
       >

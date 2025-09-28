@@ -1,6 +1,6 @@
 import { ErrorResponse, SuccessResponse } from "@/types/responseType";
 import { useQuery } from "@tanstack/react-query";
-import { getImageUrl } from "../services/imageServie";
+import { getImageUrl } from "../services/imageService";
 
 export const useGetImage = (enabled = true, path?: string) =>
   useQuery<SuccessResponse<string>, ErrorResponse>({

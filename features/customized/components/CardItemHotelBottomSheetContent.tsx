@@ -29,7 +29,7 @@ const CardItemHotelBottomSheetContent = ({
   onCloseModalBottomSheet,
 }: CardItemHotelBottomSheetContentProps) => {
   const { customized } = useCustomizedContext();
-  const { data, isPending, isError, error } = useGetRoomSimple({
+  const { data, isFetching, isError, error } = useGetRoomSimple({
     enabled: isOpenRoom && !!datePicked,
     hotelId: dataHotel.hotelId,
     params: {
@@ -42,8 +42,8 @@ const CardItemHotelBottomSheetContent = ({
       child: customized?.search?.child,
       checkIn: "yes",
       totalRoom: 1,
-      startStayDate: new Date(customized?.search?.startStayDate!).toISOString(),
-      endStayDate: new Date(customized?.search?.endStayDate!).toISOString(),
+      startStayDate: customized?.search?.startStayDate,
+      endStayDate: customized?.search?.endStayDate,
     },
   });
 
@@ -58,7 +58,7 @@ const CardItemHotelBottomSheetContent = ({
     <View className="mb-4 p-4 bg-white rounded-lg shadow-lg">
       <View
         className={`flex flex-row items-center ${
-          isOpenRoom && "border-b border-gray-200 mb-3 pb-3"
+          isOpenRoom && !isFetching && "border-b border-gray-200 mb-3 pb-3"
         }`}
       >
         <View className="flex-1 flex flex-row items-center gap-3">
@@ -86,7 +86,7 @@ const CardItemHotelBottomSheetContent = ({
         </View>
 
         <Button
-          loading={isPending && isOpenRoom}
+          loading={isFetching && isOpenRoom}
           className="px-4 py-2"
           classNameText="text-lg font-semibold text-white"
           text="Room"
@@ -94,7 +94,7 @@ const CardItemHotelBottomSheetContent = ({
         />
       </View>
 
-      {isOpenRoom && !isPending && (
+      {isOpenRoom && !isFetching && (
         <>
           {isError ? (
             <Text className="text-red-500 text-lg text-center">

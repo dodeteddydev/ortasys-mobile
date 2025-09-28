@@ -24,7 +24,7 @@ const AddHotelBottomSheetContent = ({
 
   const { value, debouncedValue, setValue } = useDebounce<string>();
 
-  const { data, isPending, isError, error, refetch } = useGetHotelSimple({
+  const { data, isFetching, isError, error, refetch } = useGetHotelSimple({
     enabled: !!customized?.search?.country && !!customized?.search?.state,
     params: {
       search: debouncedValue,
@@ -47,8 +47,8 @@ const AddHotelBottomSheetContent = ({
       </View>
 
       <View className="flex-1">
-        {isPending || isError ? (
-          isPending ? (
+        {isFetching || isError ? (
+          isFetching ? (
             <Loading />
           ) : (
             <Error statusCode={error?.status ?? "Unexpected error"} />
@@ -59,7 +59,7 @@ const AddHotelBottomSheetContent = ({
               <FlatList
                 data={data?.data}
                 keyExtractor={(_, index) => index.toString()}
-                refreshing={isPending}
+                refreshing={isFetching}
                 onRefresh={() => refetch()}
                 keyboardShouldPersistTaps="handled"
                 contentContainerStyle={{ padding: 12 }}

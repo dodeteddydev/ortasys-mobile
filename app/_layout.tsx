@@ -1,8 +1,7 @@
-import HeaderLeft from "@/components/HeaderLeft";
 import { colors } from "@/constants/colors";
 import { GlobalProvider } from "@/context/GlobalProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { router, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import "../global.css";
 
 const queryClient = new QueryClient({
@@ -26,6 +25,7 @@ const RootLayout = () => {
             headerTintColor: "white",
           }}
         >
+          {/* LOGIN ROUTE */}
           <Stack.Screen
             name="index"
             options={{
@@ -33,6 +33,7 @@ const RootLayout = () => {
             }}
           />
 
+          {/* (MAIN) ROUTE */}
           <Stack.Screen
             name="(main)"
             options={{
@@ -40,19 +41,29 @@ const RootLayout = () => {
             }}
           />
 
+          {/* CUSTOMIZED ROUTE */}
+          <Stack.Screen
+            name="customized"
+            options={{
+              headerShown: false,
+            }}
+          />
+
+          {/* CHANGE PASSWORD ROUTE */}
           <Stack.Screen
             name="change-password"
             options={{
               title: "Change Password",
-              headerLeft: () => <HeaderLeft onPress={() => router.back()} />,
+              headerBackTitle: "Back",
             }}
           />
 
+          {/* EDIT PROFILE ROUTE */}
           <Stack.Screen
             name="edit-profile"
             options={{
               title: "Edit Profile",
-              headerLeft: () => <HeaderLeft onPress={() => router.back()} />,
+              headerBackTitle: "Back",
             }}
           />
         </Stack>

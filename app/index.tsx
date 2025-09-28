@@ -6,7 +6,7 @@ import vectors from "@/constants/vectors";
 import { useGlobalContext } from "@/context/GlobalProvider";
 import { useLogin } from "@/features/auth/hooks/useLogin";
 import { loginSchema, LoginSchema } from "@/features/auth/schemas/loginSchema";
-import { LoginRequest } from "@/features/auth/types/loginRequestType";
+import { LoginRequest } from "@/features/auth/types/loginRequest";
 import { Storage } from "@/utilities/secureStorage";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Redirect, router } from "expo-router";
@@ -40,9 +40,9 @@ const Index = () => {
 
   const onLogin = (data: LoginSchema) => {
     login.mutate(data as LoginRequest, {
-      onSuccess: ({ data }) => {
-        Storage.saveToken(accessTokenKey, data.accessToken);
-        Storage.saveToken(refreshTokenKey, data.refreshToken);
+      onSuccess: async ({ data }) => {
+        await Storage.saveToken(accessTokenKey, data.accessToken);
+        await Storage.saveToken(refreshTokenKey, data.refreshToken);
         setTimeout(() => router.replace("/home"), 2050);
         Toast.show({
           type: "success",
@@ -63,8 +63,9 @@ const Index = () => {
 
   return (
     <SafeAreaView>
-      <KeyboardAvoidingView behavior="padding">
-        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <KeyboardAvoidingView behavior="padding">
+          {/* LOGIN FORM */}
           <View className="p-4 gap-3 h-full justify-center items-center">
             <Image
               className="h-36 w-36"
@@ -103,14 +104,14 @@ const Index = () => {
             />
 
             <Button
-              className="mt-8"
+              className="mt-8 h-16 w-full"
               text="LOGIN"
               loading={login.isPending}
               onPress={handleSubmit(onLogin)}
             />
           </View>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
 
       <Toast
         position="bottom"

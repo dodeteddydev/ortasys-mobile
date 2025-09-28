@@ -1,6 +1,5 @@
 import DropdownInputField from "@/components/DropdownInputField";
 import { SelectOptions } from "@/types/selectOptionsType";
-import React from "react";
 import { useGetCountry } from "../hooks/useGetCountry";
 
 type DropdownCountryProps = {

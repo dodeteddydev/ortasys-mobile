@@ -1,7 +1,6 @@
 import { colors } from "@/constants/colors";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs } from "expo-router";
-import React from "react";
 
 const MainLayout = () => {
   return (
@@ -15,6 +14,7 @@ const MainLayout = () => {
         headerTintColor: "white",
       }}
     >
+      {/* HOME TAB ROUTE */}
       <Tabs.Screen
         name="home"
         options={{
@@ -25,6 +25,19 @@ const MainLayout = () => {
           ),
         }}
       />
+
+      {/* REPORT TAB ROUTE */}
+      <Tabs.Screen
+        name="report"
+        options={{
+          title: "Report",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="bar-chart" size={24} color={color} />
+          ),
+        }}
+      />
+
+      {/* PROFILE TAB ROUTE */}
       <Tabs.Screen
         name="profile"
         options={{

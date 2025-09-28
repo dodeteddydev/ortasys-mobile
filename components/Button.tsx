@@ -1,27 +1,37 @@
-import React from "react";
 import { Keyboard, Text, TouchableOpacity } from "react-native";
 
 type ButtonProps = {
   text?: string;
   loading?: boolean;
+  disabled?: boolean;
   onPress?: () => void;
   className?: string;
+  classNameText?: string;
 };
 
-const Button = ({ text, loading, onPress, className }: ButtonProps) => {
+const Button = ({
+  text,
+  loading,
+  disabled,
+  onPress,
+  className,
+  classNameText,
+}: ButtonProps) => {
   return (
     <TouchableOpacity
       onPress={() => {
         onPress && onPress();
         Keyboard.dismiss();
       }}
-      disabled={loading}
+      disabled={disabled || loading}
       activeOpacity={0.8}
-      className={`${className} bg-primary w-full h-16 items-center justify-center rounded-lg ${
-        loading && "opacity-70"
-      }`}
+      className={`bg-primary items-center justify-center rounded-lg ${
+        (disabled || loading) && "opacity-70"
+      } ${className}`}
     >
-      <Text className="text-white text-xl font-semibold">
+      <Text
+        className={`${classNameText ?? "text-xl text-white font-semibold"}`}
+      >
         {loading ? "Loading..." : text}
       </Text>
     </TouchableOpacity>

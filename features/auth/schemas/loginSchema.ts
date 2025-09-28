@@ -1,4 +1,5 @@
 import { z } from "zod";
+
 export const loginSchema = z.object({
   account: z.string().nonempty("Email or password is required"),
   password: z

@@ -1,7 +1,7 @@
 import { axiosInstance } from "@/services/axiosInstance";
 import { SuccessResponse } from "@/types/responseType";
-import { ProfileResponse } from "../types/profileResponseType";
-import { UpdateProfileRequest } from "../types/updateProfileRequestType";
+import { ProfileResponse } from "../types/profileResponse";
+import { UpdateProfileRequest } from "../types/updateProfileRequest";
 
 export class ProfileService {
   static async get() {

@@ -1,6 +1,6 @@
 import { ErrorResponse, SuccessResponse } from "@/types/responseType";
 import { useMutation } from "@tanstack/react-query";
-import { ChangePasswordRequest } from "../types/changePasswordRequestType";
+import { ChangePasswordRequest } from "../types/changePasswordRequest";
 import { ChangePasswordService } from "../services/changePasswordService";
 
 export const useChangePassword = () =>

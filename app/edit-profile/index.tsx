@@ -11,10 +11,10 @@ import {
   updateProfileSchema,
   UpdateProfileSchema,
 } from "@/features/profile/schemas/updateProfileSchema";
-import { UpdateProfileRequest } from "@/features/profile/types/updateProfileRequestType";
+import { UpdateProfileRequest } from "@/features/profile/types/updateProfileRequest";
 import DropdownState from "@/features/state/components/DropdownState";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Keyboard,
@@ -99,7 +99,7 @@ const EditProfile = () => {
               <Text className="text-2xl font-semibold">Edit Profile</Text>
               <Text className="mb-8">Click update when you're done.</Text>
 
-              {/* Basic Information */}
+              {/* BASIC INFORMATION FORM SECTION */}
               <View className="gap-3 py-4 mb-5 border-b border-gray-300">
                 <Text className="font-semibold">Basic Information</Text>
                 <Controller
@@ -145,7 +145,7 @@ const EditProfile = () => {
                 />
               </View>
 
-              {/* Contact Information */}
+              {/* CONTACT INFORMATION FORM SECTION */}
               <View className="gap-3 py-4 mb-5 border-b border-gray-300">
                 <Text className="font-semibold">Contact Information</Text>
                 <Controller
@@ -179,7 +179,7 @@ const EditProfile = () => {
                 />
               </View>
 
-              {/* Address Information */}
+              {/* ADDRESS INFORMATION FORM SECTION */}
               <View className="gap-3 py-4">
                 <Text className="font-semibold">Address Information</Text>
                 <Controller
@@ -240,7 +240,6 @@ const EditProfile = () => {
                 />
               </View>
 
-              {/* Update Button */}
               <Button
                 text="UPDATE PROFILE"
                 loading={updateProfile.isPending}

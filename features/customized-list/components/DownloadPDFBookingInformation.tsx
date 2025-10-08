@@ -45,7 +45,7 @@ const DownloadPDFBookingInformation = ({
   };
 
   const generatePdf = async (data: BookingDetailResponse) => {
-    const html = htmlPDFFormat(data);
+    const html = await htmlPDFFormat(data);
 
     const { uri } = await Print.printToFileAsync({ html });
 

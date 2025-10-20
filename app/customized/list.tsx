@@ -1,12 +1,10 @@
 import DataNotFound from "@/components/DataNotFound";
 import Loading from "@/components/Loading";
-import ToastCustom from "@/components/ToastCustom";
 import CardCustomizedListItem from "@/features/customized-list/components/CardCustomizedListItem";
 import { useGetCustomizedPackage } from "@/features/customized-list/hooks/useGetCustomizedPackage";
 import { CustomizedPackageResponse } from "@/features/customized-list/types/customizedPackageResponse";
 import { useEffect, useState } from "react";
 import { FlatList, Text } from "react-native";
-import Toast from "react-native-toast-message";
 
 const ListScreen = () => {
   const [page, setPage] = useState<number>(1);
@@ -62,20 +60,6 @@ const ListScreen = () => {
             <Text className="text-center">Loading...</Text>
           ) : null
         }
-      />
-
-      <Toast
-        position="bottom"
-        visibilityTime={2000}
-        config={{
-          error: (value) => (
-            <ToastCustom
-              type="error"
-              title={value.text1!}
-              text={value.text2!}
-            />
-          ),
-        }}
       />
     </>
   ) : (

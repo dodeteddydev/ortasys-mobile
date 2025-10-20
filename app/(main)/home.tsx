@@ -2,7 +2,7 @@ import Loading from "@/components/Loading";
 import { colors } from "@/constants/colors";
 import { useGlobalContext } from "@/context/GlobalProvider";
 import HomeHeaderSection from "@/features/home/components/HomeHeaderSection";
-import { HomeMenuType } from "@/types/homeMenuType";
+import { HomeMenu } from "@/types/homeMenuType";
 import Feather from "@expo/vector-icons/Feather";
 import { router } from "expo-router";
 import { useEffect } from "react";
@@ -51,7 +51,7 @@ const Home = () => {
 
 export default Home;
 
-const homeMenu: HomeMenuType[] = [
+const homeMenu: HomeMenu[] = [
   {
     title: "Customized",
     path: "/customized/list",

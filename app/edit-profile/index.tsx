@@ -241,6 +241,7 @@ const EditProfile = () => {
               </View>
 
               <Button
+                className="h-16"
                 text="UPDATE PROFILE"
                 loading={updateProfile.isPending}
                 onPress={handleSubmit(onUpdateProfile)}

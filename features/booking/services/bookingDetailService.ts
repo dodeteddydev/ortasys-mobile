@@ -1,6 +1,6 @@
 import { axiosInstance } from "@/services/axiosInstance";
 import { SuccessResponse } from "@/types/responseType";
-import { BookingDetailResponse } from "../types/BookingDetailResponse";
+import { BookingDetailResponse } from "../types/bookingDetailResponse";
 
 export class BookingDetailService {
   static async get(bookingId: number) {

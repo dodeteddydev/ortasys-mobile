@@ -6,16 +6,16 @@ import React, { useState } from "react";
 import { Text, TouchableOpacity } from "react-native";
 import Toast from "react-native-toast-message";
 import { BookingDetailService } from "../services/bookingDetailService";
-import { BookingDetailResponse } from "../types/BookingDetailResponse";
-import { htmlPDFFormat } from "../utilities/htmlPDFFormat";
+import { BookingDetailResponse } from "../types/bookingDetailResponse";
+import { bookingHtmlPDFFormat } from "../utilities/bookingHtmlPDFFormat";
 
-type DownloadPDFBookingInformationProps = {
+type ButtonDownloadPDFBookingProps = {
   bookingId: number;
 };
 
-const DownloadPDFBookingInformation = ({
+const ButtonDownloadPDFBooking = ({
   bookingId,
-}: DownloadPDFBookingInformationProps) => {
+}: ButtonDownloadPDFBookingProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const getBookingDetail = () => {
@@ -45,7 +45,7 @@ const DownloadPDFBookingInformation = ({
   };
 
   const generatePdf = async (data: BookingDetailResponse) => {
-    const html = await htmlPDFFormat(data);
+    const html = await bookingHtmlPDFFormat(data);
 
     const { uri } = await Print.printToFileAsync({ html });
 
@@ -63,7 +63,7 @@ const DownloadPDFBookingInformation = ({
       onPress={getBookingDetail}
       disabled={isLoading}
     >
-      <AntDesign name="pdffile1" size={24} color="white" />
+      <AntDesign name="file-pdf" size={24} color="white" />
       <Text className="text-white">
         {isLoading ? "Loading..." : "Download PDF"}
       </Text>
@@ -71,4 +71,4 @@ const DownloadPDFBookingInformation = ({
   );
 };
 
-export default DownloadPDFBookingInformation;
+export default ButtonDownloadPDFBooking;

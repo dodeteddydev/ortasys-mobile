@@ -1,10 +1,10 @@
 import { axiosInstance } from "@/services/axiosInstance";
 import { PaginationResponse, SuccessResponse } from "@/types/responseType";
-import { CustomizedPackageQueryParams } from "../types/customizedPackageQueryParams";
 import { CustomizedPackageResponse } from "../types/customizedPackageResponse";
+import { DefaultQueryParams } from "@/types/queryParamsType";
 
 export class CustomizedPackageService {
-  static async get(params?: CustomizedPackageQueryParams) {
+  static async get(params?: DefaultQueryParams) {
     return await axiosInstance
       .get<SuccessResponse<PaginationResponse<CustomizedPackageResponse>>>(
         "agent/package/page",

@@ -113,6 +113,7 @@ const ChangePassword = () => {
               />
 
               <Button
+                className="h-16"
                 loading={changePassword.isPending}
                 text="UPDATE PASSWORD"
                 onPress={handleSubmit(onUpdate)}

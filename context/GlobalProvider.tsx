@@ -40,7 +40,7 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   const checkUserRole = (response: ProfileResponse) => {
-    if (response.role !== "agent")
+    if (!response.role.includes("agent"))
       return Alert.alert("Access Denied", "Only agents can access this app.", [
         { text: "Logout", onPress: logout },
       ]);

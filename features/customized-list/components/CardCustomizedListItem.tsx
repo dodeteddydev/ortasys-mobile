@@ -1,13 +1,13 @@
 import Badge from "@/components/Badge";
 import Card from "@/components/Card";
 import { colors } from "@/constants/colors";
+import ButtonDownloadPDFBooking from "@/features/booking/components/ButtonDownloadPDFBooking";
 import HorizontalDataPreview from "@/features/customized-create/components/HorizontalDataPreview";
 import { calculateNights } from "@/utilities/calculateNights";
 import { dateFormat } from "@/utilities/dateFormat";
-import { MaterialIcons, Octicons } from "@expo/vector-icons";
+import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
 import { View } from "react-native";
 import { CustomizedPackageResponse } from "../types/customizedPackageResponse";
-import DownloadPDFBookingInformation from "./DownloadPDFBookingInformation";
 
 type CardCustomizedListItemProps = {
   item: CustomizedPackageResponse;
@@ -21,8 +21,8 @@ const CardCustomizedListItem = ({ item }: CardCustomizedListItemProps) => {
 
         <HorizontalDataPreview
           icon={
-            <MaterialIcons
-              name="calendar-today"
+            <FontAwesome
+              name="calendar-check-o"
               size={22}
               color={colors.grayInactive}
             />
@@ -33,8 +33,8 @@ const CardCustomizedListItem = ({ item }: CardCustomizedListItemProps) => {
 
         <HorizontalDataPreview
           icon={
-            <MaterialIcons
-              name="calendar-today"
+            <FontAwesome
+              name="calendar-times-o"
               size={22}
               color={colors.grayInactive}
             />
@@ -74,7 +74,7 @@ const CardCustomizedListItem = ({ item }: CardCustomizedListItemProps) => {
           description={item?.child?.toString() ?? "0"}
         />
 
-        <DownloadPDFBookingInformation bookingId={item?.id} />
+        <ButtonDownloadPDFBooking bookingId={item?.id} />
       </View>
     </Card>
   );

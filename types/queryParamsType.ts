@@ -1,4 +1,4 @@
-export type CustomizedPackageQueryParams = {
+export type DefaultQueryParams = {
   page: number;
   limit: number;
   order: string;

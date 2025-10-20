@@ -1,6 +1,7 @@
 import { colors } from "@/constants/colors";
 import { useGlobalContext } from "@/context/GlobalProvider";
 import ProfileButtonItem from "@/features/auth/components/ProfileButtonItem";
+import { Octicons } from "@expo/vector-icons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { router } from "expo-router";
@@ -25,7 +26,7 @@ const Profile = () => {
       <View className="p-4 gap-3">
         {/* EDIT PROFILE CARD */}
         <ProfileButtonItem
-          icon={<FontAwesome6 name="user" size={25} color={colors.primary} />}
+          icon={<Octicons name="person" size={25} color={colors.primary} />}
           title="Edit Profile"
           onPress={() => router.push("/edit-profile")}
         />

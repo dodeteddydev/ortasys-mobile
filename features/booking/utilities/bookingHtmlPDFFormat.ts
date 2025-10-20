@@ -2,10 +2,10 @@ import { BookingStatusEnum } from "@/constants/bookingStatusEnum";
 import { dateFormat } from "@/utilities/dateFormat";
 import { addDays } from "date-fns";
 import { Asset } from "expo-asset";
-import * as FileSystem from "expo-file-system";
-import { BookingDetailResponse } from "../types/BookingDetailResponse";
+import * as FileSystem from "expo-file-system/legacy";
+import { BookingDetailResponse } from "../types/bookingDetailResponse";
 
-export const htmlPDFFormat = async (
+export const bookingHtmlPDFFormat = async (
   data: BookingDetailResponse
 ): Promise<string> => {
   // Load the image
@@ -16,7 +16,7 @@ export const htmlPDFFormat = async (
 
   // Convert to Base64
   const base64 = await FileSystem.readAsStringAsync(logoAsset.localUri!, {
-    encoding: FileSystem.EncodingType.Base64,
+    encoding: "base64",
   });
 
   // Make the data URL
@@ -101,7 +101,7 @@ export const htmlPDFFormat = async (
             `
           )
           .join("")
-      : "<td colspan='5' style='border: 1px solid; padding: 1rem; text-align: center'>No Activity</td>";
+      : "<td colspan='5' style='border: 1px solid; padding: 1rem; text-align: center'>No Room</td>";
 
   const activityTh = ["Day", "Date", "Activity", "Location", "Description"]
     .map(

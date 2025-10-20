@@ -12,7 +12,7 @@ export type BookingDetailResponse = {
   marketId: number;
   marketName: string;
   bookingRooms: BookingRoom[];
-  activity: any[]; // not provided in JSON, so keeping it generic
+  activity: any[]; // TODO: change type
   status: number;
   guestFirstName: string;
   guestLastName: string;

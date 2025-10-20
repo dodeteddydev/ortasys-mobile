@@ -3,6 +3,7 @@ import { colors } from "@/constants/colors";
 import { useGlobalContext } from "@/context/GlobalProvider";
 import HomeHeaderSection from "@/features/home/components/HomeHeaderSection";
 import { HomeMenu } from "@/types/homeMenuType";
+import { FontAwesome } from "@expo/vector-icons";
 import Feather from "@expo/vector-icons/Feather";
 import { router } from "expo-router";
 import { useEffect } from "react";
@@ -56,5 +57,10 @@ const homeMenu: HomeMenu[] = [
     title: "Customized",
     path: "/customized/list",
     icon: <Feather name="package" size={24} color={colors.primary} />,
+  },
+  {
+    title: "Booking",
+    path: "/booking",
+    icon: <FontAwesome name="calendar" size={24} color={colors.primary} />,
   },
 ];

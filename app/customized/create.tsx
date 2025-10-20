@@ -1,5 +1,5 @@
 import Stepper from "@/components/Stepper";
-import { stepper } from "@/constants/stepper";
+import { stepperCustomized } from "@/constants/stepper";
 import ScreenGuestInformation from "@/features/customized-create/components/ScreenGuestInformation";
 import ScreenHotelRoom from "@/features/customized-create/components/ScreenHotelRoom";
 import ScreenPayment from "@/features/customized-create/components/ScreenPayment";
@@ -13,7 +13,7 @@ import { KeyboardAvoidingView, Platform } from "react-native";
 import Toast from "react-native-toast-message";
 
 const CreateScreen = () => {
-  const [step, setStep] = useState<string>(stepper.search);
+  const [step, setStep] = useState<string>(stepperCustomized.search);
 
   const bookingPackageRequest = useBookingPackage();
 
@@ -48,34 +48,36 @@ const CreateScreen = () => {
           onChangeStep={(step) => setStep(step)}
           steps={[
             {
-              id: stepper.search,
+              id: stepperCustomized.search,
               label: "Search",
               content: (
-                <ScreenSearch onSearch={() => setStep(stepper.hotelRoom)} />
+                <ScreenSearch
+                  onSearch={() => setStep(stepperCustomized.hotelRoom)}
+                />
               ),
             },
             {
-              id: stepper.hotelRoom,
+              id: stepperCustomized.hotelRoom,
               label: "Hotel Room",
               content: (
                 <ScreenHotelRoom
-                  onPressPrevious={() => setStep(stepper.search)}
-                  onPressNext={() => setStep(stepper.guest)}
+                  onPressPrevious={() => setStep(stepperCustomized.search)}
+                  onPressNext={() => setStep(stepperCustomized.guest)}
                 />
               ),
             },
             {
-              id: stepper.guest,
+              id: stepperCustomized.guest,
               label: "Guest Information",
               content: (
                 <ScreenGuestInformation
-                  onPressPrevious={() => setStep(stepper.hotelRoom)}
-                  onPressNext={() => setStep(stepper.payment)}
+                  onPressPrevious={() => setStep(stepperCustomized.hotelRoom)}
+                  onPressNext={() => setStep(stepperCustomized.payment)}
                 />
               ),
             },
             {
-              id: stepper.payment,
+              id: stepperCustomized.payment,
               label: "Payment",
               content: (
                 <ScreenPayment

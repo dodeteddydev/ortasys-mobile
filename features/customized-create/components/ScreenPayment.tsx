@@ -144,7 +144,7 @@ const ScreenPayment = ({ isLoading, onSubmit }: ScreenPaymentProps) => {
             <HorizontalDataPreview
               icon={
                 <MaterialIcons
-                  name="calendar-today"
+                  name="bed"
                   size={24}
                   color={colors.grayInactive}
                 />

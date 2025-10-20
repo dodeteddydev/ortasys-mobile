@@ -2,7 +2,6 @@ import Button from "@/components/Button";
 import { calculateNights } from "@/utilities/calculateNights";
 import { currencyFormat } from "@/utilities/currencyFormat";
 import { Feather } from "@expo/vector-icons";
-import { useMemo } from "react";
 import { Text, useWindowDimensions, View } from "react-native";
 import RenderHtml from "react-native-render-html";
 import { useCustomizedContext } from "../context/CustomizedProvider";

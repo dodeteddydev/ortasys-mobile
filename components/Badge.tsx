@@ -1,4 +1,4 @@
-import { BookingStatusEnum } from "@/constants/bookingStatusEnum";
+import { BookingStatusEnum } from "@/enums/bookingStatusEnum";
 import { Text, View } from "react-native";
 
 export type BadgeProps = {

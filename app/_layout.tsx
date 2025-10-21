@@ -49,6 +49,14 @@ const RootLayout = () => {
             }}
           />
 
+          {/* BOOKING ROUTE */}
+          <Stack.Screen
+            name="booking"
+            options={{
+              headerShown: false,
+            }}
+          />
+
           {/* CHANGE PASSWORD ROUTE */}
           <Stack.Screen
             name="change-password"

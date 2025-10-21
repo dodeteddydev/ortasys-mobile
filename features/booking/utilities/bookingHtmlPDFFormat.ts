@@ -1,4 +1,4 @@
-import { BookingStatusEnum } from "@/constants/bookingStatusEnum";
+import { BookingStatusEnum } from "@/enums/bookingStatusEnum";
 import { dateFormat } from "@/utilities/dateFormat";
 import { addDays } from "date-fns";
 import { Asset } from "expo-asset";

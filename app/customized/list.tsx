@@ -6,7 +6,7 @@ import { CustomizedPackageResponse } from "@/features/customized-list/types/cust
 import { useEffect, useState } from "react";
 import { FlatList, Text } from "react-native";
 
-const ListScreen = () => {
+const CustomizedList = () => {
   const [page, setPage] = useState<number>(1);
   const [dataList, setDataList] = useState<CustomizedPackageResponse[]>([]);
 
@@ -67,4 +67,4 @@ const ListScreen = () => {
   );
 };
 
-export default ListScreen;
+export default CustomizedList;

@@ -60,7 +60,7 @@ const homeMenu: HomeMenu[] = [
   },
   {
     title: "Booking",
-    path: "/booking",
+    path: "/booking/list",
     icon: <FontAwesome name="calendar" size={24} color={colors.primary} />,
   },
 ];

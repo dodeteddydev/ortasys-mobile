@@ -3,8 +3,9 @@ import { stepperBooking } from "@/constants/stepper";
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, Text } from "react-native";
 
-const Booking = () => {
+const BookingCreate = () => {
   const [step, setStep] = useState<string>(stepperBooking.booking);
+
   return (
     <KeyboardAvoidingView
       className="flex-1"
@@ -31,4 +32,4 @@ const Booking = () => {
   );
 };
 
-export default Booking;
+export default BookingCreate;

@@ -5,12 +5,18 @@ type ModalGeneralProps = {
   show: boolean;
   title?: string;
   children?: ReactNode;
+  position?: "center" | "bottom" | "top";
 };
-const ModalGeneral = ({ show, title, children }: ModalGeneralProps) => {
+const ModalGeneral = ({
+  show,
+  title,
+  children,
+  position = "center",
+}: ModalGeneralProps) => {
   return (
     <Modal transparent visible={show} animationType="fade">
-      <View className="flex-1 justify-center items-center bg-black/50">
-        <View className="bg-white rounded-xl shadow-xl p-3">
+      <View className={`flex-1 justify-${position} items-center bg-black/50`}>
+        <View className="bg-white rounded-xl shadow-xl p-3 my-10">
           {title && (
             <Text className="text-lg font-bold text-primary">{title}</Text>
           )}

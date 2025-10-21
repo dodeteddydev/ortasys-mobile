@@ -12,7 +12,7 @@ import { useState } from "react";
 import { KeyboardAvoidingView, Platform } from "react-native";
 import Toast from "react-native-toast-message";
 
-const CreateScreen = () => {
+const CustomizedCreate = () => {
   const [step, setStep] = useState<string>(stepperCustomized.search);
 
   const bookingPackageRequest = useBookingPackage();
@@ -93,4 +93,4 @@ const CreateScreen = () => {
   );
 };
 
-export default CreateScreen;
+export default CustomizedCreate;

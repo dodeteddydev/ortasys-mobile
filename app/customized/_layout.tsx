@@ -1,6 +1,12 @@
 import { colors } from "@/constants/colors";
+import {
+  FontAwesome6,
+  MaterialCommunityIcons,
+  MaterialIcons,
+  SimpleLineIcons,
+} from "@expo/vector-icons";
 import { router, Stack } from "expo-router";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Platform, Text, TouchableOpacity, View } from "react-native";
 
 const CustomizedLayout = () => {
   return (
@@ -20,21 +26,27 @@ const CustomizedLayout = () => {
           headerBackTitle: "Back",
           headerTitleAlign: "center",
           headerLeft: () => (
-            <View>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => router.back()}
-              >
-                <Text className="text-white text-xl">Home</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity activeOpacity={0.8} onPress={() => router.back()}>
+              {Platform.OS === "ios" ? (
+                <Text className="text-white text-xl">Back</Text>
+              ) : (
+                <MaterialCommunityIcons
+                  name="arrow-left"
+                  size={24}
+                  color="white"
+                />
+              )}
+            </TouchableOpacity>
           ),
           headerRight: () => (
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={() => router.push("/customized/create")}
             >
-              <Text className="text-white text-xl">Add</Text>
+              <View className="flex flex-row items-center gap-1">
+                <FontAwesome6 name="add" size={16} color="white" />
+                <Text className="text-white text-xl">Add</Text>
+              </View>
             </TouchableOpacity>
           ),
         }}

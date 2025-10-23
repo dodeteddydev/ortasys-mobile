@@ -2,7 +2,6 @@ import Button from "@/components/Button";
 import { TextInputField } from "@/components/TextInputField";
 import ToastCustom from "@/components/ToastCustom";
 import { accessTokenKey, refreshTokenKey } from "@/constants/storageKey";
-import vectors from "@/constants/vectors";
 import { useGlobalContext } from "@/context/GlobalProvider";
 import { useLogin } from "@/features/auth/hooks/useLogin";
 import { loginSchema, LoginSchema } from "@/features/auth/schemas/loginSchema";
@@ -21,6 +20,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
+import logo from "@/assets/images/vectors/ortasys-logo.png";
 
 const Index = () => {
   const { isLoggedIn } = useGlobalContext();
@@ -67,11 +67,7 @@ const Index = () => {
         <KeyboardAvoidingView behavior="padding">
           {/* LOGIN FORM */}
           <View className="p-4 gap-3 h-full justify-center items-center">
-            <Image
-              className="h-36 w-36"
-              source={vectors.logo}
-              resizeMode="contain"
-            />
+            <Image className="h-36 w-36" source={logo} resizeMode="contain" />
 
             <Controller
               name="account"

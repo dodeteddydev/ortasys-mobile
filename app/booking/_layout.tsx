@@ -13,9 +13,9 @@ const BookingLayout = () => {
         headerTintColor: "white",
       }}
     >
-      {/* LIST BOOKING ROUTE */}
+      {/* SEARCH BOOKING ROUTE */}
       <Stack.Screen
-        name="list"
+        name="search"
         options={{
           title: "Booking",
           headerBackTitle: "Back",

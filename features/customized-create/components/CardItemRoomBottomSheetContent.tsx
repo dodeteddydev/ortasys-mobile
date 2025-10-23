@@ -9,6 +9,7 @@ import { useGetContract } from "../hooks/useGetContract";
 import { ContractResponse } from "../types/contractResponse";
 import { HotelSimpleResponse } from "../types/hotelSimpleResponse";
 import { RoomSimpleResponse } from "../types/roomSimpleResponse";
+import TextWithShowMore from "@/components/TextWithShowMore";
 
 type CardItemRoomBottomSheetContentProps = {
   isOpenRate: boolean;
@@ -102,9 +103,11 @@ const CardItemRoomBottomSheetContent = ({
             {dataHotelAndRoom?.room?.roomTypeDescription}
           </Text>
           {dataHotelAndRoom?.room?.roomDescription && (
-            <Text className="text-sm text-gray-400">
-              {dataHotelAndRoom?.room?.roomDescription}
-            </Text>
+            <View className="max-w-[85%]">
+              <TextWithShowMore
+                text={dataHotelAndRoom?.room?.roomDescription}
+              />
+            </View>
           )}
         </View>
 

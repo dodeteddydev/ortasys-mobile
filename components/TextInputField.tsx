@@ -1,5 +1,5 @@
 import Feather from "@expo/vector-icons/Feather";
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 import {
   KeyboardTypeOptions,
   Text,

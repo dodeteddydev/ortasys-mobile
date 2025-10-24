@@ -7,8 +7,6 @@ import { View } from "react-native";
 const BookingSearch = () => {
   const [params, setParams] = useState<BookingListQueryParams>();
 
-  console.log(params);
-
   return (
     <View className="flex-1">
       <BookingFilterSection onSearch={(params) => setParams(params)} />

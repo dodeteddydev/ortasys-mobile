@@ -198,7 +198,10 @@ const BookingFilterSection = ({ onSearch }: BookingFilterSectionProp) => {
               className="px-4 py-2"
               classNameText="text-lg text-white font-semibold"
               text="Apply Filter"
-              onPress={() => {}}
+              onPress={() => {
+                setShowModal(false);
+                onSearch({ ...params, city: params?.cityName });
+              }}
             />
           </View>
         </View>

@@ -1,7 +1,7 @@
 import DataNotFound from "@/components/DataNotFound";
 import Error from "@/components/Error";
 import Loading from "@/components/Loading";
-import { FlatList } from "react-native";
+import { FlatList, Text, View } from "react-native";
 import { useGetBookingList } from "../hooks/useGetBookingList";
 import { BookingListQueryParams } from "../types/bookingListQueryParams";
 import CardBookingListItem from "./CardBookingListItem";

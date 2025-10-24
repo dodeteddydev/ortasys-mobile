@@ -1,58 +1,84 @@
+import Button from "@/components/Button";
+import Card from "@/components/Card";
 import HotelStar from "@/components/HotelStar";
 import NetworkImage from "@/components/NetworkImage";
 import { colors } from "@/constants/colors";
 import { Ionicons } from "@expo/vector-icons";
-import { Text, TouchableOpacity, View } from "react-native";
+import { useState } from "react";
+import {
+  Text,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import { BookingListResponse } from "../types/bookingListResponse";
-import Card from "@/components/Card";
-import Button from "@/components/Button";
+import ModalDetailHotel from "./ModalDetailHotel";
 
 type CardBookingListItemProps = {
   data: BookingListResponse;
 };
 
 const CardBookingListItem = ({ data }: CardBookingListItemProps) => {
+  const { width } = useWindowDimensions();
+  const [showModal, setShowModal] = useState<boolean>(false);
+
   return (
-    <Card>
-      <View className="flex flex-row items-center">
-        <View className="flex-1 flex flex-row items-center gap-3">
-          <NetworkImage path={data?.logoPath} />
-          <View>
-            <HotelStar star={data?.star ?? 0} />
-            <Text className="text-lg font-bold text-primary">
-              {data?.hotelName}
-            </Text>
-            <Text className="text-sm text-gray-400">
-              Child {data?.childAgeMin} - {data?.childAgeMax}{" "}
-              {data?.childAgeMax > 1 ? "years" : "year"}
-            </Text>
-            <View className="w-[165px] flex flex-row gap-1">
-              <Ionicons
-                name="location-outline"
-                size={18}
-                color={colors.primary}
-              />
-              <Text className="text-sm text-gray-400">
-                {data?.city}, {data?.countryName}
+    <>
+      <Card>
+        <View className="flex flex-row items-center">
+          <View className="flex-1 flex flex-row items-center gap-3">
+            <NetworkImage path={data?.logoPath} />
+            <View>
+              <HotelStar star={data?.star ?? 0} />
+              <Text className="text-lg font-bold text-primary">
+                {data?.hotelName}
               </Text>
+              <Text className="text-sm text-gray-400">
+                Child {data?.childAgeMin} - {data?.childAgeMax}{" "}
+                {data?.childAgeMax > 1 ? "years" : "year"}
+              </Text>
+              <View className="w-[165px] flex flex-row gap-1">
+                <Ionicons
+                  name="location-outline"
+                  size={18}
+                  color={colors.primary}
+                />
+                <Text className="text-sm text-gray-400">
+                  {data?.city}, {data?.countryName}
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
 
-        <View className="flex flex-col justify-center">
-          <TouchableOpacity activeOpacity={0.8} className="bg-white shadow-md">
-            <Text className="text-primary font-bold text-lg">View Detail</Text>
-          </TouchableOpacity>
+          <View className="flex flex-col justify-center gap-2">
+            <TouchableOpacity
+              activeOpacity={0.8}
+              className="bg-white shadow-md border border-primary rounded-lg px-2 py-1"
+              onPress={() => setShowModal(true)}
+            >
+              <Text className="text-primary font-bold text-lg">
+                View Detail
+              </Text>
+            </TouchableOpacity>
 
-          <Button
-            className="p-1 px-2"
-            classNameText="text-lg font-semibold text-white"
-            text="Book Now"
-            // onPress={onPress}
-          />
+            <Button
+              className="p-1 px-2"
+              classNameText="text-lg font-semibold text-white"
+              text="Book Now"
+              onPress={() => {}}
+            />
+          </View>
         </View>
-      </View>
-    </Card>
+      </Card>
+
+      <ModalDetailHotel
+        showModal={showModal}
+        data={data}
+        width={width}
+        onClose={() => setShowModal(false)}
+        onBookNow={() => {}}
+      />
+    </>
   );
 };
 

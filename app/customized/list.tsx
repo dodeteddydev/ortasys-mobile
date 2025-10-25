@@ -1,9 +1,9 @@
 import DataNotFound from "@/components/DataNotFound";
 import Error from "@/components/Error";
 import Loading from "@/components/Loading";
-import CardCustomizedListItem from "@/features/customized-list/components/CardCustomizedListItem";
-import { useGetCustomizedPackage } from "@/features/customized-list/hooks/useGetCustomizedPackage";
-import { CustomizedPackageResponse } from "@/features/customized-list/types/customizedPackageResponse";
+import CardCustomizedListItem from "@/features/customized/components/CardCustomizedListItem";
+import { useGetCustomizedPackage } from "@/features/customized/hooks/useGetCustomizedPackage";
+import { CustomizedPackageResponse } from "@/features/customized/types/customizedPackageResponse";
 import { useEffect, useState } from "react";
 import { FlatList, Text } from "react-native";
 

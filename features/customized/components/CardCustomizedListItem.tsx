@@ -2,7 +2,7 @@ import Badge from "@/components/Badge";
 import Card from "@/components/Card";
 import { colors } from "@/constants/colors";
 import ButtonDownloadPDFBooking from "@/features/booking/components/ButtonDownloadPDFBooking";
-import HorizontalDataPreview from "@/features/customized-create/components/HorizontalDataPreview";
+import HorizontalDataPreview from "@/features/customized/components/HorizontalDataPreview";
 import { calculateNights } from "@/utilities/calculateNights";
 import { dateFormat } from "@/utilities/dateFormat";
 import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";

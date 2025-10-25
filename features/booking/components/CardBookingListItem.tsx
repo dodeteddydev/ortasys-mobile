@@ -16,9 +16,10 @@ import ModalDetailHotel from "./ModalDetailHotel";
 
 type CardBookingListItemProps = {
   data: BookingListResponse;
+  onBookNow: () => void;
 };
 
-const CardBookingListItem = ({ data }: CardBookingListItemProps) => {
+const CardBookingListItem = ({ data, onBookNow }: CardBookingListItemProps) => {
   const { width } = useWindowDimensions();
   const [showModal, setShowModal] = useState<boolean>(false);
 
@@ -65,7 +66,7 @@ const CardBookingListItem = ({ data }: CardBookingListItemProps) => {
               className="p-1 px-2"
               classNameText="text-lg font-semibold text-white"
               text="Book Now"
-              onPress={() => {}}
+              onPress={onBookNow}
             />
           </View>
         </View>
@@ -76,7 +77,7 @@ const CardBookingListItem = ({ data }: CardBookingListItemProps) => {
         data={data}
         width={width}
         onClose={() => setShowModal(false)}
-        onBookNow={() => {}}
+        onBookNow={onBookNow}
       />
     </>
   );

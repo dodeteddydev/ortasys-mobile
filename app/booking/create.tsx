@@ -1,10 +1,14 @@
 import Stepper from "@/components/Stepper";
 import { stepperBooking } from "@/constants/stepper";
+import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, Text } from "react-native";
 
 const BookingCreate = () => {
+  const params = useLocalSearchParams();
   const [step, setStep] = useState<string>(stepperBooking.booking);
+
+  console.log(params);
 
   return (
     <KeyboardAvoidingView
@@ -18,12 +22,12 @@ const BookingCreate = () => {
         steps={[
           {
             id: stepperBooking.booking,
-            label: "Booking",
+            label: "Booking Information",
             content: <Text>BOOKING</Text>,
           },
           {
             id: stepperBooking.payment,
-            label: "Payment",
+            label: "Payment & Sumary",
             content: <Text>PAYMENT</Text>,
           },
         ]}

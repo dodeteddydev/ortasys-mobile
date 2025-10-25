@@ -40,8 +40,8 @@ const BookingLayout = () => {
       <Stack.Screen
         name="create"
         options={{
-          title: "Create Booking Package",
-          headerBackTitle: " ",
+          title: "Booking",
+          headerTitleAlign: "center",
         }}
       />
     </Stack>

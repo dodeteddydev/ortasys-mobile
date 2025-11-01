@@ -1,11 +1,12 @@
 import DataNotFound from "@/components/DataNotFound";
 import Error from "@/components/Error";
 import Loading from "@/components/Loading";
-import { FlatList, Text, View } from "react-native";
+import { router } from "expo-router";
+import { FlatList } from "react-native";
 import { useGetBookingList } from "../hooks/useGetBookingList";
 import { BookingListQueryParams } from "../types/bookingListQueryParams";
 import CardBookingListItem from "./CardBookingListItem";
-import { router } from "expo-router";
+import { BookingHotelRoomQueryParams } from "../types/bookingHotelRoomQueryParams";
 
 type BookingListSectionProps = {
   params?: BookingListQueryParams;
@@ -23,7 +24,7 @@ const BookingListSection = ({ params }: BookingListSectionProps) => {
 
   if (isFetching) return <Loading />;
 
-  if (isError) return <Error statusCode={error.response?.status!} />;
+  if (isError) return <Error statusCode={error.response?.status ?? ""} />;
 
   return data?.data && data?.data?.length! > 0 ? (
     <FlatList
@@ -35,6 +36,7 @@ const BookingListSection = ({ params }: BookingListSectionProps) => {
       contentContainerStyle={{ padding: 12 }}
       renderItem={({ item }) => (
         <CardBookingListItem
+          params={params}
           data={item}
           onBookNow={() =>
             router.push({
@@ -44,11 +46,8 @@ const BookingListSection = ({ params }: BookingListSectionProps) => {
                 checkOut: params?.checkOut,
                 maxAdult: params?.maxAdult || 0,
                 maxChild: params?.maxChild || 0,
-                hotelId: item?.id,
-              } as Pick<
-                BookingListQueryParams,
-                "checkIn" | "checkOut" | "maxAdult" | "maxChild"
-              >,
+                hotelRoomId: item?.hotelRoomId,
+              } as BookingHotelRoomQueryParams,
             })
           }
         />

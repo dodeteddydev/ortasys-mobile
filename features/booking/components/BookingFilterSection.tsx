@@ -18,6 +18,7 @@ import { addDays } from "date-fns";
 import DropdownCountry from "@/features/country/components/DropdownCountry";
 import DropdownState from "@/features/state/components/DropdownState";
 import DropdownCity from "@/features/city/components/DropdownCity";
+import DropdownHotelStar from "@/components/DropdownHotelStar";
 
 type BookingFilterSectionProp = {
   onSearch: (params?: BookingListQueryParams) => void;
@@ -100,6 +101,16 @@ const BookingFilterSection = ({ onSearch }: BookingFilterSectionProp) => {
               <MaterialIcons name="close" size={24} color={colors.primary} />
             </TouchableOpacity>
           </View>
+
+          <DropdownHotelStar
+            value={params?.stars?.toString()}
+            onChange={(val) => {
+              setParams({
+                ...params,
+                stars: parseInt(val.value.toString()),
+              });
+            }}
+          />
 
           <DropdownCountry
             value={params?.country}
@@ -194,6 +205,17 @@ const BookingFilterSection = ({ onSearch }: BookingFilterSectionProp) => {
           />
 
           <View className="flex flex-row justify-end gap-3">
+            <Button
+              className="bg-white shadow-md border border-primary rounded-lg px-2 py-1"
+              classNameText="text-lg text-primary font-semibold"
+              text="Clear Filter"
+              onPress={() => {
+                setShowModal(false);
+                setParams({});
+                onSearch();
+              }}
+            />
+
             <Button
               className="px-4 py-2"
               classNameText="text-lg text-white font-semibold"

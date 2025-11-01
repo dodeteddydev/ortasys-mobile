@@ -11,6 +11,8 @@ type DropdownInputFieldProps<T> = {
   data: T[];
   onChange: (value: T) => void;
   error?: string;
+  withSearch?: boolean;
+  renderItem?: (item: any, selected?: boolean) => React.ReactElement | null;
 };
 
 const DropdownInputField = <T extends SelectOptions>({
@@ -21,6 +23,8 @@ const DropdownInputField = <T extends SelectOptions>({
   data,
   onChange,
   error,
+  withSearch = true,
+  renderItem,
 }: DropdownInputFieldProps<T>) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
 
@@ -51,13 +55,14 @@ const DropdownInputField = <T extends SelectOptions>({
           onBlur={() => setIsFocused(false)}
           data={data}
           maxHeight={300}
-          search
+          search={withSearch}
           labelField="label"
           valueField="value"
           placeholder={placeholder}
           searchPlaceholder="Search..."
           value={data.find((val) => val.value === value)}
           onChange={onChange}
+          renderItem={renderItem}
         />
       </View>
       {error && <Text className="text-red-500">{error}</Text>}

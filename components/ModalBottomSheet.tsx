@@ -61,7 +61,7 @@ const ModalBottomSheet = ({
             </View>
 
             <TouchableOpacity activeOpacity={0.8} onPress={onClose}>
-              <AntDesign name="close" size={32} color={colors.primary} />
+              <AntDesign name="close" size={24} color={colors.primary} />
             </TouchableOpacity>
           </View>
 

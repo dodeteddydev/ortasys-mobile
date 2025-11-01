@@ -5,21 +5,22 @@ import NetworkImage from "@/components/NetworkImage";
 import { colors } from "@/constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import {
-  Text,
-  TouchableOpacity,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { Text, useWindowDimensions, View } from "react-native";
+import { BookingListQueryParams } from "../types/bookingListQueryParams";
 import { BookingListResponse } from "../types/bookingListResponse";
 import ModalDetailHotel from "./ModalDetailHotel";
 
 type CardBookingListItemProps = {
+  params?: BookingListQueryParams;
   data: BookingListResponse;
   onBookNow: () => void;
 };
 
-const CardBookingListItem = ({ data, onBookNow }: CardBookingListItemProps) => {
+const CardBookingListItem = ({
+  params,
+  data,
+  onBookNow,
+}: CardBookingListItemProps) => {
   const { width } = useWindowDimensions();
   const [showModal, setShowModal] = useState<boolean>(false);
 
@@ -52,15 +53,12 @@ const CardBookingListItem = ({ data, onBookNow }: CardBookingListItemProps) => {
           </View>
 
           <View className="flex flex-col justify-center gap-2">
-            <TouchableOpacity
-              activeOpacity={0.8}
+            <Button
               className="bg-white shadow-md border border-primary rounded-lg px-2 py-1"
+              classNameText="text-lg text-primary font-semibold"
+              text="View Detail"
               onPress={() => setShowModal(true)}
-            >
-              <Text className="text-primary font-bold text-lg">
-                View Detail
-              </Text>
-            </TouchableOpacity>
+            />
 
             <Button
               className="p-1 px-2"
@@ -74,10 +72,14 @@ const CardBookingListItem = ({ data, onBookNow }: CardBookingListItemProps) => {
 
       <ModalDetailHotel
         showModal={showModal}
-        data={data}
+        hotelRoomId={data?.hotelRoomId}
+        params={params}
         width={width}
         onClose={() => setShowModal(false)}
-        onBookNow={onBookNow}
+        onBookNow={() => {
+          setShowModal(false);
+          onBookNow();
+        }}
       />
     </>
   );

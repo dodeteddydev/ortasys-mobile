@@ -51,7 +51,7 @@ const AddHotelBottomSheetContent = ({
           isFetching ? (
             <Loading />
           ) : (
-            <Error statusCode={error?.status ?? "Unexpected error"} />
+            <Error statusCode={error?.status ?? ""} />
           )
         ) : (
           <>

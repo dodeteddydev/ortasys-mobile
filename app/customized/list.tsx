@@ -46,7 +46,7 @@ const CustomizedList = () => {
 
   if (isFetching && page === 1) return <Loading />;
 
-  if (isError) return <Error statusCode={error.response?.status!} />;
+  if (isError) return <Error statusCode={error.response?.status ?? ""} />;
 
   return dataList?.length! > 0 ? (
     <FlatList

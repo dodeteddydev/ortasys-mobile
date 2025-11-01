@@ -1,5 +1,5 @@
 import { useGetImage } from "@/hooks/useGetImage";
-import { Image } from "expo-image";
+import { Image } from "react-native";
 import { useEffect, useState } from "react";
 import { ImageSourcePropType, View } from "react-native";
 import loading from "@/assets/images/vectors/loading.png";
@@ -17,12 +17,12 @@ const NetworkImage = ({ className, path }: NetworkImageProps) => {
   const { isLoading, data } = useGetImage(!!path, path);
 
   useEffect(() => {
-    if (data?.data) {
+    if (path && data?.data) {
       setSource({ uri: data?.data });
     } else {
       setSource(error);
     }
-  }, [data]);
+  }, []);
 
   return (
     <View className={`h-24 w-24 bg-gray-200 rounded-lg shadow-sm ${className}`}>
@@ -32,9 +32,7 @@ const NetworkImage = ({ className, path }: NetworkImageProps) => {
           height: "100%",
           borderRadius: 6,
         }}
-        source={isLoading ? loading : source}
-        contentFit="contain"
-        transition={1000}
+        source={path && isLoading ? loading : source}
       />
     </View>
   );

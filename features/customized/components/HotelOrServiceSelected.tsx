@@ -15,6 +15,7 @@ import { RoomAvailableService } from "../services/roomAvailableService";
 import { HotelRoomCustomized, ResponseCustomized } from "../types/customized";
 import { RoomAvailableResponse } from "../types/roomAvailableResponse";
 import ButtonCounter from "./ButtonCounter";
+import TextWithShowMore from "@/components/TextWithShowMore";
 
 type HotelOrServiceSelectedProps = {
   index: number;
@@ -197,12 +198,15 @@ const HotelOrServiceSelected = ({
       <ModalGeneral
         show={showModal}
         title={`Room ${
-          room?.roomDescription && room?.roomDescription.length > 0
-            ? `(${room?.roomDescription})`
+          room?.roomTypeDescription && room?.roomTypeDescription.length > 0
+            ? `(${room?.roomTypeDescription})`
             : ""
         }`}
       >
         <View className="gap-3" style={{ width: width - 100 }}>
+          {/* ROOM DESCRIPTION */}
+          <TextWithShowMore text={room?.roomDescription ?? ""} />
+
           {/* GALERY */}
           {room?.galleries?.length! > 0 ? (
             <ScrollView
@@ -255,8 +259,8 @@ const HotelOrServiceSelected = ({
           </View>
 
           <Button
-            className="px-4 py-2"
-            classNameText="text-lg text-white font-semibold"
+            className="bg-white shadow-md border border-primary rounded-lg px-4 py-2"
+            classNameText="text-lg text-primary font-semibold"
             text="Close"
             onPress={() => setShowModal(false)}
           />

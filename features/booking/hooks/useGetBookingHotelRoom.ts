@@ -6,15 +6,15 @@ import { BookingHotelRoomResponse } from "../types/bookingHotelRoomResponse";
 
 export const useGetBookingHotelRoom = ({
   enabled = true,
-  roomId,
+  hotelRoomId,
   params,
 }: {
   enabled?: boolean;
-  roomId: number;
+  hotelRoomId: number;
   params?: BookingHotelRoomQueryParams;
 }) =>
   useQuery<SuccessResponse<BookingHotelRoomResponse>, ErrorResponse>({
-    queryKey: ["booking-room", roomId, params],
-    queryFn: () => BookingService.getHotelRoom(roomId, params),
+    queryKey: ["booking-hotel-room", hotelRoomId, params],
+    queryFn: () => BookingService.getHotelRoom(hotelRoomId, params),
     enabled,
   });

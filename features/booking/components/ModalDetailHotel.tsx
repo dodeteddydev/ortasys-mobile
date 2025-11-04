@@ -1,4 +1,5 @@
 import Button from "@/components/Button";
+import Error from "@/components/Error";
 import HotelStar from "@/components/HotelStar";
 import Loading from "@/components/Loading";
 import ModalGeneral from "@/components/Modal";
@@ -9,9 +10,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { ScrollView, Text, View } from "react-native";
 import RenderHTML from "react-native-render-html";
 import { useGetBookingHotelRoom } from "../hooks/useGetBookingHotelRoom";
-import { BookingListResponse } from "../types/bookingListResponse";
 import { BookingHotelRoomQueryParams } from "../types/bookingHotelRoomQueryParams";
-import Error from "@/components/Error";
 
 type ModalDetailHotelProps = {
   showModal: boolean;
@@ -32,7 +31,7 @@ const ModalDetailHotel = ({
 }: ModalDetailHotelProps) => {
   const { data, isLoading, isError, error } = useGetBookingHotelRoom({
     enabled: showModal && !!hotelRoomId,
-    roomId: hotelRoomId,
+    hotelRoomId: hotelRoomId,
     params,
   });
 

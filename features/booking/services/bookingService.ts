@@ -1,10 +1,12 @@
 import { axiosInstance } from "@/services/axiosInstance";
 import { SuccessResponse } from "@/types/responseType";
 import { BookingDetailResponse } from "../types/bookingDetailResponse";
+import { BookingHotelQueryParams } from "../types/bookingHotelQueryParams";
+import { BookingHotelRoomQueryParams } from "../types/bookingHotelRoomQueryParams";
+import { BookingHotelRoomResponse } from "../types/bookingHotelRoomResponse";
 import { BookingListQueryParams } from "../types/bookingListQueryParams";
 import { BookingListResponse } from "../types/bookingListResponse";
-import { BookingHotelRoomResponse } from "../types/bookingHotelRoomResponse";
-import { BookingHotelRoomQueryParams } from "../types/bookingHotelRoomQueryParams";
+import { BookingHotelResponse } from "../types/bookingHoteResponse";
 
 export class BookingService {
   static async get(params?: BookingListQueryParams) {
@@ -22,12 +24,23 @@ export class BookingService {
   }
 
   static async getHotelRoom(
-    roomId: number,
+    hotelRoomId: number,
     params?: BookingHotelRoomQueryParams
   ) {
     return await axiosInstance
       .get<SuccessResponse<BookingHotelRoomResponse>>(
-        `hotel/room/${roomId}/booking`,
+        `hotel/room/${hotelRoomId}/booking`,
+        {
+          params,
+        }
+      )
+      .then((response) => response.data);
+  }
+
+  static async getHotel(hotelId: number, params?: BookingHotelQueryParams) {
+    return await axiosInstance
+      .get<SuccessResponse<BookingHotelResponse[]>>(
+        `hotel/${hotelId}/booking`,
         {
           params,
         }

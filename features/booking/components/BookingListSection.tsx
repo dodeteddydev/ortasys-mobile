@@ -6,7 +6,7 @@ import { FlatList } from "react-native";
 import { useGetBookingList } from "../hooks/useGetBookingList";
 import { BookingListQueryParams } from "../types/bookingListQueryParams";
 import CardBookingListItem from "./CardBookingListItem";
-import { BookingHotelRoomQueryParams } from "../types/bookingHotelRoomQueryParams";
+import { BookingHotelQueryParams } from "../types/bookingHotelQueryParams";
 
 type BookingListSectionProps = {
   params?: BookingListQueryParams;
@@ -46,8 +46,8 @@ const BookingListSection = ({ params }: BookingListSectionProps) => {
                 checkOut: params?.checkOut,
                 maxAdult: params?.maxAdult || 0,
                 maxChild: params?.maxChild || 0,
-                hotelRoomId: item?.hotelRoomId,
-              } as BookingHotelRoomQueryParams,
+                hotelId: item?.id,
+              } as BookingHotelQueryParams,
             })
           }
         />

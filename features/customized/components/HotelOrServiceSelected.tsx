@@ -2,6 +2,7 @@ import Button from "@/components/Button";
 import HotelStar from "@/components/HotelStar";
 import ModalGeneral from "@/components/Modal";
 import NetworkImage from "@/components/NetworkImage";
+import TextWithShowMore from "@/components/TextWithShowMore";
 import { ErrorResponse } from "@/types/responseType";
 import { currencyFormat } from "@/utilities/currencyFormat";
 import { addDays } from "date-fns";
@@ -15,7 +16,6 @@ import { RoomAvailableService } from "../services/roomAvailableService";
 import { HotelRoomCustomized, ResponseCustomized } from "../types/customized";
 import { RoomAvailableResponse } from "../types/roomAvailableResponse";
 import ButtonCounter from "./ButtonCounter";
-import TextWithShowMore from "@/components/TextWithShowMore";
 
 type HotelOrServiceSelectedProps = {
   index: number;

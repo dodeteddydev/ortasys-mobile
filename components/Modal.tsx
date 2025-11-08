@@ -1,5 +1,12 @@
 import { ReactNode } from "react";
-import { Modal, Text, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
 
 type ModalGeneralProps = {
   show: boolean;
@@ -16,13 +23,27 @@ const ModalGeneral = ({
   return (
     <Modal transparent visible={show} animationType="fade">
       <View className={`flex-1 justify-${position} items-center bg-black/50`}>
-        <View className="bg-white rounded-xl shadow-xl p-3 my-10">
-          {title && (
-            <Text className="text-lg font-bold text-primary">{title}</Text>
-          )}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+          <ScrollView
+            contentContainerStyle={{
+              flexGrow: 1,
+              justifyContent: position === "center" ? "center" : "flex-start",
+              alignItems: "center",
+            }}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+          >
+            <View className="bg-white rounded-xl shadow-xl p-3 my-10">
+              {title && (
+                <Text className="text-lg font-bold text-primary">{title}</Text>
+              )}
 
-          {children}
-        </View>
+              {children}
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </View>
     </Modal>
   );

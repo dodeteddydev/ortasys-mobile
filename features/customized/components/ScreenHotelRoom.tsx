@@ -5,6 +5,7 @@ import StepperButton from "@/components/StepperButton";
 import ToastCustom from "@/components/ToastCustom";
 import { colors } from "@/constants/colors";
 import { calculateNights } from "@/utilities/calculateNights";
+import { currencyFormat } from "@/utilities/currencyFormat";
 import { FontAwesome } from "@expo/vector-icons";
 import { addDays } from "date-fns";
 import { useEffect, useState } from "react";
@@ -15,11 +16,10 @@ import { HotelRoomCustomized } from "../types/customized";
 import AddHotelBottomScheetContent from "./AddHotelBottomSheetContent";
 import AddServiceBottomScheetContent from "./AddServiceBottomScheetContent";
 import CardHotelRoomTitle from "./CardHotelRoomTitle";
+import HorizontalDataPreview from "./HorizontalDataPreview";
 import HotelOrServiceSelected from "./HotelOrServiceSelected";
 import NoHotelOrServiceSelected from "./NoHotelOrServiceSelected";
 import ServiceItem from "./ServiceItem";
-import HorizontalDataPreview from "./HorizontalDataPreview";
-import { currencyFormat } from "@/utilities/currencyFormat";
 
 type ScreenHotelRoomProps = {
   onPressPrevious: () => void;

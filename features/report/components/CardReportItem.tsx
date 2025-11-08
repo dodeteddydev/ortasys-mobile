@@ -4,17 +4,16 @@ import { colors } from "@/constants/colors";
 import ButtonDownloadPDFBooking from "@/features/booking/components/ButtonDownloadPDFBooking";
 import HorizontalDataPreview from "@/features/customized/components/HorizontalDataPreview";
 import { calculateNights } from "@/utilities/calculateNights";
+import { currencyFormat } from "@/utilities/currencyFormat";
 import { dateFormat } from "@/utilities/dateFormat";
 import {
   FontAwesome,
-  FontAwesome5,
   Fontisto,
   MaterialIcons,
   Octicons,
 } from "@expo/vector-icons";
 import { View } from "react-native";
 import { ReportResponse } from "../types/reportResponse";
-import { currencyFormat } from "@/utilities/currencyFormat";
 
 type CardReportItemProps = {
   item: ReportResponse;

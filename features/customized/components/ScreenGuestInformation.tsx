@@ -1,8 +1,7 @@
-import Button from "@/components/Button";
 import Card from "@/components/Card";
 import StepperButton from "@/components/StepperButton";
 import { TextInputField } from "@/components/TextInputField";
-import { calculateNights } from "@/utilities/calculateNights";
+import DropdownCountry from "@/features/country/components/DropdownCountry";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { ScrollView, View } from "react-native";
@@ -11,8 +10,6 @@ import {
   guestInformationSchema,
   GuestInformationSchema,
 } from "../schemas/guestInformationSchema";
-import DropdownCountry from "@/features/country/components/DropdownCountry";
-import { useEffect } from "react";
 
 type ScreenGuestInformationProps = {
   onPressPrevious: () => void;

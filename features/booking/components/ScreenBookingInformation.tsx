@@ -1,217 +1,265 @@
 import Button from "@/components/Button";
-import Card from "@/components/Card";
 import Error from "@/components/Error";
-import HotelStar from "@/components/HotelStar";
 import Loading from "@/components/Loading";
-import NetworkImage from "@/components/NetworkImage";
 import StepperButton from "@/components/StepperButton";
-import { colors } from "@/constants/colors";
-import HorizontalDataPreview from "@/features/customized/components/HorizontalDataPreview";
-import { dateFormat } from "@/utilities/dateFormat";
-import {
-  Feather,
-  FontAwesome,
-  Ionicons,
-  MaterialCommunityIcons,
-  MaterialIcons,
-  Octicons,
-} from "@expo/vector-icons";
-import { useState } from "react";
-import {
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  useWindowDimensions,
-  View,
-} from "react-native";
-import RenderHTML from "react-native-render-html";
-import { useGetBookingHotel } from "../hooks/useGetBookingHotel";
-import { BookingHotelQueryParams } from "../types/bookingHotelQueryParams";
-import BookingInformationHotelRoomItem from "./BookingInformationHotelRoomItem";
-import ModalFilterBookingInformation from "./ModalFilterBookingInformation";
+import ToastCustom from "@/components/ToastCustom";
 import { calculateNights } from "@/utilities/calculateNights";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { RefreshControl, ScrollView, View } from "react-native";
+import Toast from "react-native-toast-message";
+import { useBookingContext } from "../context/BookingProvider";
+import { useGetBookingHotel } from "../hooks/useGetBookingHotel";
+import {
+  guestInformationSchema,
+  GuestInformationSchema,
+} from "../schemas/guestInformationSchema";
+import { BookingHotelQueryParams } from "../types/bookingHotelQueryParams";
+import BookingBreakdownSection from "./BookingBreakdownSection";
+import FormGuestInformation from "./FormGuestInformation";
+import HotelSection from "./HotelSection";
+import ModalFilterBookingInformation from "./ModalFilterBookingInformation";
+import ModalMorePrice from "./ModalMorePrice";
+import RoomSection from "./RoomSection";
 
 type ScreenBookingInformationProps = {
   params: BookingHotelQueryParams;
+  onNextStep: () => void;
 };
 
 const ScreenBookingInformation = ({
   params,
+  onNextStep,
 }: ScreenBookingInformationProps) => {
-  const { width } = useWindowDimensions();
+  const { booking, setBooking } = useBookingContext();
+  const scrollViewRef = useRef<ScrollView>(null);
+  const formRef = useRef<View>(null);
+
   const [queryParams, setQueryParams] =
     useState<BookingHotelQueryParams>(params);
-  const { data, isLoading, isError, error } = useGetBookingHotel({
+  const [showModalFilter, setShowModalFilter] = useState<boolean>(false);
+  const [showModalPrice, setShowModalPrice] = useState<{
+    show: boolean;
+    hotelId?: number;
+  }>({ show: false });
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+
+  const { data, isLoading, isError, error, refetch } = useGetBookingHotel({
     enabled: !!queryParams?.hotelId,
     hotelId: queryParams?.hotelId!,
     params: queryParams,
   });
 
-  const dataHotel = data?.data[0];
+  const {
+    control,
+    handleSubmit,
+    reset,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<GuestInformationSchema>({
+    resolver: zodResolver(guestInformationSchema),
+    defaultValues: {
+      guestFirstName: "",
+      guestLastName: "",
+      guestEmail: "",
+      guestPhone: "",
+      guestCountry: "",
+      guestZipcode: "",
+      specialRequest: "",
+      bookingRoom: [],
+    },
+  });
 
-  const [showModal, setShowModal] = useState(false);
+  const bookingRoom = watch("bookingRoom");
 
-  if (isLoading) return <Loading />;
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }, [refetch]);
 
-  if (isError) return <Error statusCode={error?.response?.status ?? ""} />;
+  const handleChangeTotalRoom = (value: number, hotelId: number) => {
+    const newBookingRoom = bookingRoom?.map((room) => {
+      if (room?.hotelId === hotelId) {
+        return {
+          ...room,
+          totalRoom: value,
+        };
+      }
+      return room;
+    });
 
-  return (
+    setValue("bookingRoom", newBookingRoom);
+  };
+
+  const handleChangePriceRate = (rate: number) => {
+    const newBookingRoom = bookingRoom?.map((room) => {
+      if (room?.hotelId === showModalPrice?.hotelId) {
+        return {
+          ...room,
+          pricePerNight: rate,
+        };
+      }
+      return room;
+    });
+
+    setValue("bookingRoom", newBookingRoom);
+
+    setShowModalPrice({ show: false, hotelId: undefined });
+  };
+
+  const handleNavigateToPayment = (data: GuestInformationSchema) => {
+    setBooking({
+      checkIn: queryParams?.checkIn || "",
+      checkOut: queryParams?.checkOut || "",
+      person:
+        (Number(queryParams?.maxAdult) ?? 0) +
+        (Number(queryParams?.maxChild) ?? 0),
+      hotelId: queryParams?.hotelId || 0,
+      marketId: null,
+      child: queryParams?.maxChild || 0,
+      night: calculateNights(queryParams?.checkIn!, queryParams?.checkOut!),
+      adult: queryParams?.maxAdult || 0,
+      guestFirstName: data?.guestFirstName || "",
+      guestLastName: data?.guestLastName || "",
+      guestEmail: data?.guestEmail || "",
+      guestPhone: data?.guestPhone || "",
+      specialRequest: data?.specialRequest || "",
+      bookingRooms: data?.bookingRoom ?? [],
+      guestCountry: data?.guestCountry || "",
+      guestZipcode: data?.guestZipcode || "",
+    });
+
+    onNextStep();
+  };
+
+  const handleError = () => {
+    requestAnimationFrame(() => {
+      if (formRef.current && scrollViewRef.current) {
+        formRef.current.measure((_, __, ___, ____, ______, pageY) => {
+          scrollViewRef.current?.scrollTo({ y: pageY - 100, animated: true });
+        });
+      }
+    });
+  };
+
+  const handleNextStep = () => {
+    const isAddRoomAtLeastOne = bookingRoom?.some(
+      (value) => value?.totalRoom > 0
+    );
+
+    if (isAddRoomAtLeastOne) {
+      handleSubmit(handleNavigateToPayment, handleError)();
+    } else {
+      Toast.show({
+        type: "error",
+        text1: "Almost there 👋",
+        text2: "Please add at least one room to continue.",
+      });
+    }
+  };
+
+  const handleInitialValue = () => {
+    const rooms = data?.data.map((value) => ({
+      hotelId: value?.id,
+      hotelRoomId: value?.hotelRoomId,
+      totalRoom: 0,
+      pricePerNight: value?.price,
+      extraBedRate: value?.extraBedRate,
+      totalExtraBed: 0,
+      contractRateId: value?.contractRateId,
+      rateId: value?.rateId,
+    }));
+
+    reset({
+      guestFirstName: booking?.guestFirstName || "",
+      guestLastName: booking?.guestLastName || "",
+      guestEmail: booking?.guestEmail || "",
+      guestPhone: booking?.guestPhone || "",
+      guestCountry: booking?.guestCountry || "",
+      guestZipcode: booking?.guestZipcode || "",
+      specialRequest: booking?.specialRequest || "",
+      bookingRoom: booking ? booking?.bookingRooms : rooms,
+    });
+  };
+
+  useEffect(() => {
+    if (!data?.data) return;
+    handleInitialValue();
+  }, [data, queryParams.checkIn, queryParams.checkOut, reset, booking]);
+
+  return isLoading ? (
+    <Loading />
+  ) : isError ? (
+    <Error statusCode={error?.response?.status ?? ""} />
+  ) : (
     <>
       <View className="flex-1">
-        <ScrollView>
-          <Card className="mx-4 my-2">
-            <View className="flex flex-row items-center gap-3">
-              <NetworkImage path={dataHotel?.logoPath!} />
-              <View>
-                <HotelStar star={dataHotel?.star ?? 0} />
-                <Text className="text-lg font-bold text-primary">
-                  {dataHotel?.hotelName}
-                </Text>
-                <View className="flex flex-row gap-1">
-                  <Ionicons
-                    name="location-outline"
-                    size={18}
-                    color={colors.primary}
-                  />
-                  <Text className="text-sm text-gray-400">
-                    {dataHotel?.city}, {dataHotel?.countryName}
-                  </Text>
-                </View>
-              </View>
-            </View>
+        <ScrollView
+          ref={scrollViewRef}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          <HotelSection data={data?.data[0]!} />
 
-            <RenderHTML
-              contentWidth={width}
-              source={{ html: dataHotel?.highlight ?? "" }}
-            />
-          </Card>
+          <RoomSection
+            data={data?.data ?? []}
+            bookingRoom={bookingRoom ?? []}
+            onShowModalFilter={() => setShowModalFilter(true)}
+            onChangeTotalRoom={handleChangeTotalRoom}
+            onShowModalPrice={(hotelId) =>
+              setShowModalPrice({ show: true, hotelId })
+            }
+          />
 
-          <View className="mx-5 my-2">
-            <View className="flex flex-row justify-between">
-              <Text className="text-lg font-bold text-primary">Room</Text>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => setShowModal(true)}
-              >
-                <Feather name="filter" size={24} color={colors.primary} />
-              </TouchableOpacity>
-            </View>
-            <Text className="text-sm text-gray-400">
-              Choose rooms that are available for your booking.
-            </Text>
+          <BookingBreakdownSection queryParams={queryParams} />
+
+          <View ref={formRef}>
+            <FormGuestInformation control={control} errors={errors} />
           </View>
-
-          <View className="mx-4 my-2">
-            {data?.data && data?.data?.length > 0 ? (
-              data?.data?.map((item, index) => (
-                <BookingInformationHotelRoomItem key={index} data={item} />
-              ))
-            ) : (
-              <Text className="text-center text-gray-400">
-                No room available
-              </Text>
-            )}
-          </View>
-
-          <Card className="mx-4 my-2">
-            <View className="gap-3">
-              <HorizontalDataPreview
-                icon={
-                  <FontAwesome
-                    name="calendar-check-o"
-                    size={22}
-                    color={colors.grayInactive}
-                  />
-                }
-                title="Check In"
-                description={dateFormat(queryParams?.checkIn!, "day-long")}
-              />
-
-              <HorizontalDataPreview
-                icon={
-                  <FontAwesome
-                    name="calendar-times-o"
-                    size={22}
-                    color={colors.grayInactive}
-                  />
-                }
-                title="Check Out"
-                description={dateFormat(queryParams?.checkOut!, "day-long")}
-              />
-
-              <HorizontalDataPreview
-                icon={
-                  <Octicons
-                    name="person"
-                    size={24}
-                    color={colors.grayInactive}
-                  />
-                }
-                title="Adult"
-                description={queryParams?.maxAdult?.toString() ?? "0"}
-              />
-
-              <HorizontalDataPreview
-                icon={
-                  <MaterialIcons
-                    name="child-care"
-                    size={24}
-                    color={colors.grayInactive}
-                  />
-                }
-                title="Child"
-                description={queryParams?.maxChild?.toString() ?? "0"}
-              />
-
-              <HorizontalDataPreview
-                icon={
-                  <MaterialIcons
-                    name="bed"
-                    size={24}
-                    color={colors.grayInactive}
-                  />
-                }
-                title="Total Night"
-                description={calculateNights(
-                  queryParams?.checkIn!,
-                  queryParams?.checkOut!
-                ).toString()}
-              />
-
-              <HorizontalDataPreview
-                icon={
-                  <MaterialCommunityIcons
-                    name="door"
-                    size={24}
-                    color={colors.grayInactive}
-                  />
-                }
-                title="Total Room"
-                description={calculateNights(
-                  queryParams?.checkIn!,
-                  queryParams?.checkOut!
-                ).toString()}
-              />
-            </View>
-          </Card>
         </ScrollView>
 
         <StepperButton>
           <Button
             className="m-6 mb-10 w-full h-14"
             text="Next Step"
-            onPress={() => {}}
+            onPress={handleNextStep}
           />
         </StepperButton>
       </View>
 
       <ModalFilterBookingInformation
-        show={showModal}
+        show={showModalFilter}
         params={params}
-        onClose={() => setShowModal(false)}
+        onClose={() => setShowModalFilter(false)}
         onApplyFilter={(params) => {
           setQueryParams(params);
-          setShowModal(false);
+          setShowModalFilter(false);
+        }}
+      />
+
+      <ModalMorePrice
+        data={data?.data?.find((value) => value.id === showModalPrice?.hotelId)}
+        show={showModalPrice?.show}
+        onClose={() => setShowModalPrice({ show: false, hotelId: undefined })}
+        onChangePrice={handleChangePriceRate}
+      />
+
+      <Toast
+        position="bottom"
+        bottomOffset={110}
+        visibilityTime={3000}
+        config={{
+          error: (value) => (
+            <ToastCustom
+              type="error"
+              title={value?.text1!}
+              text={value?.text2!}
+            />
+          ),
         }}
       />
     </>

@@ -1,6 +1,7 @@
 import Button from "@/components/Button";
 import Card from "@/components/Card";
 import StepperButton from "@/components/StepperButton";
+import ToastCustom from "@/components/ToastCustom";
 import { colors } from "@/constants/colors";
 import { useGetBalance } from "@/hooks/useGetBalance";
 import { calculateNights } from "@/utilities/calculateNights";
@@ -14,11 +15,10 @@ import {
   Octicons,
 } from "@expo/vector-icons";
 import { ScrollView, Text, View } from "react-native";
+import Toast from "react-native-toast-message";
 import { useCustomizedContext } from "../context/CustomizedProvider";
 import { BookingPackageRequest } from "../types/bookingPackageRequest";
 import HorizontalDataPreview from "./HorizontalDataPreview";
-import Toast from "react-native-toast-message";
-import ToastCustom from "@/components/ToastCustom";
 
 type ScreenPaymentProps = {
   isLoading: boolean;

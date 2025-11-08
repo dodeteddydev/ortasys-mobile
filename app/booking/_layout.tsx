@@ -23,7 +23,7 @@ const BookingLayout = () => {
           headerLeft: () => (
             <TouchableOpacity activeOpacity={0.8} onPress={() => router.back()}>
               {Platform.OS === "ios" ? (
-                <Text className="text-white text-xl">Back</Text>
+                <Text className="text-white text-[20px]">Home</Text>
               ) : (
                 <MaterialCommunityIcons
                   name="arrow-left"
@@ -41,7 +41,7 @@ const BookingLayout = () => {
         name="create"
         options={{
           title: "Booking",
-          headerTitleAlign: "center",
+          headerBackTitle: "Back",
         }}
       />
     </Stack>

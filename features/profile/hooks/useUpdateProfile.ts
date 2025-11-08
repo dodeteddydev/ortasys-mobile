@@ -1,8 +1,8 @@
 import { ErrorResponse, SuccessResponse } from "@/types/responseType";
 import { useMutation } from "@tanstack/react-query";
-import { UpdateProfileRequest } from "../types/updateProfileRequest";
 import { ProfileService } from "../services/profileService";
 import { ProfileResponse } from "../types/profileResponse";
+import { UpdateProfileRequest } from "../types/updateProfileRequest";
 
 export const useUpdateProfile = () =>
   useMutation<

@@ -16,7 +16,7 @@ const ButtonCounter = ({
   onPressArrowLeft,
 }: ButtonCounterProps) => {
   return (
-    <View className="flex flex-row gap-4 items-center border border-primary rounded-lg px-4 h-10">
+    <View className="flex flex-row gap-4 items-center justify-center border border-primary rounded-lg px-4 h-10">
       <View className="flex flex-row items-center gap-4">
         <TouchableOpacity activeOpacity={0.8} onPress={onPressArrowLeft}>
           <Feather name="arrow-left-circle" size={22} color={colors.primary} />

@@ -1,6 +1,6 @@
 import { ErrorResponse, SuccessResponse } from "@/types/responseType";
 import { useQuery } from "@tanstack/react-query";
-import { getBalance, BalanceResponse } from "../services/balanceService";
+import { BalanceResponse, getBalance } from "../services/balanceService";
 
 export const useGetBalance = (enabled = true) =>
   useQuery<SuccessResponse<BalanceResponse>, ErrorResponse>({

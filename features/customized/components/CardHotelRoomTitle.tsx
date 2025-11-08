@@ -19,7 +19,7 @@ const CardHotelRoomTitle = ({
 }: CardHotelRoomTitleProps) => {
   return (
     <View className="w-full">
-      <View className="flex flex-row items-center gap-2">
+      <View className="flex flex-row items-center gap-2 my-2 mx-4">
         <Text className="text-lg font-bold text-primary">
           Day {payload?.day}
         </Text>

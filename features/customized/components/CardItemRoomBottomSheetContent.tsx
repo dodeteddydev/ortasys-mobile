@@ -97,23 +97,19 @@ const CardItemRoomBottomSheetContent = ({
 
   return (
     <View className="px-4 py-2 border-b border-gray-200">
-      <View className="flex flex-row justify-between items-center mb-3">
-        <View>
+      <View className="flex flex-row items-center gap-3 mb-3">
+        <View className="flex-1">
           <Text className="text-primary font-bold text-lg">
             {dataHotelAndRoom?.room?.roomTypeDescription}
           </Text>
           {dataHotelAndRoom?.room?.roomDescription && (
-            <View className="max-w-[85%]">
-              <TextWithShowMore
-                text={dataHotelAndRoom?.room?.roomDescription}
-              />
-            </View>
+            <TextWithShowMore text={dataHotelAndRoom?.room?.roomDescription} />
           )}
         </View>
 
         <Button
           loading={isFetching && isOpenRate}
-          className="px-4 py-2"
+          className=" px-4 py-2"
           classNameText="text-sm font-semibold text-white"
           text="Rate"
           onPress={onPressRate}

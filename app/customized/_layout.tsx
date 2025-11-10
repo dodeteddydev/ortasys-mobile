@@ -1,8 +1,21 @@
 import { colors } from "@/constants/colors";
+import { FontAwesome6, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, Stack } from "expo-router";
-import { Text, TouchableOpacity, View } from "react-native";
+import { useState } from "react";
+import { Platform, Text, TouchableOpacity, View } from "react-native";
 
 const CustomizedLayout = () => {
+  const [isNavigating, setIsNavigating] = useState(false);
+
+  const handlePress = () => {
+    if (isNavigating) return;
+    setIsNavigating(true);
+
+    router.push("/customized/create");
+
+    setTimeout(() => setIsNavigating(false), 1000);
+  };
+
   return (
     <Stack
       screenOptions={{
@@ -20,21 +33,24 @@ const CustomizedLayout = () => {
           headerBackTitle: "Back",
           headerTitleAlign: "center",
           headerLeft: () => (
-            <View>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => router.back()}
-              >
-                <Text className="text-white text-xl">Home</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity activeOpacity={0.8} onPress={() => router.back()}>
+              {Platform.OS === "ios" ? (
+                <Text className="text-white text-[20px]">Home</Text>
+              ) : (
+                <MaterialCommunityIcons
+                  name="arrow-left"
+                  size={24}
+                  color="white"
+                />
+              )}
+            </TouchableOpacity>
           ),
           headerRight: () => (
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={() => router.push("/customized/create")}
-            >
-              <Text className="text-white text-xl">Add</Text>
+            <TouchableOpacity activeOpacity={0.8} onPress={handlePress}>
+              <View className="flex flex-row items-center gap-1">
+                <FontAwesome6 name="add" size={16} color="white" />
+                <Text className="text-white text-[20px]">Add</Text>
+              </View>
             </TouchableOpacity>
           ),
         }}
@@ -45,7 +61,7 @@ const CustomizedLayout = () => {
         name="create"
         options={{
           title: "Create Customized Package",
-          headerBackTitle: " ",
+          headerBackTitle: "Back",
         }}
       />
     </Stack>

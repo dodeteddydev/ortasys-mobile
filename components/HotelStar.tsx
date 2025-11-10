@@ -1,4 +1,4 @@
-import AntDesign from "@expo/vector-icons/AntDesign";
+import { FontAwesome } from "@expo/vector-icons";
 import { View } from "react-native";
 
 type HotelStarProps = {
@@ -9,9 +9,9 @@ const HotelStar = ({ star }: HotelStarProps) => {
   return (
     <View className="flex flex-row">
       {Array.from({ length: 5 }, (_, index) => (
-        <AntDesign
+        <FontAwesome
           key={index}
-          name={index < star ? "star" : "staro"}
+          name={index < star ? "star" : "star-o"}
           size={18}
           color={index < star ? "#eab308" : "#9ca3af"}
         />

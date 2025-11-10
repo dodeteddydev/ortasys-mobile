@@ -88,7 +88,7 @@ const EditProfile = () => {
 
   if (isLoading) return <Loading />;
 
-  if (isError) return <Error statusCode={error.response?.status!} />;
+  if (isError) return <Error statusCode={error.response?.status ?? ""} />;
 
   return (
     <>

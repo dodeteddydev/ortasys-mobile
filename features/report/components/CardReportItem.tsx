@@ -2,19 +2,18 @@ import Badge from "@/components/Badge";
 import Card from "@/components/Card";
 import { colors } from "@/constants/colors";
 import ButtonDownloadPDFBooking from "@/features/booking/components/ButtonDownloadPDFBooking";
-import HorizontalDataPreview from "@/features/customized-create/components/HorizontalDataPreview";
+import HorizontalDataPreview from "@/features/customized/components/HorizontalDataPreview";
 import { calculateNights } from "@/utilities/calculateNights";
+import { currencyFormat } from "@/utilities/currencyFormat";
 import { dateFormat } from "@/utilities/dateFormat";
 import {
   FontAwesome,
-  FontAwesome5,
   Fontisto,
   MaterialIcons,
   Octicons,
 } from "@expo/vector-icons";
 import { View } from "react-native";
 import { ReportResponse } from "../types/reportResponse";
-import { currencyFormat } from "@/utilities/currencyFormat";
 
 type CardReportItemProps = {
   item: ReportResponse;
@@ -49,7 +48,9 @@ const CardReportItem = ({ item }: CardReportItemProps) => {
             <Octicons name="person" size={24} color={colors.grayInactive} />
           }
           title="Guest Name"
-          description={item?.hotelName}
+          description={`${item?.guestFirstName || ""} ${
+            item?.guestLastName || ""
+          }`}
         />
 
         <HorizontalDataPreview

@@ -5,7 +5,7 @@ import * as Sharing from "expo-sharing";
 import React, { useState } from "react";
 import { Text, TouchableOpacity } from "react-native";
 import Toast from "react-native-toast-message";
-import { BookingDetailService } from "../services/bookingDetailService";
+import { BookingService } from "../services/bookingService";
 import { BookingDetailResponse } from "../types/bookingDetailResponse";
 import { bookingHtmlPDFFormat } from "../utilities/bookingHtmlPDFFormat";
 
@@ -20,7 +20,7 @@ const ButtonDownloadPDFBooking = ({
 
   const getBookingDetail = () => {
     setIsLoading(true);
-    BookingDetailService.get(bookingId)
+    BookingService.getDetail(bookingId)
       .then(async (response) => {
         try {
           await generatePdf(response.data);

@@ -2,7 +2,6 @@ import { colors } from "@/constants/colors";
 import { useGlobalContext } from "@/context/GlobalProvider";
 import ProfileButtonItem from "@/features/auth/components/ProfileButtonItem";
 import { Octicons } from "@expo/vector-icons";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { router } from "expo-router";
 import { Alert, StatusBar, View } from "react-native";

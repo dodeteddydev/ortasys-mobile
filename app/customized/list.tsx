@@ -1,24 +1,27 @@
 import DataNotFound from "@/components/DataNotFound";
+import Error from "@/components/Error";
 import Loading from "@/components/Loading";
-import CardCustomizedListItem from "@/features/customized-list/components/CardCustomizedListItem";
-import { useGetCustomizedPackage } from "@/features/customized-list/hooks/useGetCustomizedPackage";
-import { CustomizedPackageResponse } from "@/features/customized-list/types/customizedPackageResponse";
+import CardCustomizedListItem from "@/features/customized/components/CardCustomizedListItem";
+import { useGetCustomizedPackage } from "@/features/customized/hooks/useGetCustomizedPackage";
+import { CustomizedPackageResponse } from "@/features/customized/types/customizedPackageResponse";
 import { useEffect, useState } from "react";
 import { FlatList, Text } from "react-native";
 
-const ListScreen = () => {
+const CustomizedList = () => {
   const [page, setPage] = useState<number>(1);
   const [dataList, setDataList] = useState<CustomizedPackageResponse[]>([]);
 
-  const { data, isFetching, refetch } = useGetCustomizedPackage({
-    enabled: true,
-    params: {
-      limit: 10,
-      page: page,
-      order: "DESC",
-      sortBy: "created_at",
-    },
-  });
+  const { data, isFetching, refetch, isError, error } = useGetCustomizedPackage(
+    {
+      enabled: true,
+      params: {
+        limit: 10,
+        page: page,
+        order: "DESC",
+        sortBy: "created_at",
+      },
+    }
+  );
 
   const onRefresh = () => {
     setPage(1);
@@ -43,28 +46,28 @@ const ListScreen = () => {
 
   if (isFetching && page === 1) return <Loading />;
 
+  if (isError) return <Error statusCode={error.response?.status ?? ""} />;
+
   return dataList?.length! > 0 ? (
-    <>
-      <FlatList
-        data={dataList}
-        keyExtractor={(_, index) => index.toString()}
-        refreshing={isFetching && page === 1}
-        onRefresh={onRefresh}
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{ padding: 12 }}
-        renderItem={({ item }) => <CardCustomizedListItem item={item} />}
-        onEndReached={loadMore}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={
-          isFetching && page > 1 ? (
-            <Text className="text-center">Loading...</Text>
-          ) : null
-        }
-      />
-    </>
+    <FlatList
+      data={dataList}
+      keyExtractor={(_, index) => index.toString()}
+      refreshing={isFetching && page === 1}
+      onRefresh={onRefresh}
+      keyboardShouldPersistTaps="handled"
+      contentContainerStyle={{ padding: 12 }}
+      renderItem={({ item }) => <CardCustomizedListItem item={item} />}
+      onEndReached={loadMore}
+      onEndReachedThreshold={0.5}
+      ListFooterComponent={
+        isFetching && page > 1 ? (
+          <Text className="text-center">Loading...</Text>
+        ) : null
+      }
+    />
   ) : (
     <DataNotFound />
   );
 };
 
-export default ListScreen;
+export default CustomizedList;

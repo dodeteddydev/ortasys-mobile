@@ -10,9 +10,12 @@ type CardProps = {
 const Card = ({ title, children, className }: CardProps) => {
   return (
     <View className={`bg-white rounded-xl shadow-sm ${className}`}>
-      {title && (
-        <Text className="text-lg font-bold text-primary p-2">{title}</Text>
-      )}
+      {title &&
+        (typeof title === "string" ? (
+          <Text className="text-lg font-bold text-primary p-2">{title}</Text>
+        ) : (
+          title
+        ))}
       <View className={title ? "px-4 pb-4" : "p-4"}>{children}</View>
     </View>
   );

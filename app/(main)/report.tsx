@@ -1,5 +1,6 @@
 import DataNotFound from "@/components/DataNotFound";
 import Loading from "@/components/Loading";
+import { useGlobalContext } from "@/context/GlobalProvider";
 import CardReportItem from "@/features/report/components/CardReportItem";
 import { useGetReport } from "@/features/report/hooks/useGetReport";
 import { ReportResponse } from "@/features/report/types/reportResponse";
@@ -7,12 +8,14 @@ import { useEffect, useState } from "react";
 import { FlatList, Text } from "react-native";
 
 const Report = () => {
+  const { dataProfile } = useGlobalContext();
   const [page, setPage] = useState<number>(1);
   const [dataList, setDataList] = useState<ReportResponse[]>([]);
 
   const { data, isFetching, refetch } = useGetReport({
     enabled: true,
     params: {
+      agentId: dataProfile?.agentId!,
       limit: 10,
       page: page,
       order: "DESC",

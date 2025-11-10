@@ -48,7 +48,9 @@ const CardReportItem = ({ item }: CardReportItemProps) => {
             <Octicons name="person" size={24} color={colors.grayInactive} />
           }
           title="Guest Name"
-          description={item?.hotelName}
+          description={`${item?.guestFirstName || ""} ${
+            item?.guestLastName || ""
+          }`}
         />
 
         <HorizontalDataPreview

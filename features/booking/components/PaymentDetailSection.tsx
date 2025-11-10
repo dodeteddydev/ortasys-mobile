@@ -9,27 +9,24 @@ import {
   MaterialIcons,
   Octicons,
 } from "@expo/vector-icons";
-import { View } from "react-native";
-import { BookingHotelQueryParams } from "../types/bookingHotelQueryParams";
-import { Text } from "react-native";
+import { Text, View } from "react-native";
+import { BookingRequest } from "../types/bookingRequest";
 
-type BookingBreakdownSectionProps = {
-  queryParams: BookingHotelQueryParams;
-  totalRoom: number;
+type PaymentDetailSectionProps = {
+  data?: BookingRequest;
 };
 
-const BookingBreakdownSection = ({
-  queryParams,
-  totalRoom,
-}: BookingBreakdownSectionProps) => {
+const PaymentDetailSection = ({ data }: PaymentDetailSectionProps) => {
+  const totalRoom = data?.bookingRooms?.reduce((prev, curr) => {
+    return prev + curr?.totalRoom;
+  }, 0);
+
   return (
     <>
       <View className="mx-5 my-2">
-        <Text className="text-lg font-bold text-primary">
-          Booking Breakdown
-        </Text>
+        <Text className="text-lg font-bold text-primary">Payment Details</Text>
         <Text className="text-sm text-gray-400">
-          Here's breakdown of your booking information.
+          Please review your payment information before proceeding.
         </Text>
       </View>
 
@@ -44,7 +41,7 @@ const BookingBreakdownSection = ({
               />
             }
             title="Check In"
-            description={dateFormat(queryParams?.checkIn!, "day-long")}
+            description={dateFormat(data?.checkIn!, "day-long")}
           />
 
           <HorizontalDataPreview
@@ -56,7 +53,7 @@ const BookingBreakdownSection = ({
               />
             }
             title="Check Out"
-            description={dateFormat(queryParams?.checkOut!, "day-long")}
+            description={dateFormat(data?.checkOut!, "day-long")}
           />
 
           <HorizontalDataPreview
@@ -64,7 +61,7 @@ const BookingBreakdownSection = ({
               <Octicons name="person" size={24} color={colors.grayInactive} />
             }
             title="Adult"
-            description={queryParams?.maxAdult?.toString() ?? "0"}
+            description={data?.adult?.toString() ?? "0"}
           />
 
           <HorizontalDataPreview
@@ -76,7 +73,7 @@ const BookingBreakdownSection = ({
               />
             }
             title="Child"
-            description={queryParams?.maxChild?.toString() ?? "0"}
+            description={data?.child?.toString() ?? "0"}
           />
 
           <HorizontalDataPreview
@@ -85,8 +82,8 @@ const BookingBreakdownSection = ({
             }
             title="Total Night"
             description={calculateNights(
-              queryParams?.checkIn!,
-              queryParams?.checkOut!
+              data?.checkIn!,
+              data?.checkOut!
             ).toString()}
           />
 
@@ -99,7 +96,7 @@ const BookingBreakdownSection = ({
               />
             }
             title="Total Room"
-            description={totalRoom?.toString() ?? "0"}
+            description={totalRoom?.toString() || "0"}
           />
         </View>
       </Card>
@@ -107,4 +104,4 @@ const BookingBreakdownSection = ({
   );
 };
 
-export default BookingBreakdownSection;
+export default PaymentDetailSection;

@@ -32,7 +32,7 @@ const ScreenBookingInformation = ({
   params,
   onNextStep,
 }: ScreenBookingInformationProps) => {
-  const { booking, setBooking } = useBookingContext();
+  const { setBookingRoomData, booking, setBooking } = useBookingContext();
   const scrollViewRef = useRef<ScrollView>(null);
   const formRef = useRef<View>(null);
 
@@ -94,6 +94,10 @@ const ScreenBookingInformation = ({
     setValue("bookingRoom", newBookingRoom);
   };
 
+  const totalRoom = bookingRoom?.reduce((prev, curr) => {
+    return prev + curr?.totalRoom;
+  }, 0);
+
   const handleChangePriceRate = (rate: number) => {
     const newBookingRoom = bookingRoom?.map((room) => {
       if (room?.hotelId === showModalPrice?.hotelId) {
@@ -117,11 +121,11 @@ const ScreenBookingInformation = ({
       person:
         (Number(queryParams?.maxAdult) ?? 0) +
         (Number(queryParams?.maxChild) ?? 0),
-      hotelId: queryParams?.hotelId || 0,
+      hotelId: Number(queryParams?.hotelId) || 0,
       marketId: null,
-      child: queryParams?.maxChild || 0,
+      child: Number(queryParams?.maxChild) || 0,
       night: calculateNights(queryParams?.checkIn!, queryParams?.checkOut!),
-      adult: queryParams?.maxAdult || 0,
+      adult: Number(queryParams?.maxAdult) || 0,
       guestFirstName: data?.guestFirstName || "",
       guestLastName: data?.guestLastName || "",
       guestEmail: data?.guestEmail || "",
@@ -185,9 +189,14 @@ const ScreenBookingInformation = ({
     });
   };
 
+  const handleSetRoomData = () => {
+    setBookingRoomData(data?.data ?? []);
+  };
+
   useEffect(() => {
     if (!data?.data) return;
     handleInitialValue();
+    handleSetRoomData();
   }, [data, queryParams.checkIn, queryParams.checkOut, reset, booking]);
 
   return isLoading ? (
@@ -215,7 +224,10 @@ const ScreenBookingInformation = ({
             }
           />
 
-          <BookingBreakdownSection queryParams={queryParams} />
+          <BookingBreakdownSection
+            queryParams={queryParams}
+            totalRoom={totalRoom ?? 0}
+          />
 
           <View ref={formRef}>
             <FormGuestInformation control={control} errors={errors} />

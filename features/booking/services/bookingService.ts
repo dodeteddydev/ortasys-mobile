@@ -7,6 +7,7 @@ import { BookingHotelRoomResponse } from "../types/bookingHotelRoomResponse";
 import { BookingListQueryParams } from "../types/bookingListQueryParams";
 import { BookingListResponse } from "../types/bookingListResponse";
 import { BookingHotelResponse } from "../types/bookingHoteResponse";
+import { BookingRequest } from "../types/bookingRequest";
 
 export class BookingService {
   static async get(params?: BookingListQueryParams) {
@@ -14,6 +15,12 @@ export class BookingService {
       .get<SuccessResponse<BookingListResponse[]>>("hotel/room/booking", {
         params,
       })
+      .then((response) => response.data);
+  }
+
+  static async create(request: BookingRequest) {
+    return await axiosInstance
+      .post<SuccessResponse<string>>("booking/agent", request)
       .then((response) => response.data);
   }
 

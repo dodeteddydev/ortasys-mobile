@@ -102,7 +102,9 @@ const RoomItem = ({
       </View>
 
       <View className="flex items-center mt-3 gap-2">
-        <Text className="text-gray-400">Only 2 left</Text>
+        <Text className="text-gray-400">
+          Only {data?.roomAllotment ?? 0} left
+        </Text>
 
         <View className="flex flex-row items-center gap-2">
           <Text className="text-lg font-bold text-primary">
@@ -130,7 +132,7 @@ const RoomItem = ({
             activeOpacity={0.8}
             className="bg-primary p-1 rounded-md"
             onPress={
-              bookingRoom?.totalRoom < 2
+              bookingRoom?.totalRoom < (data?.roomAllotment ?? 0)
                 ? () => onChangeTotalRoom(bookingRoom?.totalRoom + 1)
                 : undefined
             }

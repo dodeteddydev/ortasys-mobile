@@ -1,6 +1,11 @@
 import "dotenv/config";
 
 const appEnv = process.env.APP_ENV || "development";
+const API_URLS = {
+  development: "", // change this to your development API URL
+  staging: "",
+  production: "",
+};
 
 export default {
   expo: {
@@ -67,7 +72,7 @@ export default {
 
     extra: {
       appEnv,
-      BASE_API_URL: process.env.BASE_API_URL,
+      BASE_API_URL: API_URLS[appEnv],
       eas: {
         projectId: "4be1affa-a074-42a3-a032-54b3bf47e697",
       },
